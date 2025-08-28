@@ -1,22 +1,8 @@
 {
-  "name": "vncompare-web",
+
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
+
+
   "headers": [
     {
       "source": "/(.*)",
@@ -79,11 +65,7 @@
       "destination": "/api/robots"
     }
   ],
-  "functions": {
-    "apps/web/src/app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
+
   "env": {
     "NODE_ENV": "production"
   }
