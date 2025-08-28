@@ -2,7 +2,7 @@
 
 ## 🎨 Overview
 
-VNCompare.com is Vietnam's premier paint comparison platform, designed to help consumers and businesses find the best paint products, prices, and suppliers across Vietnam. Inspired by Germany's CHECK24, our platform provides transparent, comprehensive comparisons for all types of paint products.
+VNCompare.com is Vietnam's premier paint comparison platform, designed to help consumers and businesses find the best paint products, prices, and suppliers across Vietnam. Our platform provides transparent, comprehensive comparisons for all types of paint products.
 
 ## 🌟 Key Features
 
