@@ -35,6 +35,10 @@ VNCompare.com is Vietnam's premier paint comparison platform, designed to help c
 - **Installation Services**: Find professional painters and contractors
 - **Sample Requests**: Order paint samples before buying
 - **Wishlist**: Save favorite paints for later comparison
+- **Coverage Calculator**: Calculate paint needed based on room dimensions (m²)
+- **Shipping Calculator**: Real-time shipping cost and duration calculation
+- **Total Price Calculation**: Product price + shipping + taxes
+- **Address Management**: Vietnam address validation and autocomplete
 
 ### 📱 User Features
 - **Personalized Recommendations**: AI-powered paint suggestions
@@ -50,6 +54,12 @@ VNCompare.com is Vietnam's premier paint comparison platform, designed to help c
 - **Analytics**: Market trends and pricing insights
 - **Bulk Ordering**: Streamlined ordering for large projects
 - **Invoice Management**: Track expenses and generate reports
+- **Provider Backoffice**: Angular-based admin panel for suppliers
+- **Product Management**: Add, edit, and manage paint products
+- **Pricing Management**: Set base prices, discounts, and promotions
+- **Shipping Configuration**: Define shipping zones, costs, and delivery times
+- **Coverage Data Management**: Set paint coverage rates (m²/liter)
+- **Address Management**: Manage delivery addresses and service areas
 
 ## 🛠 Tech Stack
 
@@ -61,6 +71,15 @@ VNCompare.com is Vietnam's premier paint comparison platform, designed to help c
 - **Icons**: Lucide React
 - **Charts**: Recharts for data visualization
 - **Maps**: Google Maps API for supplier locations
+
+### Admin Backoffice
+- **Framework**: Angular 17 with TypeScript
+- **Styling**: Angular Material + Tailwind CSS
+- **State Management**: NgRx for state management
+- **UI Components**: Angular Material Design components
+- **Forms**: Reactive Forms with validation
+- **Charts**: Chart.js for analytics and reporting
+- **Maps**: Google Maps API for address management
 
 ### Backend
 - **Runtime**: Node.js with TypeScript
@@ -116,13 +135,16 @@ vncompare/
 
 ### Database Schema
 - **Users**: Customer and business accounts
-- **Products**: Paint products with specifications
-- **Suppliers**: Paint stores and manufacturers
+- **Products**: Paint products with specifications and coverage data (m²/liter)
+- **Suppliers**: Paint stores and manufacturers with service areas
 - **Prices**: Historical and current pricing data
 - **Reviews**: Customer ratings and feedback
 - **Orders**: Purchase tracking and history
 - **Projects**: User painting projects
 - **Analytics**: Usage and performance data
+- **Addresses**: Vietnam address database with provinces, districts, wards
+- **Shipping**: Shipping zones, costs, and delivery timeframes
+- **Coverage**: Paint coverage rates and calculation formulas
 
 ## 🚀 Getting Started
 

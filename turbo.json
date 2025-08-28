@@ -16,6 +16,9 @@
       "dependsOn": ["^test"],
       "outputs": ["coverage/**"]
     },
+    "ng": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true
