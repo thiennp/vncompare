@@ -1,0 +1,159 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Users and Authentication
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  role      String   @default("customer")
+  createdAt DateTime @default(now()) @map("created_at")
+  orders    Order[]
+
+  @@map("users")
+}
+
+// Vietnam Address System
+model Province {
+  id       Int        @id @default(autoincrement())
+  code     String     @unique
+  name     String
+  type     String
+  districts District[]
+  serviceAreas ServiceArea[]
+
+  @@map("provinces")
+}
+
+model District {
+  id         Int        @id @default(autoincrement())
+  provinceId Int        @map("province_id")
+  code       String     @unique
+  name       String
+  type       String
+  province   Province   @relation(fields: [provinceId], references: [id])
+  wards      Ward[]
+  serviceAreas ServiceArea[]
+
+  @@map("districts")
+}
+
+model Ward {
+  id         Int        @id @default(autoincrement())
+  districtId Int        @map("district_id")
+  code       String     @unique
+  name       String
+  type       String
+  district   District   @relation(fields: [districtId], references: [id])
+  serviceAreas ServiceArea[]
+
+  @@map("wards")
+}
+
+// Products and Pricing
+model Product {
+  id            Int               @id @default(autoincrement())
+  name          String
+  brand         String?
+  category      String?
+  description   String?
+  basePrice     Decimal?          @map("base_price") @db.Decimal(10, 2)
+  originalPrice Decimal?          @map("original_price") @db.Decimal(10, 2)
+  coverageRate  Decimal?          @map("coverage_rate") @db.Decimal(8, 2) // m²/liter
+  unit          String?
+  isActive      Boolean           @default(true) @map("is_active")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  coverage      ProductCoverage[]
+  orders        Order[]
+
+  @@map("products")
+}
+
+model ProductCoverage {
+  id            Int      @id @default(autoincrement())
+  productId     Int      @map("product_id")
+  surfaceType   String   @map("surface_type")
+  coverageRate  Decimal  @map("coverage_rate") @db.Decimal(8, 2)
+  coatsRequired Int      @default(2) @map("coats_required")
+  notes         String?
+  product       Product  @relation(fields: [productId], references: [id])
+
+  @@map("product_coverage")
+}
+
+// Suppliers and Service Areas
+model Supplier {
+  id           Int            @id @default(autoincrement())
+  name         String
+  businessInfo Json?          @map("business_info")
+  contactInfo  Json?          @map("contact_info")
+  isVerified   Boolean        @default(false) @map("is_verified")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  shippingZones ShippingZone[]
+  serviceAreas ServiceArea[]
+  orders       Order[]
+
+  @@map("suppliers")
+}
+
+model ShippingZone {
+  id            Int           @id @default(autoincrement())
+  supplierId    Int           @map("supplier_id")
+  zoneName      String        @map("zone_name")
+  baseRate      Decimal       @map("base_rate") @db.Decimal(10, 2)
+  weightFactor  Decimal       @map("weight_factor") @db.Decimal(10, 2)
+  distanceFactor Decimal      @map("distance_factor") @db.Decimal(10, 2)
+  deliveryDays  Int           @map("delivery_days")
+  isActive      Boolean       @default(true) @map("is_active")
+  supplier      Supplier      @relation(fields: [supplierId], references: [id])
+  serviceAreas  ServiceArea[]
+
+  @@map("shipping_zones")
+}
+
+model ServiceArea {
+  id             Int          @id @default(autoincrement())
+  supplierId     Int          @map("supplier_id")
+  provinceId     Int          @map("province_id")
+  districtId     Int?         @map("district_id")
+  wardId         Int?         @map("ward_id")
+  shippingZoneId Int          @map("shipping_zone_id")
+  deliveryFee    Decimal      @map("delivery_fee") @db.Decimal(10, 2)
+  deliveryDays   Int          @map("delivery_days")
+  supplier       Supplier     @relation(fields: [supplierId], references: [id])
+  province       Province     @relation(fields: [provinceId], references: [id])
+  district       District?    @relation(fields: [districtId], references: [id])
+  ward           Ward?        @relation(fields: [wardId], references: [id])
+  shippingZone   ShippingZone @relation(fields: [shippingZoneId], references: [id])
+
+  @@map("service_areas")
+}
+
+// Orders and Analytics
+model Order {
+  id             Int      @id @default(autoincrement())
+  userId         Int      @map("user_id")
+  productId      Int      @map("product_id")
+  supplierId     Int      @map("supplier_id")
+  quantity       Int
+  totalPrice     Decimal  @map("total_price") @db.Decimal(10, 2)
+  shippingAddress Json    @map("shipping_address")
+  status         String
+  createdAt      DateTime @default(now()) @map("created_at")
+  user           User     @relation(fields: [userId], references: [id])
+  product        Product  @relation(fields: [productId], references: [id])
+  supplier       Supplier @relation(fields: [supplierId], references: [id])
+
+  @@map("orders")
+}
