@@ -269,9 +269,7 @@ export default function HeroSection() {
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse" />
-      <div className="absolute bottom-20 right-20 w-32 h-32 bg-green-200 rounded-full opacity-20 animate-pulse delay-1000" />
-      <div className="absolute top-1/2 left-5 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-pulse delay-500" />
+      {/* Removed decorative circles to fix overlapping issues */}
     </section>
   )
 }
