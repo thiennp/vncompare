@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ApiService, Order, PaginatedResponse } from '../../services/api.service';
 
 interface Order {
   id: string;
@@ -45,6 +46,9 @@ interface Address {
           <p>Track and manage customer orders</p>
         </div>
         <div class="header-actions">
+          <button class="btn btn-outline" (click)="loadOrders()" [disabled]="loading">
+            {{ loading ? 'Loading...' : 'Refresh' }}
+          </button>
           <button class="btn btn-outline" (click)="exportOrders()">
             📤 Export
           </button>
@@ -52,6 +56,21 @@ interface Address {
             ➕ Create Order
           </button>
         </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="error">
+        <div class="error-content">
+          <span class="error-icon">⚠️</span>
+          <span>{{ error }}</span>
+          <button class="btn btn-sm btn-outline" (click)="loadOrders()">Retry</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="loading && !error">
+        <div class="loading-spinner"></div>
+        <p>Loading orders...</p>
       </div>
 
       <!-- Filters and Search -->
@@ -547,8 +566,49 @@ export class OrdersComponent implements OnInit {
   statusFilter = '';
   paymentFilter = '';
   dateFilter = '';
+  loading = false;
+  error: string | null = null;
 
-  orders: Order[] = [
+  orders: Order[] = [];
+  filteredOrders: Order[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadOrders();
+  }
+
+  loadOrders(): void {
+    this.loading = true;
+    this.error = null;
+
+    const params = {
+      page: 1,
+      limit: 50,
+      search: this.searchTerm || undefined,
+      status: this.statusFilter || undefined,
+      paymentStatus: this.paymentFilter || undefined,
+      sort: 'createdAt:desc'
+    };
+
+    this.apiService.getOrders(params).subscribe({
+      next: (response: PaginatedResponse<Order>) => {
+        this.orders = response.data;
+        this.filteredOrders = [...this.orders];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading orders:', error);
+        this.error = 'Failed to load orders';
+        this.loading = false;
+        // Fallback to mock data
+        this.loadMockData();
+      }
+    });
+  }
+
+  loadMockData(): void {
+    this.orders = [
     {
       id: 'ORD-001',
       customerName: 'Nguyen Van A',
@@ -619,16 +679,8 @@ export class OrdersComponent implements OnInit {
   }
 
   filterOrders(): void {
-    this.filteredOrders = this.orders.filter(order => {
-      const matchesSearch = order.id.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           order.customerName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           order.customerEmail.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesStatus = !this.statusFilter || order.status === this.statusFilter;
-      const matchesPayment = !this.paymentFilter || order.paymentStatus === this.paymentFilter;
-      const matchesDate = !this.dateFilter || order.createdAt.startsWith(this.dateFilter);
-      
-      return matchesSearch && matchesStatus && matchesPayment && matchesDate;
-    });
+    // Reload orders with new filters
+    this.loadOrders();
   }
 
   viewOrder(order: Order): void {

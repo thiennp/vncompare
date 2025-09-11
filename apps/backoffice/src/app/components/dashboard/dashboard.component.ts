@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ApiService, DashboardMetrics, Product, Order } from '../../services/api.service';
 
 interface MetricCard {
   title: string;
@@ -39,10 +40,28 @@ interface Product {
       <div class="dashboard-header">
         <h1>Dashboard</h1>
         <p>Welcome back! Here's what's happening with your business today.</p>
+        <button class="btn btn-outline" (click)="loadDashboardData()" [disabled]="loading">
+          {{ loading ? 'Loading...' : 'Refresh' }}
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="error">
+        <div class="error-content">
+          <span class="error-icon">⚠️</span>
+          <span>{{ error }}</span>
+          <button class="btn btn-sm btn-outline" (click)="loadDashboardData()">Retry</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="loading && !error">
+        <div class="loading-spinner"></div>
+        <p>Loading dashboard data...</p>
       </div>
 
       <!-- Metrics Cards -->
-      <div class="metrics-grid">
+      <div class="metrics-grid" *ngIf="!loading || metrics.length > 0">
         <div class="metric-card" *ngFor="let metric of metrics">
           <div class="metric-icon" [style.background-color]="metric.color">
             <span>{{ metric.icon }}</span>
@@ -191,6 +210,56 @@ interface Product {
       color: #64748b;
       font-size: 1.1rem;
       margin: 0;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .error-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .error-icon {
+      font-size: 1.25rem;
+    }
+
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #3730a3;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .metrics-grid {
@@ -562,102 +631,220 @@ interface Product {
 })
 export class DashboardComponent implements OnInit {
   selectedPeriod = '30d';
+  loading = true;
+  error: string | null = null;
   
-  metrics: MetricCard[] = [
-    {
-      title: 'Total Revenue',
-      value: '₫45,250,000',
-      change: '+12.5%',
-      changeType: 'positive',
-      icon: '💰',
-      color: '#10b981'
-    },
-    {
-      title: 'Orders Today',
-      value: '23',
-      change: '+8.2%',
-      changeType: 'positive',
-      icon: '🛒',
-      color: '#3b82f6'
-    },
-    {
-      title: 'Active Products',
-      value: '156',
-      change: '+3',
-      changeType: 'positive',
-      icon: '📦',
-      color: '#8b5cf6'
-    },
-    {
-      title: 'Service Areas',
-      value: '12',
-      change: '0%',
-      changeType: 'neutral',
-      icon: '📍',
-      color: '#f59e0b'
-    }
-  ];
+  metrics: MetricCard[] = [];
+  dashboardData: DashboardMetrics | null = null;
 
-  revenueBars = [
-    { height: 65 },
-    { height: 78 },
-    { height: 82 },
-    { height: 75 },
-    { height: 88 },
-    { height: 92 },
-    { height: 85 }
-  ];
+  revenueBars: { height: number }[] = [];
   chartLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  topProducts: Product[] = [];
+  recentOrders: RecentOrder[] = [];
+  lowStockProducts: any[] = [];
 
-  topProducts = [
-    { name: 'Dulux Weathershield', brand: 'Dulux', sales: 45, revenue: 12500000 },
-    { name: 'Jotun Lady', brand: 'Jotun', sales: 32, revenue: 8500000 },
-    { name: 'Kova Premium', brand: 'Kova', sales: 28, revenue: 21000000 },
-    { name: 'Nippon Paint', brand: 'Nippon', sales: 24, revenue: 9800000 }
-  ];
-
-  recentOrders: RecentOrder[] = [
-    {
-      id: 'ORD-001',
-      customer: 'Nguyen Van A',
-      product: 'Dulux Weathershield',
-      amount: 1250000,
-      status: 'delivered',
-      date: '2024-01-15'
-    },
-    {
-      id: 'ORD-002',
-      customer: 'Tran Thi B',
-      product: 'Jotun Lady',
-      amount: 850000,
-      status: 'shipped',
-      date: '2024-01-15'
-    },
-    {
-      id: 'ORD-003',
-      customer: 'Le Van C',
-      product: 'Kova Premium',
-      amount: 2100000,
-      status: 'processing',
-      date: '2024-01-14'
-    },
-    {
-      id: 'ORD-004',
-      customer: 'Pham Thi D',
-      product: 'Nippon Paint',
-      amount: 980000,
-      status: 'pending',
-      date: '2024-01-14'
-    }
-  ];
-
-  lowStockProducts = [
-    { name: 'Dulux Weathershield', brand: 'Dulux', stock: 5, stockLevel: 'low' },
-    { name: 'Jotun Lady', brand: 'Jotun', stock: 12, stockLevel: 'medium' },
-    { name: 'Kova Premium', brand: 'Kova', stock: 3, stockLevel: 'low' }
-  ];
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    // Initialize dashboard data
+    this.loadDashboardData();
+  }
+
+  loadDashboardData(): void {
+    this.loading = true;
+    this.error = null;
+
+    // Load dashboard metrics
+    this.apiService.getDashboardAnalytics().subscribe({
+      next: (data) => {
+        this.dashboardData = data;
+        this.updateMetrics(data);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading dashboard data:', error);
+        this.error = 'Failed to load dashboard data';
+        this.loading = false;
+        // Fallback to mock data
+        this.loadMockData();
+      }
+    });
+
+    // Load top products
+    this.apiService.getTopProducts(4).subscribe({
+      next: (products) => {
+        this.topProducts = products;
+      },
+      error: (error) => {
+        console.error('Error loading top products:', error);
+      }
+    });
+
+    // Load recent orders
+    this.apiService.getOrders({ limit: 4, page: 1 }).subscribe({
+      next: (response) => {
+        this.recentOrders = response.data.map(order => ({
+          id: order.id,
+          customer: order.customerName,
+          product: order.products[0]?.productName || 'Multiple products',
+          amount: order.totalAmount,
+          status: order.status,
+          date: new Date(order.createdAt).toISOString().split('T')[0]
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading recent orders:', error);
+      }
+    });
+
+    // Load low stock products
+    this.apiService.getProducts({ limit: 10, page: 1 }).subscribe({
+      next: (response) => {
+        this.lowStockProducts = response.products
+          .filter(product => product.stock < 20)
+          .slice(0, 3)
+          .map(product => ({
+            name: product.name,
+            brand: product.brand,
+            stock: product.stock,
+            stockLevel: product.stock < 10 ? 'low' : 'medium'
+          }));
+      },
+      error: (error) => {
+        console.error('Error loading low stock products:', error);
+      }
+    });
+  }
+
+  updateMetrics(data: DashboardMetrics): void {
+    this.metrics = [
+      {
+        title: 'Total Revenue',
+        value: `₫${data.totalRevenue.toLocaleString()}`,
+        change: `${data.revenueChange > 0 ? '+' : ''}${data.revenueChange}%`,
+        changeType: data.revenueChange > 0 ? 'positive' : data.revenueChange < 0 ? 'negative' : 'neutral',
+        icon: '💰',
+        color: '#10b981'
+      },
+      {
+        title: 'Total Orders',
+        value: data.totalOrders.toString(),
+        change: `${data.ordersChange > 0 ? '+' : ''}${data.ordersChange}%`,
+        changeType: data.ordersChange > 0 ? 'positive' : data.ordersChange < 0 ? 'negative' : 'neutral',
+        icon: '🛒',
+        color: '#3b82f6'
+      },
+      {
+        title: 'Active Products',
+        value: data.activeProducts.toString(),
+        change: `${data.productsChange > 0 ? '+' : ''}${data.productsChange}%`,
+        changeType: data.productsChange > 0 ? 'positive' : data.productsChange < 0 ? 'negative' : 'neutral',
+        icon: '📦',
+        color: '#8b5cf6'
+      },
+      {
+        title: 'Service Areas',
+        value: data.serviceAreas.toString(),
+        change: `${data.areasChange > 0 ? '+' : ''}${data.areasChange}%`,
+        changeType: data.areasChange > 0 ? 'positive' : data.areasChange < 0 ? 'negative' : 'neutral',
+        icon: '📍',
+        color: '#f59e0b'
+      }
+    ];
+  }
+
+  loadMockData(): void {
+    // Fallback mock data when API fails
+    this.metrics = [
+      {
+        title: 'Total Revenue',
+        value: '₫45,250,000',
+        change: '+12.5%',
+        changeType: 'positive',
+        icon: '💰',
+        color: '#10b981'
+      },
+      {
+        title: 'Orders Today',
+        value: '23',
+        change: '+8.2%',
+        changeType: 'positive',
+        icon: '🛒',
+        color: '#3b82f6'
+      },
+      {
+        title: 'Active Products',
+        value: '156',
+        change: '+3',
+        changeType: 'positive',
+        icon: '📦',
+        color: '#8b5cf6'
+      },
+      {
+        title: 'Service Areas',
+        value: '12',
+        change: '0%',
+        changeType: 'neutral',
+        icon: '📍',
+        color: '#f59e0b'
+      }
+    ];
+
+    this.revenueBars = [
+      { height: 65 },
+      { height: 78 },
+      { height: 82 },
+      { height: 75 },
+      { height: 88 },
+      { height: 92 },
+      { height: 85 }
+    ];
+
+    this.topProducts = [
+      { name: 'Dulux Weathershield', brand: 'Dulux', sales: 45, revenue: 12500000 } as any,
+      { name: 'Jotun Lady', brand: 'Jotun', sales: 32, revenue: 8500000 } as any,
+      { name: 'Kova Premium', brand: 'Kova', sales: 28, revenue: 21000000 } as any,
+      { name: 'Nippon Paint', brand: 'Nippon', sales: 24, revenue: 9800000 } as any
+    ];
+
+    this.recentOrders = [
+      {
+        id: 'ORD-001',
+        customer: 'Nguyen Van A',
+        product: 'Dulux Weathershield',
+        amount: 1250000,
+        status: 'delivered',
+        date: '2024-01-15'
+      },
+      {
+        id: 'ORD-002',
+        customer: 'Tran Thi B',
+        product: 'Jotun Lady',
+        amount: 850000,
+        status: 'shipped',
+        date: '2024-01-15'
+      },
+      {
+        id: 'ORD-003',
+        customer: 'Le Van C',
+        product: 'Kova Premium',
+        amount: 2100000,
+        status: 'processing',
+        date: '2024-01-14'
+      },
+      {
+        id: 'ORD-004',
+        customer: 'Pham Thi D',
+        product: 'Nippon Paint',
+        amount: 980000,
+        status: 'pending',
+        date: '2024-01-14'
+      }
+    ];
+
+    this.lowStockProducts = [
+      { name: 'Dulux Weathershield', brand: 'Dulux', stock: 5, stockLevel: 'low' },
+      { name: 'Jotun Lady', brand: 'Jotun', stock: 12, stockLevel: 'medium' },
+      { name: 'Kova Premium', brand: 'Kova', stock: 3, stockLevel: 'low' }
+    ];
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ApiService, User, PaginatedResponse } from '../../services/api.service';
 
 interface User {
   id: string;
@@ -29,6 +30,9 @@ interface User {
           <p>Manage users, roles, and permissions</p>
         </div>
         <div class="header-actions">
+          <button class="btn btn-outline" (click)="loadUsers()" [disabled]="loading">
+            {{ loading ? 'Loading...' : 'Refresh' }}
+          </button>
           <button class="btn btn-outline" (click)="exportUsers()">
             📤 Export
           </button>
@@ -36,6 +40,21 @@ interface User {
             ➕ Add User
           </button>
         </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="error">
+        <div class="error-content">
+          <span class="error-icon">⚠️</span>
+          <span>{{ error }}</span>
+          <button class="btn btn-sm btn-outline" (click)="loadUsers()">Retry</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="loading && !error">
+        <div class="loading-spinner"></div>
+        <p>Loading users...</p>
       </div>
 
       <!-- Filters and Search -->
@@ -494,8 +513,49 @@ export class UsersComponent implements OnInit {
   searchTerm = '';
   roleFilter = '';
   statusFilter = '';
+  loading = false;
+  error: string | null = null;
 
-  users: User[] = [
+  users: User[] = [];
+  filteredUsers: User[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers(): void {
+    this.loading = true;
+    this.error = null;
+
+    const params = {
+      page: 1,
+      limit: 50,
+      search: this.searchTerm || undefined,
+      role: this.roleFilter || undefined,
+      status: this.statusFilter || undefined,
+      sort: 'createdAt:desc'
+    };
+
+    this.apiService.getUsers(params).subscribe({
+      next: (response: PaginatedResponse<User>) => {
+        this.users = response.data;
+        this.filteredUsers = [...this.users];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+        this.error = 'Failed to load users';
+        this.loading = false;
+        // Fallback to mock data
+        this.loadMockData();
+      }
+    });
+  }
+
+  loadMockData(): void {
+    this.users = [
     {
       id: 'USR-001',
       firstName: 'Admin',
@@ -538,9 +598,9 @@ export class UsersComponent implements OnInit {
       ordersCount: 0,
       totalSpent: 0
     }
-  ];
-
-  filteredUsers: User[] = [];
+    ];
+    this.filteredUsers = [...this.users];
+  }
 
   get totalUsers(): number {
     return this.users.length;
@@ -558,22 +618,9 @@ export class UsersComponent implements OnInit {
     return this.users.filter(user => user.role === 'customer').length;
   }
 
-  ngOnInit(): void {
-    this.filteredUsers = [...this.users];
-  }
-
   filterUsers(): void {
-    this.filteredUsers = this.users.filter(user => {
-      const matchesSearch = user.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           user.lastName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           user.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesRole = !this.roleFilter || user.role === this.roleFilter;
-      const matchesStatus = !this.statusFilter || 
-                           (this.statusFilter === 'active' && user.isActive) ||
-                           (this.statusFilter === 'inactive' && !user.isActive);
-      
-      return matchesSearch && matchesRole && matchesStatus;
-    });
+    // Reload users with new filters
+    this.loadUsers();
   }
 
   viewUser(user: User): void {

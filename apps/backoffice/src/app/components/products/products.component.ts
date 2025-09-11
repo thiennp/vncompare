@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ApiService, Product, ProductListResponse } from '../../services/api.service';
 
 interface Product {
   id: string;
@@ -37,6 +38,9 @@ interface ProductCategory {
           <p>Manage your paint products, categories, and inventory</p>
         </div>
         <div class="header-actions">
+          <button class="btn btn-outline" (click)="loadProducts()" [disabled]="loading">
+            {{ loading ? 'Loading...' : 'Refresh' }}
+          </button>
           <button class="btn btn-outline" (click)="exportProducts()">
             📤 Export
           </button>
@@ -44,6 +48,21 @@ interface ProductCategory {
             ➕ Add Product
           </button>
         </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="error">
+        <div class="error-content">
+          <span class="error-icon">⚠️</span>
+          <span>{{ error }}</span>
+          <button class="btn btn-sm btn-outline" (click)="loadProducts()">Retry</button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="loading && !error">
+        <div class="loading-spinner"></div>
+        <p>Loading products...</p>
       </div>
 
       <!-- Filters and Search -->
@@ -118,19 +137,21 @@ interface ProductCategory {
                 </div>
               </td>
               <td>{{ product.brand }}</td>
-              <td>{{ product.category }}</td>
+              <td>{{ product.category.name }}</td>
               <td>
-                <span class="type-badge" [class]="product.type.toLowerCase()">
-                  {{ product.type }}
+                <span class="type-badge" [class]="product.category.slug.toLowerCase()">
+                  {{ product.category.name }}
                 </span>
               </td>
               <td class="price-cell">₫{{ product.price | number }}</td>
-              <td class="stock-cell">
-                <span class="stock-badge" [class]="getStockLevel(product.stock)">
-                  {{ product.stock }}
-                </span>
+              <td class="rating-cell">
+                <div class="rating">
+                  <span class="stars">⭐</span>
+                  <span class="rating-value">{{ product.rating }}</span>
+                  <span class="reviews-count">({{ product.totalReviews }})</span>
+                </div>
               </td>
-              <td>{{ product.coverageRate }} m²/L</td>
+              <td>{{ product.coverage }} m²/L</td>
               <td>
                 <span class="status-badge" [class]="product.isActive ? 'active' : 'inactive'">
                   {{ product.isActive ? 'Active' : 'Inactive' }}
@@ -601,90 +622,116 @@ export class ProductsComponent implements OnInit {
   pageSize = 10;
   totalProducts = 0;
   totalPages = 0;
+  loading = false;
+  error: string | null = null;
 
   Math = Math;
 
   productTypes = ['Interior', 'Exterior', 'Specialty', 'Industrial', 'Decorative', 'Eco-friendly'];
 
-  categories: ProductCategory[] = [
-    { id: '1', name: 'Interior Paint', description: 'Indoor paint products', productCount: 45 },
-    { id: '2', name: 'Exterior Paint', description: 'Outdoor paint products', productCount: 32 },
-    { id: '3', name: 'Specialty Paint', description: 'Special purpose paints', productCount: 18 },
-    { id: '4', name: 'Industrial Paint', description: 'Industrial grade paints', productCount: 12 },
-    { id: '5', name: 'Decorative Paint', description: 'Decorative and artistic paints', productCount: 25 },
-    { id: '6', name: 'Eco-friendly Paint', description: 'Environmentally friendly paints', productCount: 15 }
-  ];
-
-  products: Product[] = [
-    {
-      id: '1',
-      name: 'Dulux Weathershield',
-      brand: 'Dulux',
-      category: 'Exterior Paint',
-      type: 'Exterior',
-      price: 1250000,
-      stock: 45,
-      coverageRate: 12,
-      description: 'High-quality exterior paint with weather protection',
-      imageUrl: '',
-      isActive: true,
-      createdAt: '2024-01-01',
-      updatedAt: '2024-01-15'
-    },
-    {
-      id: '2',
-      name: 'Jotun Lady',
-      brand: 'Jotun',
-      category: 'Interior Paint',
-      type: 'Interior',
-      price: 850000,
-      stock: 12,
-      coverageRate: 10,
-      description: 'Premium interior paint with easy application',
-      imageUrl: '',
-      isActive: true,
-      createdAt: '2024-01-02',
-      updatedAt: '2024-01-16'
-    },
-    {
-      id: '3',
-      name: 'Kova Premium',
-      brand: 'Kova',
-      category: 'Specialty Paint',
-      type: 'Specialty',
-      price: 2100000,
-      stock: 3,
-      coverageRate: 15,
-      description: 'Specialty paint for unique applications',
-      imageUrl: '',
-      isActive: true,
-      createdAt: '2024-01-03',
-      updatedAt: '2024-01-17'
-    }
-  ];
-
+  categories: ProductCategory[] = [];
+  products: Product[] = [];
   filteredProducts: Product[] = [];
 
+  constructor(private apiService: ApiService) {}
+
   ngOnInit(): void {
-    this.filteredProducts = [...this.products];
-    this.totalProducts = this.products.length;
-    this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
+    this.loadProducts();
+  }
+
+  loadProducts(): void {
+    this.loading = true;
+    this.error = null;
+
+    const params = {
+      page: this.currentPage,
+      limit: this.pageSize,
+      search: this.searchTerm || undefined,
+      category: this.selectedCategory || undefined,
+      sort: 'createdAt:desc'
+    };
+
+    this.apiService.getProducts(params).subscribe({
+      next: (response: ProductListResponse) => {
+        this.products = response.products;
+        this.filteredProducts = [...this.products];
+        this.totalProducts = response.pagination.total;
+        this.totalPages = response.pagination.totalPages;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.error = 'Failed to load products';
+        this.loading = false;
+        // Fallback to mock data
+        this.loadMockData();
+      }
+    });
   }
 
   filterProducts(): void {
-    this.filteredProducts = this.products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           product.brand.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesCategory = !this.selectedCategory || product.category === this.selectedCategory;
-      const matchesType = !this.selectedType || product.type === this.selectedType;
-      const matchesStock = this.matchesStockFilter(product.stock);
-      
-      return matchesSearch && matchesCategory && matchesType && matchesStock;
-    });
-    
-    this.totalProducts = this.filteredProducts.length;
-    this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
+    // Reload products with new filters
     this.currentPage = 1;
+    this.loadProducts();
+  }
+
+  loadMockData(): void {
+    // Fallback mock data when API fails
+    this.categories = [
+      { id: '1', name: 'Interior Paint', description: 'Indoor paint products', productCount: 45 },
+      { id: '2', name: 'Exterior Paint', description: 'Outdoor paint products', productCount: 32 },
+      { id: '3', name: 'Specialty Paint', description: 'Special purpose paints', productCount: 18 },
+      { id: '4', name: 'Industrial Paint', description: 'Industrial grade paints', productCount: 12 },
+      { id: '5', name: 'Decorative Paint', description: 'Decorative and artistic paints', productCount: 25 },
+      { id: '6', name: 'Eco-friendly Paint', description: 'Environmentally friendly paints', productCount: 15 }
+    ];
+
+    this.products = [
+      {
+        id: '1',
+        name: 'Dulux Weathershield',
+        brand: 'Dulux',
+        category: { id: '1', name: 'Exterior Paint', slug: 'exterior-paint' },
+        supplier: { id: '1', companyName: 'Dulux Vietnam', rating: 4.8 },
+        sku: 'DUL-001',
+        color: 'White',
+        finish: 'Matte',
+        coverage: 12,
+        volume: 1,
+        price: 1250000,
+        images: [],
+        rating: 4.5,
+        totalReviews: 23,
+        isFeatured: true,
+        isActive: true,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-15T00:00:00Z'
+      },
+      {
+        id: '2',
+        name: 'Jotun Lady',
+        brand: 'Jotun',
+        category: { id: '2', name: 'Interior Paint', slug: 'interior-paint' },
+        supplier: { id: '2', companyName: 'Jotun Vietnam', rating: 4.6 },
+        sku: 'JOT-001',
+        color: 'Pink',
+        finish: 'Satin',
+        coverage: 10,
+        volume: 1,
+        price: 850000,
+        images: [],
+        rating: 4.2,
+        totalReviews: 15,
+        isFeatured: false,
+        isActive: true,
+        createdAt: '2024-01-02T00:00:00Z',
+        updatedAt: '2024-01-16T00:00:00Z'
+      }
+    ];
+
+    this.filteredProducts = [...this.products];
+    this.totalProducts = this.products.length;
+    this.totalPages = Math.ceil(this.totalProducts / this.pageSize);
   }
 
   matchesStockFilter(stock: number): boolean {
