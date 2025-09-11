@@ -1,0 +1,694 @@
+import { Component, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
+interface MenuItem {
+  title: string;
+  icon: string;
+  route: string;
+  children?: MenuItem[];
+}
+
+interface MetricCard {
+  title: string;
+  value: string;
+  change: string;
+  changeType: 'positive' | 'negative' | 'neutral';
+  icon: string;
+  color: string;
+}
+
+interface RecentOrder {
+  id: string;
+  customer: string;
+  product: string;
+  amount: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered';
+  date: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  type: 'Interior' | 'Exterior' | 'Specialty' | 'Industrial' | 'Decorative' | 'Eco-friendly';
+  price: number;
+  stock: number;
+  coverageRate: number; // m²/liter
+  description: string;
+  imageUrl: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ProductCategory {
+  id: string;
+  name: string;
+  description: string;
+  productCount: number;
+}
+
+interface PricingRule {
+  id: string;
+  productId: string;
+  basePrice: number;
+  volumeDiscounts: VolumeDiscount[];
+  promotionalPrice?: number;
+  promotionalStartDate?: string;
+  promotionalEndDate?: string;
+  isActive: boolean;
+}
+
+interface VolumeDiscount {
+  minQuantity: number;
+  maxQuantity?: number;
+  discountPercentage: number;
+  discountAmount?: number;
+}
+
+interface CoverageCalculation {
+  area: number; // m²
+  surfaceType: 'smooth' | 'textured' | 'ceiling' | 'exterior';
+  coatsRequired: number;
+  coverageRate: number; // m²/liter
+  paintNeeded: number; // liters
+  productId: string;
+  productPrice: number;
+  totalCost: number;
+}
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'provider' | 'manager';
+  company: string;
+  avatar?: string;
+  isActive: boolean;
+}
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+@Component({
+  selector: 'app-root',
+  imports: [
+    CommonModule, 
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatTableModule,
+    MatChipsModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ],
+  templateUrl: './app.html',
+  styleUrl: './app.scss'
+})
+export class App {
+  protected readonly title = signal('VNCompare Backoffice');
+  protected readonly isSidebarOpen = signal(true);
+  protected readonly isAuthenticated = signal(false);
+  protected readonly currentUser = signal<User | null>(null);
+  protected readonly showLoginForm = signal(false);
+  protected readonly loginCredentials: LoginCredentials = { email: '', password: '' };
+
+  // Demo users for testing
+  private readonly demoUsers: User[] = [
+    {
+      id: '1',
+      email: 'admin@vncompare.com',
+      name: 'Admin User',
+      role: 'admin',
+      company: 'VNCompare',
+      avatar: 'https://via.placeholder.com/40',
+      isActive: true
+    },
+    {
+      id: '2',
+      email: 'provider@dulux.com',
+      name: 'Dulux Manager',
+      role: 'provider',
+      company: 'Dulux Vietnam',
+      avatar: 'https://via.placeholder.com/40',
+      isActive: true
+    },
+    {
+      id: '3',
+      email: 'manager@jotun.com',
+      name: 'Jotun Manager',
+      role: 'manager',
+      company: 'Jotun Vietnam',
+      avatar: 'https://via.placeholder.com/40',
+      isActive: true
+    }
+  ];
+
+  constructor(private router: Router) {
+    // Check if user is already logged in (from localStorage)
+    this.checkExistingAuth();
+  }
+
+  getCurrentRoute(): string {
+    return this.router.url;
+  }
+
+  protected readonly menuItems: MenuItem[] = [
+    {
+      title: 'Dashboard',
+      icon: 'dashboard',
+      route: '/dashboard'
+    },
+    {
+      title: 'Products',
+      icon: 'inventory',
+      route: '/products',
+      children: [
+        { title: 'All Products', icon: 'list', route: '/products' },
+        { title: 'Add Product', icon: 'add', route: '/products/new' },
+        { title: 'Categories', icon: 'category', route: '/products/categories' }
+      ]
+    },
+    {
+      title: 'Pricing',
+      icon: 'attach_money',
+      route: '/pricing',
+      children: [
+        { title: 'Price Management', icon: 'price_check', route: '/pricing' },
+        { title: 'Coverage Calculator', icon: 'calculate', route: '/pricing/calculator' },
+        { title: 'Promotions', icon: 'local_offer', route: '/pricing/promotions' }
+      ]
+    },
+    {
+      title: 'Addresses',
+      icon: 'location_on',
+      route: '/addresses',
+      children: [
+        { title: 'Service Areas', icon: 'map', route: '/addresses/service-areas' },
+        { title: 'Provinces', icon: 'public', route: '/addresses/provinces' },
+        { title: 'Districts', icon: 'location_city', route: '/addresses/districts' }
+      ]
+    },
+    {
+      title: 'Shipping',
+      icon: 'local_shipping',
+      route: '/shipping',
+      children: [
+        { title: 'Shipping Zones', icon: 'zone', route: '/shipping/zones' },
+        { title: 'Delivery Rates', icon: 'delivery_dining', route: '/shipping/rates' },
+        { title: 'Orders', icon: 'shopping_cart', route: '/shipping/orders' }
+      ]
+    },
+    {
+      title: 'Analytics',
+      icon: 'analytics',
+      route: '/analytics',
+      children: [
+        { title: 'Sales Reports', icon: 'trending_up', route: '/analytics/sales' },
+        { title: 'Customer Insights', icon: 'people', route: '/analytics/customers' },
+        { title: 'Performance', icon: 'speed', route: '/analytics/performance' }
+      ]
+    },
+    {
+      title: 'Settings',
+      icon: 'settings',
+      route: '/settings',
+      children: [
+        { title: 'Company Profile', icon: 'business', route: '/settings/profile' },
+        { title: 'User Management', icon: 'person', route: '/settings/users' },
+        { title: 'Notifications', icon: 'notifications', route: '/settings/notifications' }
+      ]
+    }
+  ];
+
+  toggleSidebar() {
+    this.isSidebarOpen.update(open => !open);
+  }
+
+
+  // Dashboard data
+  protected readonly metrics: MetricCard[] = [
+    {
+      title: 'Total Revenue',
+      value: '₫45,250,000',
+      change: '+12.5%',
+      changeType: 'positive',
+      icon: 'attach_money',
+      color: '#10b981'
+    },
+    {
+      title: 'Orders Today',
+      value: '23',
+      change: '+8.2%',
+      changeType: 'positive',
+      icon: 'shopping_cart',
+      color: '#3b82f6'
+    },
+    {
+      title: 'Active Products',
+      value: '156',
+      change: '+3',
+      changeType: 'positive',
+      icon: 'inventory',
+      color: '#8b5cf6'
+    },
+    {
+      title: 'Service Areas',
+      value: '12',
+      change: '0%',
+      changeType: 'neutral',
+      icon: 'location_on',
+      color: '#f59e0b'
+    }
+  ];
+
+  protected readonly recentOrders: RecentOrder[] = [
+    {
+      id: 'ORD-001',
+      customer: 'Nguyen Van A',
+      product: 'Dulux Weathershield',
+      amount: 1250000,
+      status: 'delivered',
+      date: '2024-01-15'
+    },
+    {
+      id: 'ORD-002',
+      customer: 'Tran Thi B',
+      product: 'Jotun Lady',
+      amount: 850000,
+      status: 'shipped',
+      date: '2024-01-15'
+    },
+    {
+      id: 'ORD-003',
+      customer: 'Le Van C',
+      product: 'Kova',
+      amount: 2100000,
+      status: 'processing',
+      date: '2024-01-14'
+    },
+    {
+      id: 'ORD-004',
+      customer: 'Pham Thi D',
+      product: 'Nippon Paint',
+      amount: 980000,
+      status: 'pending',
+      date: '2024-01-14'
+    }
+  ];
+
+  protected readonly lowStockProducts = [
+    { name: 'Dulux Weathershield White', stock: 5, minStock: 10 },
+    { name: 'Jotun Lady Pink', stock: 3, minStock: 8 },
+    { name: 'Kova Exterior Blue', stock: 7, minStock: 15 }
+  ];
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'delivered': return 'status-delivered';
+      case 'shipped': return 'status-shipped';
+      case 'processing': return 'status-processing';
+      case 'pending': return 'status-pending';
+      default: return 'status-pending';
+    }
+  }
+
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'delivered': return 'Delivered';
+      case 'shipped': return 'Shipped';
+      case 'processing': return 'Processing';
+      case 'pending': return 'Pending';
+      default: return 'Unknown';
+    }
+  }
+
+  formatCurrency(amount: number): string {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(amount);
+  }
+
+  // Product Management Data
+  protected readonly products: Product[] = [
+    {
+      id: 'PROD-001',
+      name: 'Dulux Weathershield',
+      brand: 'Dulux',
+      category: 'Exterior Paint',
+      type: 'Exterior',
+      price: 450000,
+      stock: 25,
+      coverageRate: 12,
+      description: 'High-quality exterior paint with weather protection',
+      imageUrl: 'https://via.placeholder.com/150',
+      isActive: true,
+      createdAt: '2024-01-01',
+      updatedAt: '2024-01-15'
+    },
+    {
+      id: 'PROD-002',
+      name: 'Jotun Lady',
+      brand: 'Jotun',
+      category: 'Interior Paint',
+      type: 'Interior',
+      price: 320000,
+      stock: 15,
+      coverageRate: 14,
+      description: 'Premium interior paint with excellent coverage',
+      imageUrl: 'https://via.placeholder.com/150',
+      isActive: true,
+      createdAt: '2024-01-02',
+      updatedAt: '2024-01-14'
+    },
+    {
+      id: 'PROD-003',
+      name: 'Kova Exterior',
+      brand: 'Kova',
+      category: 'Exterior Paint',
+      type: 'Exterior',
+      price: 380000,
+      stock: 8,
+      coverageRate: 11,
+      description: 'Durable exterior paint for harsh weather conditions',
+      imageUrl: 'https://via.placeholder.com/150',
+      isActive: true,
+      createdAt: '2024-01-03',
+      updatedAt: '2024-01-13'
+    },
+    {
+      id: 'PROD-004',
+      name: 'Nippon Paint Odourless',
+      brand: 'Nippon Paint',
+      category: 'Interior Paint',
+      type: 'Eco-friendly',
+      price: 420000,
+      stock: 12,
+      coverageRate: 13,
+      description: 'Odourless interior paint for sensitive environments',
+      imageUrl: 'https://via.placeholder.com/150',
+      isActive: true,
+      createdAt: '2024-01-04',
+      updatedAt: '2024-01-12'
+    }
+  ];
+
+  protected readonly categories: ProductCategory[] = [
+    { id: 'CAT-001', name: 'Interior Paint', description: 'Paints for indoor use', productCount: 2 },
+    { id: 'CAT-002', name: 'Exterior Paint', description: 'Paints for outdoor use', productCount: 2 },
+    { id: 'CAT-003', name: 'Specialty Paint', description: 'Special purpose paints', productCount: 0 },
+    { id: 'CAT-004', name: 'Industrial Paint', description: 'Heavy-duty industrial coatings', productCount: 0 }
+  ];
+
+  protected readonly productTypes = [
+    'Interior', 'Exterior', 'Specialty', 'Industrial', 'Decorative', 'Eco-friendly'
+  ];
+
+  // Product Management Methods
+  getProductsByCategory(category: string): Product[] {
+    return this.products.filter(product => product.category === category);
+  }
+
+  getLowStockProducts(): Product[] {
+    return this.products.filter(product => product.stock < 10);
+  }
+
+  getProductById(id: string): Product | undefined {
+    return this.products.find(product => product.id === id);
+  }
+
+  toggleProductStatus(product: Product): void {
+    product.isActive = !product.isActive;
+    product.updatedAt = new Date().toISOString().split('T')[0];
+  }
+
+  getStockStatusClass(stock: number): string {
+    if (stock === 0) return 'stock-out';
+    if (stock < 5) return 'stock-critical';
+    if (stock < 10) return 'stock-low';
+    return 'stock-normal';
+  }
+
+  getStockStatusText(stock: number): string {
+    if (stock === 0) return 'Out of Stock';
+    if (stock < 5) return 'Critical';
+    if (stock < 10) return 'Low';
+    return 'Normal';
+  }
+
+  // Pricing Management Data
+  protected readonly pricingRules: PricingRule[] = [
+    {
+      id: 'PRICE-001',
+      productId: 'PROD-001',
+      basePrice: 450000,
+      volumeDiscounts: [
+        { minQuantity: 1, maxQuantity: 4, discountPercentage: 0 },
+        { minQuantity: 5, maxQuantity: 9, discountPercentage: 5 },
+        { minQuantity: 10, maxQuantity: 19, discountPercentage: 10 },
+        { minQuantity: 20, discountPercentage: 15 }
+      ],
+      isActive: true
+    },
+    {
+      id: 'PRICE-002',
+      productId: 'PROD-002',
+      basePrice: 320000,
+      volumeDiscounts: [
+        { minQuantity: 1, maxQuantity: 4, discountPercentage: 0 },
+        { minQuantity: 5, maxQuantity: 9, discountPercentage: 5 },
+        { minQuantity: 10, maxQuantity: 19, discountPercentage: 10 },
+        { minQuantity: 20, discountPercentage: 15 }
+      ],
+      promotionalPrice: 280000,
+      promotionalStartDate: '2024-01-01',
+      promotionalEndDate: '2024-01-31',
+      isActive: true
+    }
+  ];
+
+  protected readonly surfaceTypes = [
+    { value: 'smooth', label: 'Smooth Walls', coverageRate: 12 },
+    { value: 'textured', label: 'Textured Walls', coverageRate: 10 },
+    { value: 'ceiling', label: 'Ceiling', coverageRate: 11 },
+    { value: 'exterior', label: 'Exterior Surfaces', coverageRate: 9 }
+  ];
+
+  // Coverage Calculator
+  protected readonly coverageCalculator = {
+    area: 0,
+    surfaceType: 'smooth' as const,
+    coatsRequired: 2,
+    selectedProduct: null as Product | null,
+    result: null as CoverageCalculation | null
+  };
+
+  // Pricing Management Methods
+  getPricingRuleByProductId(productId: string): PricingRule | undefined {
+    return this.pricingRules.find(rule => rule.productId === productId);
+  }
+
+  calculateVolumePrice(productId: string, quantity: number): number {
+    const rule = this.getPricingRuleByProductId(productId);
+    if (!rule) return 0;
+
+    const product = this.getProductById(productId);
+    if (!product) return 0;
+
+    let basePrice = rule.promotionalPrice || rule.basePrice;
+    
+    // Apply volume discount
+    const discount = rule.volumeDiscounts.find(d => 
+      quantity >= d.minQuantity && 
+      (!d.maxQuantity || quantity <= d.maxQuantity)
+    );
+
+    if (discount) {
+      basePrice = basePrice * (1 - discount.discountPercentage / 100);
+    }
+
+    return basePrice * quantity;
+  }
+
+  calculateCoverage(): void {
+    if (!this.coverageCalculator.selectedProduct || this.coverageCalculator.area <= 0) {
+      this.coverageCalculator.result = null;
+      return;
+    }
+
+    const surfaceType = this.surfaceTypes.find(st => st.value === this.coverageCalculator.surfaceType);
+    if (!surfaceType) return;
+
+    const coverageRate = surfaceType.coverageRate;
+    const paintNeeded = (this.coverageCalculator.area / coverageRate) * this.coverageCalculator.coatsRequired;
+    const productPrice = this.coverageCalculator.selectedProduct.price;
+    const totalCost = paintNeeded * productPrice;
+
+    this.coverageCalculator.result = {
+      area: this.coverageCalculator.area,
+      surfaceType: this.coverageCalculator.surfaceType,
+      coatsRequired: this.coverageCalculator.coatsRequired,
+      coverageRate,
+      paintNeeded: Math.ceil(paintNeeded * 100) / 100, // Round to 2 decimal places
+      productId: this.coverageCalculator.selectedProduct.id,
+      productPrice,
+      totalCost: Math.round(totalCost)
+    };
+  }
+
+  onSurfaceTypeChange(): void {
+    this.calculateCoverage();
+  }
+
+  onProductChange(): void {
+    this.calculateCoverage();
+  }
+
+  onAreaChange(): void {
+    this.calculateCoverage();
+  }
+
+  onCoatsChange(): void {
+    this.calculateCoverage();
+  }
+
+  getActivePromotions(): PricingRule[] {
+    const now = new Date().toISOString().split('T')[0];
+    return this.pricingRules.filter(rule => 
+      rule.promotionalPrice && 
+      rule.promotionalStartDate && 
+      rule.promotionalEndDate &&
+      rule.promotionalStartDate <= now && 
+      rule.promotionalEndDate >= now
+    );
+  }
+
+  getActiveProductsCount(): number {
+    return this.products.filter(p => p.isActive).length;
+  }
+
+  // Authentication Methods
+  checkExistingAuth(): void {
+    const savedUser = localStorage.getItem('vncompare_user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        this.currentUser.set(user);
+        this.isAuthenticated.set(true);
+      } catch (error) {
+        localStorage.removeItem('vncompare_user');
+      }
+    }
+  }
+
+  login(credentials: LoginCredentials): boolean {
+    // Simple demo authentication - in real app, this would call an API
+    const user = this.demoUsers.find(u => 
+      u.email === credentials.email && 
+      credentials.password === 'password123' // Demo password
+    );
+
+    if (user) {
+      this.currentUser.set(user);
+      this.isAuthenticated.set(true);
+      this.showLoginForm.set(false);
+      
+      // Save to localStorage
+      localStorage.setItem('vncompare_user', JSON.stringify(user));
+      return true;
+    }
+    return false;
+  }
+
+  logout(): void {
+    this.currentUser.set(null);
+    this.isAuthenticated.set(false);
+    localStorage.removeItem('vncompare_user');
+    this.router.navigate(['/']);
+  }
+
+  showLogin(): void {
+    this.showLoginForm.set(true);
+  }
+
+  hideLogin(): void {
+    this.showLoginForm.set(false);
+  }
+
+  // Data Management Methods
+  addProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): void {
+    const newProduct: Product = {
+      ...product,
+      id: `PROD-${Date.now()}`,
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+    this.products.push(newProduct);
+  }
+
+  updateProduct(id: string, updates: Partial<Product>): void {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index !== -1) {
+      this.products[index] = {
+        ...this.products[index],
+        ...updates,
+        updatedAt: new Date().toISOString().split('T')[0]
+      };
+    }
+  }
+
+  deleteProduct(id: string): void {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index !== -1) {
+      this.products.splice(index, 1);
+    }
+  }
+
+  addPricingRule(rule: Omit<PricingRule, 'id'>): void {
+    const newRule: PricingRule = {
+      ...rule,
+      id: `PRICE-${Date.now()}`
+    };
+    this.pricingRules.push(newRule);
+  }
+
+  updatePricingRule(id: string, updates: Partial<PricingRule>): void {
+    const index = this.pricingRules.findIndex(r => r.id === id);
+    if (index !== -1) {
+      this.pricingRules[index] = { ...this.pricingRules[index], ...updates };
+    }
+  }
+
+  deletePricingRule(id: string): void {
+    const index = this.pricingRules.findIndex(r => r.id === id);
+    if (index !== -1) {
+      this.pricingRules.splice(index, 1);
+    }
+  }
+}
