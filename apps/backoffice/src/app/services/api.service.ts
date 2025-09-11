@@ -87,6 +87,96 @@ export interface ProductListResponse {
   };
 }
 
+export interface Order {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  products: OrderProduct[];
+  totalAmount: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  shippingAddress: Address;
+  createdAt: string;
+  updatedAt: string;
+  estimatedDelivery: string;
+}
+
+export interface OrderProduct {
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+export interface Address {
+  id: string;
+  street: string;
+  ward: string;
+  district: string;
+  province: string;
+  postalCode: string;
+  isServiceArea: boolean;
+  deliveryFee: number;
+  estimatedDays: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Supplier {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  province: string;
+  status: 'pending' | 'verified' | 'suspended' | 'rejected';
+  productsCount: number;
+  totalRevenue: number;
+  rating: number;
+  joinedAt: string;
+  lastActiveAt: string;
+}
+
+export interface Review {
+  id: string;
+  productId: string;
+  productName: string;
+  customerName: string;
+  customerEmail: string;
+  rating: number;
+  title: string;
+  comment: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+  updatedAt: string;
+  helpful: number;
+  verified: boolean;
+}
+
+export interface DashboardMetrics {
+  totalRevenue: number;
+  totalOrders: number;
+  activeProducts: number;
+  serviceAreas: number;
+  revenueChange: number;
+  ordersChange: number;
+  productsChange: number;
+  areasChange: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -271,9 +361,262 @@ export class ApiService {
     );
   }
 
+  // Order methods
+  getOrders(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    paymentStatus?: string;
+    dateFrom?: string;
+    dateTo?: string;
+    search?: string;
+  }): Observable<PaginatedResponse<Order>> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = params[key as keyof typeof params];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<ApiResponse<PaginatedResponse<Order>>>(`${this.baseUrl}/orders`, {
+      headers: this.getHeaders(),
+      params: httpParams
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch orders');
+      })
+    );
+  }
+
+  getOrder(id: string): Observable<Order> {
+    return this.http.get<ApiResponse<Order>>(`${this.baseUrl}/orders/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch order');
+      })
+    );
+  }
+
+  updateOrderStatus(id: string, status: string): Observable<Order> {
+    return this.http.patch<ApiResponse<Order>>(`${this.baseUrl}/orders/${id}/status`, { status }, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update order status');
+      })
+    );
+  }
+
+  // User management methods
+  getUsers(params?: {
+    page?: number;
+    limit?: number;
+    role?: string;
+    status?: string;
+    search?: string;
+  }): Observable<PaginatedResponse<User>> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = params[key as keyof typeof params];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<ApiResponse<PaginatedResponse<User>>>(`${this.baseUrl}/users`, {
+      headers: this.getHeaders(),
+      params: httpParams
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch users');
+      })
+    );
+  }
+
+  updateUser(id: string, user: Partial<User>): Observable<User> {
+    return this.http.put<ApiResponse<User>>(`${this.baseUrl}/users/${id}`, user, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update user');
+      })
+    );
+  }
+
+  toggleUserStatus(id: string): Observable<User> {
+    return this.http.patch<ApiResponse<User>>(`${this.baseUrl}/users/${id}/toggle-status`, {}, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to toggle user status');
+      })
+    );
+  }
+
+  // Supplier methods
+  getSuppliers(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    rating?: number;
+    search?: string;
+  }): Observable<PaginatedResponse<Supplier>> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = params[key as keyof typeof params];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<ApiResponse<PaginatedResponse<Supplier>>>(`${this.baseUrl}/suppliers`, {
+      headers: this.getHeaders(),
+      params: httpParams
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch suppliers');
+      })
+    );
+  }
+
+  updateSupplierStatus(id: string, status: string): Observable<Supplier> {
+    return this.http.patch<ApiResponse<Supplier>>(`${this.baseUrl}/suppliers/${id}/status`, { status }, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update supplier status');
+      })
+    );
+  }
+
+  // Address methods
+  getAddresses(params?: {
+    page?: number;
+    limit?: number;
+    province?: string;
+    serviceArea?: boolean;
+    search?: string;
+  }): Observable<PaginatedResponse<Address>> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = params[key as keyof typeof params];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<ApiResponse<PaginatedResponse<Address>>>(`${this.baseUrl}/addresses`, {
+      headers: this.getHeaders(),
+      params: httpParams
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch addresses');
+      })
+    );
+  }
+
+  updateAddressServiceArea(id: string, isServiceArea: boolean): Observable<Address> {
+    return this.http.patch<ApiResponse<Address>>(`${this.baseUrl}/addresses/${id}/service-area`, { isServiceArea }, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update address service area');
+      })
+    );
+  }
+
+  // Review methods
+  getReviews(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    rating?: number;
+    search?: string;
+  }): Observable<PaginatedResponse<Review>> {
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = params[key as keyof typeof params];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get<ApiResponse<PaginatedResponse<Review>>>(`${this.baseUrl}/reviews`, {
+      headers: this.getHeaders(),
+      params: httpParams
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch reviews');
+      })
+    );
+  }
+
+  updateReviewStatus(id: string, status: string): Observable<Review> {
+    return this.http.patch<ApiResponse<Review>>(`${this.baseUrl}/reviews/${id}/status`, { status }, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update review status');
+      })
+    );
+  }
+
   // Analytics methods (Admin only)
-  getDashboardAnalytics(): Observable<any> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/dashboard`, {
+  getDashboardAnalytics(): Observable<DashboardMetrics> {
+    return this.http.get<ApiResponse<DashboardMetrics>>(`${this.baseUrl}/analytics/dashboard`, {
       headers: this.getHeaders()
     }).pipe(
       map(response => {
@@ -281,6 +624,32 @@ export class ApiService {
           return response.data;
         }
         throw new Error(response.message || 'Failed to fetch analytics');
+      })
+    );
+  }
+
+  getRevenueAnalytics(period: string): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics/revenue?period=${period}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch revenue analytics');
+      })
+    );
+  }
+
+  getTopProducts(limit: number = 10): Observable<Product[]> {
+    return this.http.get<ApiResponse<Product[]>>(`${this.baseUrl}/analytics/top-products?limit=${limit}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch top products');
       })
     );
   }

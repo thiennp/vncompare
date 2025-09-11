@@ -1,30 +1,99 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule,
+    FormsModule
   ],
   template: `
     <div class="app-container">
+      <!-- Top Navigation -->
       <div class="app-toolbar">
-        <span>VNCompare Backoffice</span>
-        <span class="spacer"></span>
-        <button class="btn btn-primary" (click)="openLoginDialog()">
-          Login
-        </button>
+        <div class="toolbar-left">
+          <button class="menu-toggle" (click)="toggleSidebar()">
+            <span class="hamburger"></span>
+          </button>
+          <span class="app-title">VNCompare Backoffice</span>
+        </div>
+        <div class="toolbar-right">
+          <div class="user-menu">
+            <span class="user-name">{{ currentUser?.firstName || 'Admin' }}</span>
+            <button class="btn btn-outline" (click)="logout()">Logout</button>
+          </div>
+        </div>
       </div>
 
-      <div class="main-content">
-        <div class="welcome-section">
-          <h2>Welcome to VNCompare Backoffice</h2>
-          <p>Click the Login button to test the authentication system.</p>
-          <button class="btn btn-primary" (click)="openLoginDialog()">
-            Test Login Dialog
-          </button>
-        </div>
+      <div class="main-layout">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" [class.collapsed]="!isSidebarOpen()">
+          <ul class="nav-menu">
+            <li class="nav-item" [class.active]="currentRoute() === '/dashboard'">
+              <a routerLink="/dashboard" class="nav-link">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/products')">
+              <a routerLink="/products" class="nav-link">
+                <span class="nav-icon">📦</span>
+                <span class="nav-text">Products</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/orders')">
+              <a routerLink="/orders" class="nav-link">
+                <span class="nav-icon">🛒</span>
+                <span class="nav-text">Orders</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/users')">
+              <a routerLink="/users" class="nav-link">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Users</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/suppliers')">
+              <a routerLink="/suppliers" class="nav-link">
+                <span class="nav-icon">🏢</span>
+                <span class="nav-text">Suppliers</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/addresses')">
+              <a routerLink="/addresses" class="nav-link">
+                <span class="nav-icon">📍</span>
+                <span class="nav-text">Addresses</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/reviews')">
+              <a routerLink="/reviews" class="nav-link">
+                <span class="nav-icon">⭐</span>
+                <span class="nav-text">Reviews</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/analytics')">
+              <a routerLink="/analytics" class="nav-link">
+                <span class="nav-icon">📈</span>
+                <span class="nav-text">Analytics</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/settings')">
+              <a routerLink="/settings" class="nav-link">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Settings</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+          <router-outlet></router-outlet>
+        </main>
       </div>
     </div>
   `,
@@ -33,77 +102,239 @@ import { CommonModule } from '@angular/common';
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      background-color: #f8fafc;
     }
 
     .app-toolbar {
-      background-color: #1976d2;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 16px 24px;
+      padding: 0 24px;
+      height: 64px;
       display: flex;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      justify-content: space-between;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    .spacer {
-      flex: 1 1 auto;
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .menu-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .hamburger {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: white;
+      position: relative;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 2px;
+      background-color: white;
+      transition: transform 0.2s;
+    }
+
+    .hamburger::before {
+      top: -6px;
+    }
+
+    .hamburger::after {
+      top: 6px;
+    }
+
+    .app-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .main-layout {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 64px);
+    }
+
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      transition: width 0.3s ease;
+      overflow: hidden;
+    }
+
+    .sidebar.collapsed {
+      width: 64px;
+    }
+
+    .nav-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-item {
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      color: #64748b;
+      text-decoration: none;
+      transition: all 0.2s;
+      gap: 12px;
+    }
+
+    .nav-link:hover {
+      background-color: #f8fafc;
+      color: #334155;
+    }
+
+    .nav-item.active .nav-link {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      border-right: 3px solid #3730a3;
+    }
+
+    .nav-icon {
+      font-size: 1.25rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .nav-text {
+      font-weight: 500;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar.collapsed .nav-text {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
     }
 
     .main-content {
       flex: 1;
       padding: 24px;
-      background-color: #f5f5f5;
-    }
-
-    .welcome-section {
-      text-align: center;
-      padding: 48px 24px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .welcome-section h2 {
-      color: #333;
-      margin-bottom: 16px;
-      font-size: 2rem;
-    }
-
-    .welcome-section p {
-      color: #666;
-      margin-bottom: 24px;
-      font-size: 1.1rem;
+      background-color: #f8fafc;
+      overflow-y: auto;
     }
 
     .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
       font-weight: 500;
-      text-transform: uppercase;
-      transition: background-color 0.3s;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .btn-primary {
-      background-color: #1976d2;
+    .btn-outline {
+      background-color: transparent;
+      border-color: rgba(255, 255, 255, 0.3);
       color: white;
     }
 
+    .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-primary {
+      background-color: #3730a3;
+      color: white;
+      border-color: #3730a3;
+    }
+
     .btn-primary:hover {
-      background-color: #1565c0;
+      background-color: #312e81;
+      border-color: #312e81;
     }
 
     .btn:not(:last-child) {
       margin-right: 8px;
     }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 64px;
+        height: calc(100vh - 64px);
+        z-index: 999;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar:not(.collapsed) {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        padding: 16px;
+      }
+    }
   `]
 })
 export class App {
   title = 'VNCompare Backoffice';
+  isSidebarOpen = signal(true);
+  currentUser: any = { firstName: 'Admin', lastName: 'User' };
 
-  openLoginDialog(): void {
-    alert('Login dialog will be implemented after fixing Angular Material issues.');
-    console.log('Login dialog clicked');
+  toggleSidebar(): void {
+    this.isSidebarOpen.update(open => !open);
+  }
+
+  currentRoute(): string {
+    return window.location.pathname;
+  }
+
+  logout(): void {
+    console.log('Logout clicked');
+    // Implement logout logic
   }
 }
