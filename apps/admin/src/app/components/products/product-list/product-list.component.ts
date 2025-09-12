@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { Product } from '../../../models/product.model';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-product-list',
@@ -17,52 +18,14 @@ export class ProductListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  products: Product[] = [
-    {
-      id: 1,
-      name: 'Sơn Dulux Nội Thất',
-      brand: 'Dulux',
-      category: 'Sơn nội thất',
-      description: 'Sơn nội thất chất lượng cao',
-      basePrice: 850000,
-      originalPrice: 950000,
-      coverageRate: 12.5,
-      unit: 'lít',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      id: 2,
-      name: 'Sơn Jotun Ngoại Thất',
-      brand: 'Jotun',
-      category: 'Sơn ngoại thất',
-      description: 'Sơn ngoại thất chống thấm',
-      basePrice: 1200000,
-      originalPrice: 1350000,
-      coverageRate: 10.0,
-      unit: 'lít',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      id: 3,
-      name: 'Sơn Nippon Chống Thấm',
-      brand: 'Nippon',
-      category: 'Sơn chống thấm',
-      description: 'Sơn chống thấm hiệu quả',
-      basePrice: 950000,
-      originalPrice: 1100000,
-      coverageRate: 8.5,
-      unit: 'lít',
-      isActive: false,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ];
+  products: Product[] = [];
+  loading = true;
+  error: string | null = null;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(
+    private dialog: MatDialog,
+    private apiService: ApiService
+  ) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -74,8 +37,34 @@ export class ProductListComponent implements OnInit {
   }
 
   loadProducts(): void {
-    // TODO: Load from API
-    this.dataSource.data = this.products;
+    this.loading = true;
+    this.error = null;
+
+    this.apiService.getProducts({ limit: 100 }).subscribe({
+      next: (response) => {
+        this.products = response.products.map(product => ({
+          id: parseInt(product.id),
+          name: product.name,
+          brand: product.brand,
+          category: product.category?.name || 'N/A',
+          description: product.description,
+          basePrice: product.currentPrice,
+          originalPrice: product.price,
+          coverageRate: product.coverage,
+          unit: 'lít',
+          isActive: product.isActive,
+          createdAt: new Date(product.createdAt),
+          updatedAt: new Date(product.updatedAt)
+        }));
+        this.dataSource.data = this.products;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Failed to load products:', error);
+        this.error = 'Không thể tải danh sách sản phẩm';
+        this.loading = false;
+      }
+    });
   }
 
   applyFilter(event: Event): void {

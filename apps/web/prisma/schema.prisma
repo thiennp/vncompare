@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 // Users and Authentication
@@ -67,9 +66,9 @@ model Product {
   brand         String?
   category      String?
   description   String?
-  basePrice     Decimal?          @map("base_price") @db.Decimal(10, 2)
-  originalPrice Decimal?          @map("original_price") @db.Decimal(10, 2)
-  coverageRate  Decimal?          @map("coverage_rate") @db.Decimal(8, 2) // m²/liter
+  basePrice     Float?            @map("base_price")
+  originalPrice Float?            @map("original_price")
+  coverageRate  Float?            @map("coverage_rate") // m²/liter
   unit          String?
   isActive      Boolean           @default(true) @map("is_active")
   createdAt     DateTime          @default(now()) @map("created_at")
@@ -84,7 +83,7 @@ model ProductCoverage {
   id            Int      @id @default(autoincrement())
   productId     Int      @map("product_id")
   surfaceType   String   @map("surface_type")
-  coverageRate  Decimal  @map("coverage_rate") @db.Decimal(8, 2)
+  coverageRate  Float    @map("coverage_rate")
   coatsRequired Int      @default(2) @map("coats_required")
   notes         String?
   product       Product  @relation(fields: [productId], references: [id])
@@ -96,8 +95,8 @@ model ProductCoverage {
 model Supplier {
   id           Int            @id @default(autoincrement())
   name         String
-  businessInfo Json?          @map("business_info")
-  contactInfo  Json?          @map("contact_info")
+  businessInfo String?        @map("business_info") // Changed from Json to String for SQLite
+  contactInfo  String?        @map("contact_info")  // Changed from Json to String for SQLite
   isVerified   Boolean        @default(false) @map("is_verified")
   createdAt    DateTime       @default(now()) @map("created_at")
   shippingZones ShippingZone[]
@@ -111,9 +110,9 @@ model ShippingZone {
   id            Int           @id @default(autoincrement())
   supplierId    Int           @map("supplier_id")
   zoneName      String        @map("zone_name")
-  baseRate      Decimal       @map("base_rate") @db.Decimal(10, 2)
-  weightFactor  Decimal       @map("weight_factor") @db.Decimal(10, 2)
-  distanceFactor Decimal      @map("distance_factor") @db.Decimal(10, 2)
+  baseRate      Float         @map("base_rate")
+  weightFactor  Float         @map("weight_factor")
+  distanceFactor Float        @map("distance_factor")
   deliveryDays  Int           @map("delivery_days")
   isActive      Boolean       @default(true) @map("is_active")
   supplier      Supplier      @relation(fields: [supplierId], references: [id])
@@ -129,7 +128,7 @@ model ServiceArea {
   districtId     Int?         @map("district_id")
   wardId         Int?         @map("ward_id")
   shippingZoneId Int          @map("shipping_zone_id")
-  deliveryFee    Decimal      @map("delivery_fee") @db.Decimal(10, 2)
+  deliveryFee    Float        @map("delivery_fee")
   deliveryDays   Int          @map("delivery_days")
   supplier       Supplier     @relation(fields: [supplierId], references: [id])
   province       Province     @relation(fields: [provinceId], references: [id])
@@ -147,8 +146,8 @@ model Order {
   productId      Int      @map("product_id")
   supplierId     Int      @map("supplier_id")
   quantity       Int
-  totalPrice     Decimal  @map("total_price") @db.Decimal(10, 2)
-  shippingAddress Json    @map("shipping_address")
+  totalPrice     Float    @map("total_price")
+  shippingAddress String  @map("shipping_address") // Changed from Json to String for SQLite
   status         String
   createdAt      DateTime @default(now()) @map("created_at")
   user           User     @relation(fields: [userId], references: [id])

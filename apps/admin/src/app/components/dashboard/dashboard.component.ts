@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
+import { ApiService, DashboardStats, RecentOrder, ChartData } from '../../services/api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,69 +11,102 @@ export class DashboardComponent implements OnInit {
   salesChart: any;
   productsChart: any;
   
-  stats = {
+  stats: DashboardStats = {
     totalProducts: 0,
     totalOrders: 0,
     totalRevenue: 0,
     activeSuppliers: 0
   };
 
-  recentOrders = [
-    {
-      id: 1,
-      customer: 'Nguyễn Văn A',
-      product: 'Sơn Dulux Nội Thất',
-      amount: 2500000,
-      status: 'completed',
-      date: new Date()
-    },
-    {
-      id: 2,
-      customer: 'Trần Thị B',
-      product: 'Sơn Jotun Ngoại Thất',
-      amount: 1800000,
-      status: 'pending',
-      date: new Date()
-    }
-  ];
+  recentOrders: RecentOrder[] = [];
+  loading = true;
+  error: string | null = null;
 
-  constructor() { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-    this.loadStats();
-    this.initCharts();
+    this.loadDashboardData();
   }
 
-  loadStats(): void {
-    // TODO: Load from API
-    this.stats = {
-      totalProducts: 45,
-      totalOrders: 128,
-      totalRevenue: 125000000,
-      activeSuppliers: 12
-    };
+  loadDashboardData(): void {
+    this.loading = true;
+    this.error = null;
+
+    // Load all dashboard data in parallel
+    Promise.all([
+      this.loadStats(),
+      this.loadRecentOrders(),
+      this.loadChartData()
+    ]).finally(() => {
+      this.loading = false;
+    });
   }
 
-  initCharts(): void {
-    this.initSalesChart();
-    this.initProductsChart();
+  loadStats(): Promise<void> {
+    return this.apiService.getDashboardStats().toPromise()
+      .then((data) => {
+        if (data) {
+          this.stats = data;
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load dashboard stats:', error);
+        this.error = 'Không thể tải thống kê dashboard';
+      });
   }
 
-  initSalesChart(): void {
+  loadRecentOrders(): Promise<void> {
+    return this.apiService.getRecentOrders(5).toPromise()
+      .then((orders) => {
+        if (orders) {
+          this.recentOrders = orders;
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load recent orders:', error);
+        this.error = 'Không thể tải đơn hàng gần đây';
+      });
+  }
+
+  loadChartData(): Promise<void> {
+    return Promise.all([
+      this.apiService.getSalesChartData().toPromise(),
+      this.apiService.getProductsChartData().toPromise()
+    ]).then(([salesData, productsData]) => {
+      if (salesData) {
+        this.initSalesChart(salesData);
+      }
+      if (productsData) {
+        this.initProductsChart(productsData);
+      }
+    }).catch((error) => {
+      console.error('Failed to load chart data:', error);
+      this.error = 'Không thể tải dữ liệu biểu đồ';
+    });
+  }
+
+  initSalesChart(data?: ChartData): void {
     const ctx = document.getElementById('salesChart') as HTMLCanvasElement;
     if (ctx) {
+      // Destroy existing chart if it exists
+      if (this.salesChart) {
+        this.salesChart.destroy();
+      }
+
+      const chartData = data || {
+        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+        datasets: [{
+          label: 'Doanh thu (triệu VND)',
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          borderColor: '#3f51b5',
+          backgroundColor: 'rgba(63, 81, 181, 0.1)',
+          tension: 0.4
+        }]
+      };
+
       this.salesChart = new Chart(ctx, {
         type: 'line',
-        data: {
-          labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-          datasets: [{
-            label: 'Doanh thu (triệu VND)',
-            data: [12, 19, 15, 25, 22, 30, 28, 35, 32, 40, 38, 45],
-            borderColor: '#3f51b5',
-            backgroundColor: 'rgba(63, 81, 181, 0.1)',
-            tension: 0.4
-          }]
-        },
+        data: chartData,
         options: {
           responsive: true,
           plugins: {
@@ -86,23 +120,31 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  initProductsChart(): void {
+  initProductsChart(data?: ChartData): void {
     const ctx = document.getElementById('productsChart') as HTMLCanvasElement;
     if (ctx) {
+      // Destroy existing chart if it exists
+      if (this.productsChart) {
+        this.productsChart.destroy();
+      }
+
+      const chartData = data || {
+        labels: ['Sơn nội thất', 'Sơn ngoại thất', 'Sơn chống thấm', 'Sơn chống cháy'],
+        datasets: [{
+          label: 'Số lượng sản phẩm',
+          data: [0, 0, 0, 0],
+          backgroundColor: [
+            '#3f51b5',
+            '#ff9800',
+            '#4caf50',
+            '#f44336'
+          ]
+        }]
+      };
+
       this.productsChart = new Chart(ctx, {
         type: 'doughnut',
-        data: {
-          labels: ['Sơn nội thất', 'Sơn ngoại thất', 'Sơn chống thấm', 'Sơn chống cháy'],
-          datasets: [{
-            data: [35, 25, 20, 20],
-            backgroundColor: [
-              '#3f51b5',
-              '#ff9800',
-              '#4caf50',
-              '#f44336'
-            ]
-          }]
-        },
+        data: chartData,
         options: {
           responsive: true,
           plugins: {

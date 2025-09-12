@@ -1,12 +1,37 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, BarChart3, TrendingUp, Shield, GitCompare, Filter } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { apiService, Product } from '@/lib/api'
 
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('interior')
+  const [comparisonData, setComparisonData] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true)
+        const response = await apiService.getProducts({ limit: 3, page: 1 })
+        if (response.success && response.data) {
+          setComparisonData(response.data.products || [])
+        } else {
+          console.error('Failed to fetch products:', response.error)
+          setComparisonData([])
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error)
+        setComparisonData([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,44 +46,6 @@ export default function HeroSection() {
     { id: 'industrial', name: 'Sơn công nghiệp', count: '120+' }
   ]
 
-  const comparisonData = [
-    {
-      id: 1,
-      name: 'Dulux Nội Thất',
-      brand: 'Dulux',
-      price: 850000,
-      originalPrice: 950000,
-      rating: 4.5,
-      reviews: 124,
-      coverage: '12m²/lít',
-      features: ['Chống nấm mốc', 'Dễ lau chùi', 'Không độc hại'],
-      selected: false
-    },
-    {
-      id: 2,
-      name: 'Jotun Nội Thất',
-      brand: 'Jotun',
-      price: 920000,
-      originalPrice: 1100000,
-      rating: 4.3,
-      reviews: 89,
-      coverage: '10m²/lít',
-      features: ['Chống thấm', 'Bền màu', 'Thân thiện môi trường'],
-      selected: false
-    },
-    {
-      id: 3,
-      name: 'Nippon Nội Thất',
-      brand: 'Nippon',
-      price: 780000,
-      originalPrice: 880000,
-      rating: 4.2,
-      reviews: 156,
-      coverage: '11m²/lít',
-      features: ['Kháng khuẩn', 'Dễ sử dụng', 'Giá tốt'],
-      selected: false
-    }
-  ]
 
   return (
     <section className="relative bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-hidden">
@@ -162,75 +149,97 @@ export default function HeroSection() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {comparisonData.map((product, index) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-green-100 rounded-lg flex items-center justify-center mr-3">
-                          <span className="text-lg">🎨</span>
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          <div className="text-sm text-gray-500">{product.brand} • {product.coverage}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-lg font-bold text-gray-900">
-                        {product.price.toLocaleString('vi-VN')} ₫
-                      </div>
-                      <div className="text-sm text-gray-500 line-through">
-                        {product.originalPrice.toLocaleString('vi-VN')} ₫
-                      </div>
-                      <div className="text-xs text-green-600 font-medium">
-                        -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <svg
-                              key={i}
-                              className={cn(
-                                "w-4 h-4",
-                                i < Math.floor(product.rating)
-                                  ? "text-yellow-400 fill-current"
-                                  : "text-gray-300"
-                              )}
-                              viewBox="0 0 20 20"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-500 ml-1">({product.reviews})</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {product.features.map((feature, i) => (
-                          <span
-                            key={i}
-                            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex space-x-2">
-                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                          Mua ngay
-                        </button>
-                        <button className="border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors">
-                          So sánh
-                        </button>
+                {loading ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center">
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <span className="ml-2 text-gray-600">Đang tải sản phẩm...</span>
                       </div>
                     </td>
                   </tr>
-                ))}
+                ) : comparisonData.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                      Không có sản phẩm nào
+                    </td>
+                  </tr>
+                ) : (
+                  comparisonData.map((product, index) => (
+                    <tr key={product.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-green-100 rounded-lg flex items-center justify-center mr-3">
+                            <span className="text-lg">🎨</span>
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                            <div className="text-sm text-gray-500">{product.brand} • {product.coverage}m²/lít</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-lg font-bold text-gray-900">
+                          {product.currentPrice.toLocaleString('vi-VN')} ₫
+                        </div>
+                        {product.discountPrice && product.discountPrice < product.price && (
+                          <>
+                            <div className="text-sm text-gray-500 line-through">
+                              {product.price.toLocaleString('vi-VN')} ₫
+                            </div>
+                            <div className="text-xs text-green-600 font-medium">
+                              -{product.discountPercentage || Math.round(((product.price - product.currentPrice) / product.price) * 100)}%
+                            </div>
+                          </>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <svg
+                                key={i}
+                                className={cn(
+                                  "w-4 h-4",
+                                  i < Math.floor(product.rating)
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-gray-300"
+                                )}
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <span className="text-sm text-gray-500 ml-1">({product.totalReviews})</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {product.finish}
+                          </span>
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            {product.color}
+                          </span>
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            {product.volume}L
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex space-x-2">
+                          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                            Mua ngay
+                          </button>
+                          <button className="border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                            So sánh
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -269,9 +278,7 @@ export default function HeroSection() {
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse" />
-      <div className="absolute bottom-20 right-20 w-32 h-32 bg-green-200 rounded-full opacity-20 animate-pulse delay-1000" />
-      <div className="absolute top-1/2 left-5 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-pulse delay-500" />
+      {/* Removed decorative circles to fix overlapping issues */}
     </section>
   )
 }

@@ -44,11 +44,30 @@
     </mat-card-content>
   </mat-card>
 
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Đang tải danh sách sản phẩm...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadProducts()">
+      Thử lại
+    </button>
+  </div>
+
   <!-- Products Table -->
-  <mat-card class="table-card">
+  <mat-card *ngIf="!loading" class="table-card">
     <mat-card-content>
       <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort class="products-table">
+        <div *ngIf="products.length === 0" class="empty-state">
+          <mat-icon>inventory</mat-icon>
+          <p>Chưa có sản phẩm nào</p>
+        </div>
+        <table *ngIf="products.length > 0" mat-table [dataSource]="dataSource" matSort class="products-table">
           <!-- ID Column -->
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>

@@ -5,8 +5,23 @@
     <p>Chào mừng bạn đến với VNCompare Admin</p>
   </div>
 
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadDashboardData()">
+      Thử lại
+    </button>
+  </div>
+
   <!-- Stats Cards -->
-  <div class="stats-grid">
+  <div *ngIf="!loading" class="stats-grid">
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-content">
@@ -14,7 +29,7 @@
             <mat-icon>inventory</mat-icon>
           </div>
           <div class="stat-info">
-            <h3>{{ stats.totalProducts }}</h3>
+            <h3>{{ stats.totalProducts | number }}</h3>
             <p>Tổng sản phẩm</p>
           </div>
         </div>
@@ -28,7 +43,7 @@
             <mat-icon>shopping_cart</mat-icon>
           </div>
           <div class="stat-info">
-            <h3>{{ stats.totalOrders }}</h3>
+            <h3>{{ stats.totalOrders | number }}</h3>
             <p>Đơn hàng</p>
           </div>
         </div>
@@ -56,7 +71,7 @@
             <mat-icon>business</mat-icon>
           </div>
           <div class="stat-info">
-            <h3>{{ stats.activeSuppliers }}</h3>
+            <h3>{{ stats.activeSuppliers | number }}</h3>
             <p>Nhà cung cấp</p>
           </div>
         </div>
@@ -90,13 +105,17 @@
   </div>
 
   <!-- Recent Orders -->
-  <div class="recent-orders">
+  <div *ngIf="!loading" class="recent-orders">
     <mat-card>
       <mat-card-header>
         <mat-card-title>Đơn hàng gần đây</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <table mat-table [dataSource]="recentOrders" class="orders-table">
+        <div *ngIf="recentOrders.length === 0" class="empty-state">
+          <mat-icon>shopping_cart</mat-icon>
+          <p>Chưa có đơn hàng nào</p>
+        </div>
+        <table *ngIf="recentOrders.length > 0" mat-table [dataSource]="recentOrders" class="orders-table">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
             <td mat-cell *matCellDef="let order">{{ order.id }}</td>
