@@ -42,6 +42,11 @@ export interface Product {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  // Additional properties that might be needed
+  type?: string;
+  stock?: number;
+  coverageRate?: number;
+  imageUrl?: string;
 }
 
 export interface User {
@@ -56,6 +61,10 @@ export interface User {
   phoneVerified: boolean;
   createdAt: string;
   updatedAt: string;
+  // Additional properties that might be needed
+  lastLoginAt?: string;
+  ordersCount?: number;
+  totalSpent?: number;
 }
 
 export interface LoginRequest {

@@ -1,38 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, Order, PaginatedResponse } from '../../services/api.service';
-
-interface Order {
-  id: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  products: OrderProduct[];
-  totalAmount: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
-  shippingAddress: Address;
-  createdAt: string;
-  updatedAt: string;
-  estimatedDelivery: string;
-}
-
-interface OrderProduct {
-  productId: string;
-  productName: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-}
-
-interface Address {
-  street: string;
-  ward: string;
-  district: string;
-  province: string;
-  postalCode: string;
-}
+import { ApiService, Order as ApiOrder, PaginatedResponse } from '../../services/api.service';
 
 @Component({
   selector: 'app-orders',
@@ -48,9 +17,6 @@ interface Address {
         <div class="header-actions">
           <button class="btn btn-outline" (click)="loadOrders()" [disabled]="loading">
             {{ loading ? 'Loading...' : 'Refresh' }}
-          </button>
-          <button class="btn btn-outline" (click)="exportOrders()">
-            📤 Export
           </button>
           <button class="btn btn-primary" (click)="createOrder()">
             ➕ Create Order
@@ -73,49 +39,15 @@ interface Address {
         <p>Loading orders...</p>
       </div>
 
-      <!-- Filters and Search -->
-      <div class="filters-section">
-        <div class="search-box">
-          <input 
-            type="text" 
-            placeholder="Search orders..." 
-            [(ngModel)]="searchTerm"
-            (input)="filterOrders()"
-            class="search-input">
-        </div>
-        <div class="filter-controls">
-          <select [(ngModel)]="statusFilter" (change)="filterOrders()" class="filter-select">
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <select [(ngModel)]="paymentFilter" (change)="filterOrders()" class="filter-select">
-            <option value="">All Payments</option>
-            <option value="pending">Pending Payment</option>
-            <option value="paid">Paid</option>
-            <option value="failed">Payment Failed</option>
-            <option value="refunded">Refunded</option>
-          </select>
-          <input 
-            type="date" 
-            [(ngModel)]="dateFilter" 
-            (change)="filterOrders()"
-            class="filter-date">
-        </div>
-      </div>
-
       <!-- Orders Table -->
-      <div class="orders-table-container">
+      <div class="table-container" *ngIf="!loading || orders.length > 0">
         <table class="orders-table">
           <thead>
             <tr>
               <th>Order ID</th>
               <th>Customer</th>
               <th>Products</th>
-              <th>Total</th>
+              <th>Amount</th>
               <th>Status</th>
               <th>Payment</th>
               <th>Date</th>
@@ -123,44 +55,33 @@ interface Address {
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let order of filteredOrders">
+            <tr *ngFor="let order of orders">
               <td class="order-id">{{ order.id }}</td>
               <td class="customer-cell">
                 <div class="customer-info">
                   <div class="customer-name">{{ order.customerName }}</div>
-                  <div class="customer-details">
-                    <span>{{ order.customerEmail }}</span>
-                    <span>{{ order.customerPhone }}</span>
-                  </div>
+                  <div class="customer-email">{{ order.customerEmail }}</div>
                 </div>
               </td>
               <td class="products-cell">
                 <div class="products-list">
-                  <div *ngFor="let product of order.products" class="product-item">
-                    <span class="product-name">{{ product.productName }}</span>
-                    <span class="product-quantity">x{{ product.quantity }}</span>
+                  <div class="product-item" *ngFor="let product of order.products">
+                    {{ product.productName }} (x{{ product.quantity }})
                   </div>
                 </div>
               </td>
-              <td class="total-cell">₫{{ order.totalAmount | number }}</td>
+              <td class="amount-cell">₫{{ order.totalAmount | number }}</td>
               <td>
                 <span class="status-badge" [class]="order.status">
-                  {{ order.status | titlecase }}
+                  {{ order.status }}
                 </span>
               </td>
               <td>
                 <span class="payment-badge" [class]="order.paymentStatus">
-                  {{ order.paymentStatus | titlecase }}
+                  {{ order.paymentStatus }}
                 </span>
               </td>
-              <td class="date-cell">
-                <div class="date-info">
-                  <div>{{ order.createdAt | date:'short' }}</div>
-                  <div class="delivery-date" *ngIf="order.estimatedDelivery">
-                    Est: {{ order.estimatedDelivery | date:'short' }}
-                  </div>
-                </div>
-              </td>
+              <td class="date-cell">{{ order.createdAt | date:'short' }}</td>
               <td class="actions-cell">
                 <div class="action-buttons">
                   <button class="btn-icon" (click)="viewOrder(order)" title="View">
@@ -169,54 +90,17 @@ interface Address {
                   <button class="btn-icon" (click)="editOrder(order)" title="Edit">
                     ✏️
                   </button>
-                  <button class="btn-icon" (click)="trackOrder(order)" title="Track">
-                    📍
-                  </button>
-                  <button class="btn-icon" (click)="printOrder(order)" title="Print">
-                    🖨️
-                  </button>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Order Statistics -->
-      <div class="order-stats">
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-content">
-            <div class="stat-value">{{ totalOrders }}</div>
-            <div class="stat-label">Total Orders</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-content">
-            <div class="stat-value">₫{{ totalRevenue | number }}</div>
-            <div class="stat-label">Total Revenue</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">⏳</div>
-          <div class="stat-content">
-            <div class="stat-value">{{ pendingOrders }}</div>
-            <div class="stat-label">Pending Orders</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">🚚</div>
-          <div class="stat-content">
-            <div class="stat-value">{{ shippedOrders }}</div>
-            <div class="stat-label">Shipped Today</div>
-          </div>
-        </div>
-      </div>
     </div>
   `,
   styles: [`
     .orders-page {
+      padding: 24px;
       max-width: 1400px;
       margin: 0 auto;
     }
@@ -226,8 +110,6 @@ interface Address {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 32px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid #e2e8f0;
     }
 
     .header-content h1 {
@@ -247,48 +129,55 @@ interface Address {
       gap: 12px;
     }
 
-    .filters-section {
-      display: flex;
-      gap: 16px;
+    .error-message {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 16px;
       margin-bottom: 24px;
-      padding: 20px;
+    }
+
+    .error-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .error-icon {
+      font-size: 1.25rem;
+    }
+
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
       background: white;
       border-radius: 12px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     }
 
-    .search-box {
-      flex: 1;
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #3730a3;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
     }
 
-    .search-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    .filter-controls {
-      display: flex;
-      gap: 12px;
-    }
-
-    .filter-select, .filter-date {
-      padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: white;
-      font-size: 14px;
-      min-width: 150px;
-    }
-
-    .orders-table-container {
+    .table-container {
       background: white;
       border-radius: 12px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      margin-bottom: 24px;
     }
 
     .orders-table {
@@ -302,17 +191,12 @@ interface Address {
       text-align: left;
       font-weight: 600;
       color: #374151;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e5e7eb;
     }
 
     .orders-table td {
       padding: 16px;
       border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-
-    .orders-table tr:hover {
-      background: #f8fafc;
     }
 
     .order-id {
@@ -327,18 +211,15 @@ interface Address {
     .customer-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
     }
 
     .customer-name {
-      font-weight: 600;
+      font-weight: 500;
       color: #1e293b;
+      margin-bottom: 2px;
     }
 
-    .customer-details {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+    .customer-email {
       font-size: 0.875rem;
       color: #64748b;
     }
@@ -354,22 +235,12 @@ interface Address {
     }
 
     .product-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       font-size: 0.875rem;
+      color: #374151;
+      padding: 2px 0;
     }
 
-    .product-name {
-      color: #1e293b;
-    }
-
-    .product-quantity {
-      color: #64748b;
-      font-weight: 500;
-    }
-
-    .total-cell {
+    .amount-cell {
       font-weight: 600;
       color: #059669;
     }
@@ -379,27 +250,27 @@ interface Address {
       border-radius: 4px;
       font-size: 0.75rem;
       font-weight: 500;
-      text-transform: uppercase;
+      text-transform: capitalize;
     }
 
     .status-badge.pending {
       background: #fef3c7;
-      color: #92400e;
+      color: #d97706;
     }
 
     .status-badge.processing {
       background: #dbeafe;
-      color: #1e40af;
+      color: #2563eb;
     }
 
     .status-badge.shipped {
-      background: #e0e7ff;
-      color: #3730a3;
+      background: #d1fae5;
+      color: #059669;
     }
 
     .status-badge.delivered {
       background: #d1fae5;
-      color: #065f46;
+      color: #059669;
     }
 
     .status-badge.cancelled {
@@ -409,12 +280,12 @@ interface Address {
 
     .payment-badge.pending {
       background: #fef3c7;
-      color: #92400e;
+      color: #d97706;
     }
 
     .payment-badge.paid {
       background: #d1fae5;
-      color: #065f46;
+      color: #059669;
     }
 
     .payment-badge.failed {
@@ -423,27 +294,17 @@ interface Address {
     }
 
     .payment-badge.refunded {
-      background: #f3e8ff;
-      color: #7c3aed;
+      background: #f3f4f6;
+      color: #6b7280;
     }
 
     .date-cell {
-      min-width: 120px;
-    }
-
-    .date-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
       font-size: 0.875rem;
-    }
-
-    .delivery-date {
       color: #64748b;
     }
 
     .actions-cell {
-      width: 150px;
+      min-width: 100px;
     }
 
     .action-buttons {
@@ -452,53 +313,22 @@ interface Address {
     }
 
     .btn-icon {
-      background: none;
-      border: none;
-      padding: 8px;
-      border-radius: 4px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #d1d5db;
+      background: white;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      transition: all 0.2s;
     }
 
     .btn-icon:hover {
-      background: #f1f5f9;
-    }
-
-    .order-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 24px;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .stat-icon {
-      font-size: 2rem;
-    }
-
-    .stat-content {
-      flex: 1;
-    }
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 0.875rem;
-      color: #64748b;
+      background: #f9fafb;
+      border-color: #9ca3af;
     }
 
     .btn {
@@ -522,7 +352,13 @@ interface Address {
     }
 
     .btn-outline:hover {
-      background-color: #f8fafc;
+      background-color: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    .btn-outline:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-primary {
@@ -536,41 +372,42 @@ interface Address {
       border-color: #312e81;
     }
 
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
     @media (max-width: 768px) {
+      .orders-page {
+        padding: 16px;
+      }
+
       .page-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
       }
 
-      .filters-section {
+      .orders-table {
+        font-size: 14px;
+      }
+
+      .orders-table th,
+      .orders-table td {
+        padding: 8px;
+      }
+
+      .action-buttons {
         flex-direction: column;
-      }
-
-      .filter-controls {
-        flex-wrap: wrap;
-      }
-
-      .orders-table-container {
-        overflow-x: auto;
-      }
-
-      .order-stats {
-        grid-template-columns: 1fr;
+        gap: 4px;
       }
     }
   `]
 })
 export class OrdersComponent implements OnInit {
-  searchTerm = '';
-  statusFilter = '';
-  paymentFilter = '';
-  dateFilter = '';
   loading = false;
   error: string | null = null;
-
-  orders: Order[] = [];
-  filteredOrders: Order[] = [];
+  orders: ApiOrder[] = [];
 
   constructor(private apiService: ApiService) {}
 
@@ -582,19 +419,9 @@ export class OrdersComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const params = {
-      page: 1,
-      limit: 50,
-      search: this.searchTerm || undefined,
-      status: this.statusFilter || undefined,
-      paymentStatus: this.paymentFilter || undefined,
-      sort: 'createdAt:desc'
-    };
-
-    this.apiService.getOrders(params).subscribe({
-      next: (response: PaginatedResponse<Order>) => {
+    this.apiService.getOrders({ limit: 50, page: 1 }).subscribe({
+      next: (response: PaginatedResponse<ApiOrder>) => {
         this.orders = response.data;
-        this.filteredOrders = [...this.orders];
         this.loading = false;
       },
       error: (error) => {
@@ -609,101 +436,75 @@ export class OrdersComponent implements OnInit {
 
   loadMockData(): void {
     this.orders = [
-    {
-      id: 'ORD-001',
-      customerName: 'Nguyen Van A',
-      customerEmail: 'nguyenvana@email.com',
-      customerPhone: '+84901234567',
-      products: [
-        { productId: '1', productName: 'Dulux Weathershield', quantity: 2, unitPrice: 1250000, totalPrice: 2500000 },
-        { productId: '2', productName: 'Jotun Lady', quantity: 1, unitPrice: 850000, totalPrice: 850000 }
-      ],
-      totalAmount: 3350000,
-      status: 'delivered',
-      paymentStatus: 'paid',
-      shippingAddress: {
-        street: '123 Le Loi Street',
-        ward: 'Ward 1',
-        district: 'District 1',
-        province: 'Ho Chi Minh City',
-        postalCode: '700000'
+      {
+        id: 'ORD-001',
+        customerName: 'Nguyen Van A',
+        customerEmail: 'nguyenvana@email.com',
+        customerPhone: '+84901234567',
+        products: [
+          { productId: '1', productName: 'Dulux Weathershield', quantity: 2, unitPrice: 1250000, totalPrice: 2500000 },
+          { productId: '2', productName: 'Jotun Lady', quantity: 1, unitPrice: 850000, totalPrice: 850000 }
+        ],
+        totalAmount: 3350000,
+        status: 'delivered',
+        paymentStatus: 'paid',
+        shippingAddress: {
+          id: '1',
+          street: '123 Le Loi Street',
+          ward: 'Ward 1',
+          district: 'District 1',
+          province: 'Ho Chi Minh City',
+          postalCode: '700000',
+          isServiceArea: true,
+          deliveryFee: 50000,
+          estimatedDays: 3,
+          createdAt: '2024-01-01T00:00:00Z',
+          updatedAt: '2024-01-01T00:00:00Z'
+        },
+        createdAt: '2024-01-15T10:30:00Z',
+        updatedAt: '2024-01-16T14:20:00Z',
+        estimatedDelivery: '2024-01-18T00:00:00Z'
       },
-      createdAt: '2024-01-15T10:30:00Z',
-      updatedAt: '2024-01-16T14:20:00Z',
-      estimatedDelivery: '2024-01-18T00:00:00Z'
-    },
-    {
-      id: 'ORD-002',
-      customerName: 'Tran Thi B',
-      customerEmail: 'tranthib@email.com',
-      customerPhone: '+84901234568',
-      products: [
-        { productId: '3', productName: 'Kova Premium', quantity: 1, unitPrice: 2100000, totalPrice: 2100000 }
-      ],
-      totalAmount: 2100000,
-      status: 'shipped',
-      paymentStatus: 'paid',
-      shippingAddress: {
-        street: '456 Nguyen Hue Boulevard',
-        ward: 'Ward 2',
-        district: 'District 1',
-        province: 'Ho Chi Minh City',
-        postalCode: '700000'
-      },
-      createdAt: '2024-01-15T14:15:00Z',
-      updatedAt: '2024-01-16T09:30:00Z',
-      estimatedDelivery: '2024-01-19T00:00:00Z'
-    }
-  ];
-
-  filteredOrders: Order[] = [];
-
-  get totalOrders(): number {
-    return this.orders.length;
-  }
-
-  get totalRevenue(): number {
-    return this.orders.reduce((sum, order) => sum + order.totalAmount, 0);
-  }
-
-  get pendingOrders(): number {
-    return this.orders.filter(order => order.status === 'pending').length;
-  }
-
-  get shippedOrders(): number {
-    return this.orders.filter(order => order.status === 'shipped').length;
-  }
-
-  ngOnInit(): void {
-    this.filteredOrders = [...this.orders];
-  }
-
-  filterOrders(): void {
-    // Reload orders with new filters
-    this.loadOrders();
-  }
-
-  viewOrder(order: Order): void {
-    console.log('View order:', order);
-  }
-
-  editOrder(order: Order): void {
-    console.log('Edit order:', order);
-  }
-
-  trackOrder(order: Order): void {
-    console.log('Track order:', order);
-  }
-
-  printOrder(order: Order): void {
-    console.log('Print order:', order);
+      {
+        id: 'ORD-002',
+        customerName: 'Tran Thi B',
+        customerEmail: 'tranthib@email.com',
+        customerPhone: '+84901234568',
+        products: [
+          { productId: '3', productName: 'Kova Premium', quantity: 1, unitPrice: 2100000, totalPrice: 2100000 }
+        ],
+        totalAmount: 2100000,
+        status: 'shipped',
+        paymentStatus: 'paid',
+        shippingAddress: {
+          id: '2',
+          street: '456 Nguyen Hue Boulevard',
+          ward: 'Ward 2',
+          district: 'District 1',
+          province: 'Ho Chi Minh City',
+          postalCode: '700000',
+          isServiceArea: true,
+          deliveryFee: 50000,
+          estimatedDays: 2,
+          createdAt: '2024-01-01T00:00:00Z',
+          updatedAt: '2024-01-01T00:00:00Z'
+        },
+        createdAt: '2024-01-15T14:15:00Z',
+        updatedAt: '2024-01-16T09:30:00Z',
+        estimatedDelivery: '2024-01-18T00:00:00Z'
+      }
+    ];
   }
 
   createOrder(): void {
     console.log('Create order clicked');
   }
 
-  exportOrders(): void {
-    console.log('Export orders clicked');
+  viewOrder(order: ApiOrder): void {
+    console.log('View order:', order);
+  }
+
+  editOrder(order: ApiOrder): void {
+    console.log('Edit order:', order);
   }
 }

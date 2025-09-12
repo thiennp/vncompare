@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, DashboardMetrics, Product, Order } from '../../services/api.service';
+import { ApiService, DashboardMetrics, Product as ApiProduct, Order as ApiOrder } from '../../services/api.service';
 
 interface MetricCard {
   title: string;
@@ -17,18 +17,8 @@ interface RecentOrder {
   customer: string;
   product: string;
   amount: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   date: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  brand: string;
-  category: string;
-  price: number;
-  stock: number;
-  isActive: boolean;
 }
 
 @Component({
@@ -77,25 +67,25 @@ interface Product {
       </div>
 
       <!-- Charts and Analytics -->
-      <div class="analytics-grid">
+      <div class="analytics-grid" *ngIf="!loading">
         <!-- Revenue Chart -->
         <div class="chart-card">
           <div class="chart-header">
-            <h3>Revenue Overview</h3>
-            <div class="chart-period">
-              <select [(ngModel)]="selectedPeriod">
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
-                <option value="90d">Last 90 days</option>
-              </select>
-            </div>
+            <h3>Revenue Trend</h3>
+            <select [(ngModel)]="selectedPeriod" class="period-select">
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+            </select>
           </div>
-          <div class="chart-placeholder">
-            <div class="chart-bars">
-              <div class="bar" *ngFor="let bar of revenueBars" [style.height.%]="bar.height"></div>
-            </div>
-            <div class="chart-labels">
-              <span *ngFor="let label of chartLabels">{{ label }}</span>
+          <div class="chart-content">
+            <div class="revenue-chart">
+              <div class="chart-bars">
+                <div class="chart-bar" *ngFor="let bar of revenueBars" [style.height.%]="bar.height"></div>
+              </div>
+              <div class="chart-labels">
+                <span *ngFor="let label of chartLabels">{{ label }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -105,92 +95,67 @@ interface Product {
           <div class="chart-header">
             <h3>Top Products</h3>
           </div>
-          <div class="product-list">
-            <div class="product-item" *ngFor="let product of topProducts">
-              <div class="product-info">
-                <span class="product-name">{{ product.name }}</span>
-                <span class="product-brand">{{ product.brand }}</span>
-              </div>
-              <div class="product-metrics">
-                <span class="product-sales">{{ product.sales }} sales</span>
-                <span class="product-revenue">₫{{ product.revenue | number }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Activity -->
-      <div class="activity-grid">
-        <!-- Recent Orders -->
-        <div class="activity-card">
-          <div class="activity-header">
-            <h3>Recent Orders</h3>
-            <a routerLink="/orders" class="view-all">View All</a>
-          </div>
-          <div class="order-list">
-            <div class="order-item" *ngFor="let order of recentOrders">
-              <div class="order-info">
-                <span class="order-id">{{ order.id }}</span>
-                <span class="order-customer">{{ order.customer }}</span>
-                <span class="order-product">{{ order.product }}</span>
-              </div>
-              <div class="order-details">
-                <span class="order-amount">₫{{ order.amount | number }}</span>
-                <span class="order-status" [class]="order.status">{{ order.status }}</span>
-                <span class="order-date">{{ order.date }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Low Stock Products -->
-        <div class="activity-card">
-          <div class="activity-header">
-            <h3>Low Stock Alert</h3>
-            <a routerLink="/products" class="view-all">Manage</a>
-          </div>
-          <div class="stock-list">
-            <div class="stock-item" *ngFor="let product of lowStockProducts">
-              <div class="product-info">
-                <span class="product-name">{{ product.name }}</span>
-                <span class="product-brand">{{ product.brand }}</span>
-              </div>
-              <div class="stock-info">
-                <span class="stock-level" [class]="product.stockLevel">{{ product.stock }} left</span>
-                <button class="btn btn-sm btn-primary">Reorder</button>
+          <div class="chart-content">
+            <div class="top-products">
+              <div class="product-item" *ngFor="let product of topProducts; let i = index">
+                <div class="product-rank">{{ i + 1 }}</div>
+                <div class="product-info">
+                  <div class="product-name">{{ product.name }}</div>
+                  <div class="product-brand">{{ product.brand }}</div>
+                </div>
+                <div class="product-metrics">
+                  <div class="product-rating">⭐ {{ product.rating || 0 }}</div>
+                  <div class="product-reviews">({{ product.totalReviews || 0 }})</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <h3>Quick Actions</h3>
-        <div class="action-buttons">
-          <button class="action-btn" routerLink="/products/new">
-            <span class="action-icon">➕</span>
-            <span>Add Product</span>
-          </button>
-          <button class="action-btn" routerLink="/orders/new">
-            <span class="action-icon">🛒</span>
-            <span>Create Order</span>
-          </button>
-          <button class="action-btn" routerLink="/suppliers/new">
-            <span class="action-icon">🏢</span>
-            <span>Add Supplier</span>
-          </button>
-          <button class="action-btn" routerLink="/analytics">
-            <span class="action-icon">📊</span>
-            <span>View Reports</span>
-          </button>
+      <!-- Recent Orders -->
+      <div class="recent-section" *ngIf="!loading">
+        <div class="section-header">
+          <h3>Recent Orders</h3>
+          <a href="/orders" class="view-all-link">View All</a>
+        </div>
+        <div class="orders-list">
+          <div class="order-item" *ngFor="let order of recentOrders">
+            <div class="order-info">
+              <div class="order-id">{{ order.id }}</div>
+              <div class="order-customer">{{ order.customer }}</div>
+              <div class="order-product">{{ order.product }}</div>
+            </div>
+            <div class="order-amount">₫{{ order.amount | number }}</div>
+            <div class="order-status" [class]="order.status">{{ order.status }}</div>
+            <div class="order-date">{{ order.date }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock Alert -->
+      <div class="alert-section" *ngIf="!loading && lowStockProducts.length > 0">
+        <div class="section-header">
+          <h3>Low Stock Alert</h3>
+        </div>
+        <div class="alert-list">
+          <div class="alert-item" *ngFor="let product of lowStockProducts">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+              <div class="alert-title">{{ product.name }}</div>
+              <div class="alert-subtitle">{{ product.brand }}</div>
+            </div>
+            <div class="alert-stock" [class]="product.stockLevel">
+              {{ product.stock }} left
+            </div>
+          </div>
         </div>
       </div>
     </div>
   `,
   styles: [`
     .dashboard {
+      padding: 24px;
       max-width: 1200px;
       margin: 0 auto;
     }
@@ -282,7 +247,7 @@ interface Product {
     .metric-icon {
       width: 48px;
       height: 48px;
-      border-radius: 12px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -322,7 +287,7 @@ interface Product {
 
     .analytics-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 24px;
       margin-bottom: 32px;
     }
@@ -338,7 +303,7 @@ interface Product {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .chart-header h3 {
@@ -348,18 +313,18 @@ interface Product {
       margin: 0;
     }
 
-    .chart-period select {
+    .period-select {
       padding: 8px 12px;
       border: 1px solid #d1d5db;
       border-radius: 6px;
       background: white;
+      font-size: 0.875rem;
     }
 
-    .chart-placeholder {
+    .revenue-chart {
       height: 200px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
 
     .chart-bars {
@@ -367,9 +332,10 @@ interface Product {
       align-items: end;
       gap: 8px;
       height: 150px;
+      margin-bottom: 16px;
     }
 
-    .bar {
+    .chart-bar {
       flex: 1;
       background: linear-gradient(to top, #3b82f6, #60a5fa);
       border-radius: 4px 4px 0 0;
@@ -379,20 +345,19 @@ interface Product {
     .chart-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       color: #64748b;
     }
 
-    .product-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .top-products {
+      max-height: 200px;
+      overflow-y: auto;
     }
 
     .product-item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 12px;
       padding: 12px 0;
       border-bottom: 1px solid #f1f5f9;
     }
@@ -401,15 +366,27 @@ interface Product {
       border-bottom: none;
     }
 
-    .product-info {
+    .product-rank {
+      width: 24px;
+      height: 24px;
+      background: #3b82f6;
+      color: white;
+      border-radius: 50%;
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .product-info {
+      flex: 1;
     }
 
     .product-name {
       font-weight: 500;
       color: #1e293b;
+      margin-bottom: 2px;
     }
 
     .product-brand {
@@ -418,103 +395,91 @@ interface Product {
     }
 
     .product-metrics {
-      display: flex;
-      flex-direction: column;
-      align-items: end;
-      gap: 4px;
+      text-align: right;
     }
 
-    .product-sales {
+    .product-rating {
       font-size: 0.875rem;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+
+    .product-reviews {
+      font-size: 0.75rem;
       color: #64748b;
     }
 
-    .product-revenue {
-      font-weight: 600;
-      color: #059669;
-    }
-
-    .activity-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 32px;
-    }
-
-    .activity-card {
+    .recent-section, .alert-section {
       background: white;
       border-radius: 12px;
       padding: 24px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
     }
 
-    .activity-header {
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
 
-    .activity-header h3 {
+    .section-header h3 {
       font-size: 1.125rem;
       font-weight: 600;
       color: #1e293b;
       margin: 0;
     }
 
-    .view-all {
+    .view-all-link {
       color: #3b82f6;
       text-decoration: none;
       font-size: 0.875rem;
       font-weight: 500;
     }
 
-    .view-all:hover {
+    .view-all-link:hover {
       text-decoration: underline;
     }
 
-    .order-list, .stock-list {
+    .orders-list, .alert-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
-    .order-item, .stock-item {
+    .order-item, .alert-item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #f1f5f9;
+      gap: 16px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
     }
 
-    .order-item:last-child, .stock-item:last-child {
-      border-bottom: none;
+    .order-info {
+      flex: 1;
     }
 
-    .order-info, .product-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .order-id, .product-name {
-      font-weight: 500;
+    .order-id {
+      font-weight: 600;
       color: #1e293b;
+      margin-bottom: 2px;
     }
 
-    .order-customer, .order-product, .product-brand {
+    .order-customer {
       font-size: 0.875rem;
       color: #64748b;
+      margin-bottom: 2px;
     }
 
-    .order-details, .stock-info {
-      display: flex;
-      flex-direction: column;
-      align-items: end;
-      gap: 4px;
+    .order-product {
+      font-size: 0.75rem;
+      color: #94a3b8;
     }
 
-    .order-amount, .product-revenue {
+    .order-amount {
       font-weight: 600;
       color: #059669;
     }
@@ -524,27 +489,32 @@ interface Product {
       border-radius: 4px;
       font-size: 0.75rem;
       font-weight: 500;
-      text-transform: uppercase;
+      text-transform: capitalize;
     }
 
     .order-status.pending {
-      background-color: #fef3c7;
-      color: #92400e;
+      background: #fef3c7;
+      color: #d97706;
     }
 
     .order-status.processing {
-      background-color: #dbeafe;
-      color: #1e40af;
+      background: #dbeafe;
+      color: #2563eb;
     }
 
     .order-status.shipped {
-      background-color: #e0e7ff;
-      color: #3730a3;
+      background: #d1fae5;
+      color: #059669;
     }
 
     .order-status.delivered {
-      background-color: #d1fae5;
-      color: #065f46;
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    .order-status.cancelled {
+      background: #fee2e2;
+      color: #dc2626;
     }
 
     .order-date {
@@ -552,78 +522,87 @@ interface Product {
       color: #64748b;
     }
 
-    .stock-level {
+    .alert-icon {
+      font-size: 1.25rem;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-title {
+      font-weight: 500;
+      color: #1e293b;
+      margin-bottom: 2px;
+    }
+
+    .alert-subtitle {
       font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    .alert-stock {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
       font-weight: 500;
     }
 
-    .stock-level.low {
+    .alert-stock.low {
+      background: #fee2e2;
       color: #dc2626;
     }
 
-    .stock-level.medium {
+    .alert-stock.medium {
+      background: #fef3c7;
       color: #d97706;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border-color: #d1d5db;
+      color: #374151;
+    }
+
+    .btn-outline:hover {
+      background-color: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    .btn-outline:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-sm {
       padding: 4px 8px;
-      font-size: 0.75rem;
-    }
-
-    .quick-actions {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    .quick-actions h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: #1e293b;
-      margin: 0 0 20px 0;
-    }
-
-    .action-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-    }
-
-    .action-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      color: #374151;
-    }
-
-    .action-btn:hover {
-      background: #e2e8f0;
-      border-color: #cbd5e1;
-    }
-
-    .action-icon {
-      font-size: 1.25rem;
+      font-size: 12px;
     }
 
     @media (max-width: 768px) {
-      .analytics-grid,
-      .activity-grid {
+      .dashboard {
+        padding: 16px;
+      }
+
+      .analytics-grid {
         grid-template-columns: 1fr;
       }
 
       .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .action-buttons {
         grid-template-columns: 1fr;
       }
     }
@@ -639,7 +618,7 @@ export class DashboardComponent implements OnInit {
 
   revenueBars: { height: number }[] = [];
   chartLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  topProducts: Product[] = [];
+  topProducts: ApiProduct[] = [];
   recentOrders: RecentOrder[] = [];
   lowStockProducts: any[] = [];
 
@@ -682,12 +661,12 @@ export class DashboardComponent implements OnInit {
     // Load recent orders
     this.apiService.getOrders({ limit: 4, page: 1 }).subscribe({
       next: (response) => {
-        this.recentOrders = response.data.map(order => ({
+        this.recentOrders = response.data.map((order: ApiOrder) => ({
           id: order.id,
           customer: order.customerName,
           product: order.products[0]?.productName || 'Multiple products',
           amount: order.totalAmount,
-          status: order.status,
+          status: order.status as 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled',
           date: new Date(order.createdAt).toISOString().split('T')[0]
         }));
       },
@@ -700,13 +679,13 @@ export class DashboardComponent implements OnInit {
     this.apiService.getProducts({ limit: 10, page: 1 }).subscribe({
       next: (response) => {
         this.lowStockProducts = response.products
-          .filter(product => product.stock < 20)
+          .filter((product: ApiProduct) => (product.stock || 0) < 20)
           .slice(0, 3)
-          .map(product => ({
+          .map((product: ApiProduct) => ({
             name: product.name,
             brand: product.brand,
-            stock: product.stock,
-            stockLevel: product.stock < 10 ? 'low' : 'medium'
+            stock: product.stock || 0,
+            stockLevel: (product.stock || 0) < 10 ? 'low' : 'medium'
           }));
       },
       error: (error) => {
@@ -800,10 +779,90 @@ export class DashboardComponent implements OnInit {
     ];
 
     this.topProducts = [
-      { name: 'Dulux Weathershield', brand: 'Dulux', sales: 45, revenue: 12500000 } as any,
-      { name: 'Jotun Lady', brand: 'Jotun', sales: 32, revenue: 8500000 } as any,
-      { name: 'Kova Premium', brand: 'Kova', sales: 28, revenue: 21000000 } as any,
-      { name: 'Nippon Paint', brand: 'Nippon', sales: 24, revenue: 9800000 } as any
+      { 
+        id: '1',
+        name: 'Dulux Weathershield', 
+        description: 'High-quality exterior paint',
+        brand: 'Dulux', 
+        category: { id: '1', name: 'Exterior Paint', slug: 'exterior-paint' },
+        supplier: { id: '1', companyName: 'Dulux Vietnam', rating: 4.8 },
+        sku: 'DUL-001',
+        color: 'White',
+        finish: 'Matte',
+        coverage: 12,
+        volume: 1,
+        price: 1250000,
+        images: [],
+        rating: 4.5, 
+        totalReviews: 23,
+        isFeatured: true,
+        isActive: true,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-15T00:00:00Z'
+      } as ApiProduct,
+      { 
+        id: '2',
+        name: 'Jotun Lady', 
+        description: 'Premium interior paint',
+        brand: 'Jotun', 
+        category: { id: '2', name: 'Interior Paint', slug: 'interior-paint' },
+        supplier: { id: '2', companyName: 'Jotun Vietnam', rating: 4.6 },
+        sku: 'JOT-001',
+        color: 'Pink',
+        finish: 'Satin',
+        coverage: 10,
+        volume: 1,
+        price: 850000,
+        images: [],
+        rating: 4.2, 
+        totalReviews: 15,
+        isFeatured: false,
+        isActive: true,
+        createdAt: '2024-01-02T00:00:00Z',
+        updatedAt: '2024-01-16T00:00:00Z'
+      } as ApiProduct,
+      { 
+        id: '3',
+        name: 'Kova Premium', 
+        description: 'Premium paint solution',
+        brand: 'Kova', 
+        category: { id: '3', name: 'Premium Paint', slug: 'premium-paint' },
+        supplier: { id: '3', companyName: 'Kova Vietnam', rating: 4.9 },
+        sku: 'KOV-001',
+        color: 'Blue',
+        finish: 'Gloss',
+        coverage: 15,
+        volume: 1,
+        price: 2100000,
+        images: [],
+        rating: 4.8, 
+        totalReviews: 31,
+        isFeatured: true,
+        isActive: true,
+        createdAt: '2024-01-03T00:00:00Z',
+        updatedAt: '2024-01-17T00:00:00Z'
+      } as ApiProduct,
+      { 
+        id: '4',
+        name: 'Nippon Paint', 
+        description: 'Quality paint solution',
+        brand: 'Nippon', 
+        category: { id: '4', name: 'Standard Paint', slug: 'standard-paint' },
+        supplier: { id: '4', companyName: 'Nippon Vietnam', rating: 4.3 },
+        sku: 'NIP-001',
+        color: 'Green',
+        finish: 'Semi-gloss',
+        coverage: 8,
+        volume: 1,
+        price: 980000,
+        images: [],
+        rating: 4.1, 
+        totalReviews: 8,
+        isFeatured: false,
+        isActive: true,
+        createdAt: '2024-01-04T00:00:00Z',
+        updatedAt: '2024-01-18T00:00:00Z'
+      } as ApiProduct
     ];
 
     this.recentOrders = [
