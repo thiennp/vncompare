@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../services/api.service';
 
 interface AnalyticsData {
   period: string;
@@ -632,72 +633,107 @@ interface ChartData {
 })
 export class AnalyticsComponent implements OnInit {
   selectedPeriod = '30d';
+  loading = false;
+  error: string | null = null;
 
-  totalRevenue = 45250000;
-  totalOrders = 156;
-  newCustomers = 23;
-  productsSold = 89;
+  // Analytics data - initialized as empty, will be loaded from API
+  totalRevenue = 0;
+  totalOrders = 0;
+  newCustomers = 0;
+  productsSold = 0;
 
-  revenueChange = 12.5;
-  ordersChange = 8.2;
-  customersChange = 15.3;
-  productsChange = 6.7;
+  revenueChange = 0;
+  ordersChange = 0;
+  customersChange = 0;
+  productsChange = 0;
 
-  revenueData = [1200000, 1500000, 1800000, 1600000, 2000000, 2200000, 1900000];
-  ordersData = [12, 15, 18, 16, 20, 22, 19];
-  chartLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  revenueData: number[] = [];
+  ordersData: number[] = [];
+  chartLabels: string[] = [];
 
   get maxRevenue(): number {
-    return Math.max(...this.revenueData);
+    return this.revenueData.length > 0 ? Math.max(...this.revenueData) : 0;
   }
 
   get maxOrders(): number {
-    return Math.max(...this.ordersData);
+    return this.ordersData.length > 0 ? Math.max(...this.ordersData) : 0;
   }
 
-  topProducts = [
-    {
-      name: 'Dulux Weathershield',
-      brand: 'Dulux',
-      sales: 45,
-      revenue: 12500000,
-      weeklySales: [5, 7, 6, 8, 9, 7, 6],
-      maxWeeklySales: 9
-    },
-    {
-      name: 'Jotun Lady',
-      brand: 'Jotun',
-      sales: 32,
-      revenue: 8500000,
-      weeklySales: [3, 4, 5, 4, 6, 5, 4],
-      maxWeeklySales: 6
-    },
-    {
-      name: 'Kova Premium',
-      brand: 'Kova',
-      sales: 28,
-      revenue: 21000000,
-      weeklySales: [2, 3, 4, 3, 5, 4, 3],
-      maxWeeklySales: 5
-    }
-  ];
+  topProducts: any[] = [];
+  totalCustomers = 0;
+  returningCustomers = 0;
+  averageOrderValue = 0;
 
-  totalCustomers = 89;
-  returningCustomers = 66;
-  averageOrderValue = 290000;
-
-  topRegions = [
-    { name: 'Ho Chi Minh City', orders: 89, revenue: 25000000 },
-    { name: 'Hanoi', orders: 45, revenue: 12000000 },
-    { name: 'Da Nang', orders: 22, revenue: 8250000 }
-  ];
+  topRegions: any[] = [];
 
   get maxRegionRevenue(): number {
-    return Math.max(...this.topRegions.map(region => region.revenue));
+    return this.topRegions.length > 0 ? Math.max(...this.topRegions.map(region => region.revenue)) : 0;
   }
 
+  constructor(private apiService: ApiService) {}
+
   ngOnInit(): void {
-    // Initialize analytics data
+    this.loadAnalyticsData();
+  }
+
+  loadAnalyticsData(): void {
+    this.loading = true;
+    this.error = null;
+
+    // Load analytics data from API
+    this.apiService.getDashboardAnalytics().subscribe({
+      next: (data) => {
+        this.totalRevenue = data.totalRevenue || 0;
+        this.totalOrders = data.totalOrders || 0;
+        this.newCustomers = data.newCustomers || 0;
+        this.productsSold = data.productsSold || 0;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading analytics data:', error);
+        this.error = 'Failed to load analytics data';
+        this.loading = false;
+      }
+    });
+
+    // Load chart data
+    this.apiService.getAnalyticsChartData(this.selectedPeriod).subscribe({
+      next: (data) => {
+        this.revenueData = data.revenueData || [];
+        this.ordersData = data.ordersData || [];
+        this.chartLabels = data.labels || [];
+      },
+      error: (error) => {
+        console.error('Error loading chart data:', error);
+      }
+    });
+
+    // Load top products
+    this.apiService.getTopProducts(3).subscribe({
+      next: (products) => {
+        this.topProducts = products.map(product => ({
+          name: product.name,
+          brand: product.brand,
+          sales: product.totalSales || 0,
+          revenue: product.totalRevenue || 0,
+          weeklySales: product.weeklySales || [],
+          maxWeeklySales: product.weeklySales ? Math.max(...product.weeklySales) : 0
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading top products:', error);
+      }
+    });
+
+    // Load regional data
+    this.apiService.getRegionalAnalytics().subscribe({
+      next: (data) => {
+        this.topRegions = data.regions || [];
+      },
+      error: (error) => {
+        console.error('Error loading regional data:', error);
+      }
+    });
   }
 
   updateAnalytics(): void {

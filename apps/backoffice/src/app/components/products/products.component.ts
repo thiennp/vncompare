@@ -422,58 +422,10 @@ export class ProductsComponent implements OnInit {
         console.error('Error loading products:', error);
         this.error = 'Failed to load products';
         this.loading = false;
-        // Fallback to mock data
-        this.loadMockData();
       }
     });
   }
 
-  loadMockData(): void {
-    this.products = [
-      {
-        id: '1',
-        name: 'Dulux Weathershield',
-        description: 'High-quality exterior paint',
-        brand: 'Dulux',
-        category: { id: '1', name: 'Exterior Paint', slug: 'exterior-paint' },
-        supplier: { id: '1', companyName: 'Dulux Vietnam', rating: 4.8 },
-        sku: 'DUL-001',
-        color: 'White',
-        finish: 'Matte',
-        coverage: 12,
-        volume: 1,
-        price: 1250000,
-        images: [],
-        rating: 4.5,
-        totalReviews: 23,
-        isFeatured: true,
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-15T00:00:00Z'
-      },
-      {
-        id: '2',
-        name: 'Jotun Lady',
-        description: 'Premium interior paint',
-        brand: 'Jotun',
-        category: { id: '2', name: 'Interior Paint', slug: 'interior-paint' },
-        supplier: { id: '2', companyName: 'Jotun Vietnam', rating: 4.6 },
-        sku: 'JOT-001',
-        color: 'Pink',
-        finish: 'Satin',
-        coverage: 10,
-        volume: 1,
-        price: 850000,
-        images: [],
-        rating: 4.2,
-        totalReviews: 15,
-        isFeatured: false,
-        isActive: true,
-        createdAt: '2024-01-02T00:00:00Z',
-        updatedAt: '2024-01-16T00:00:00Z'
-      }
-    ];
-  }
 
   addProduct(): void {
     console.log('Add product clicked');

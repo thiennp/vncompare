@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ApiService } from '../../services/api.service';
 
 interface Review {
   id: string;
@@ -484,38 +485,9 @@ export class ReviewsComponent implements OnInit {
   statusFilter = '';
   ratingFilter = '';
 
-  reviews: Review[] = [
-    {
-      id: 'REV-001',
-      productId: '1',
-      productName: 'Dulux Weathershield',
-      customerName: 'Nguyen Van A',
-      customerEmail: 'nguyenvana@email.com',
-      rating: 5,
-      title: 'Excellent quality!',
-      comment: 'This paint is amazing. Great coverage and easy to apply. Highly recommended!',
-      status: 'approved',
-      createdAt: '2024-01-15T10:30:00Z',
-      updatedAt: '2024-01-15T10:30:00Z',
-      helpful: 12,
-      verified: true
-    },
-    {
-      id: 'REV-002',
-      productId: '2',
-      productName: 'Jotun Lady',
-      customerName: 'Tran Thi B',
-      customerEmail: 'tranthib@email.com',
-      rating: 4,
-      title: 'Good value for money',
-      comment: 'Nice color and good coverage. Would buy again.',
-      status: 'pending',
-      createdAt: '2024-01-14T14:20:00Z',
-      updatedAt: '2024-01-14T14:20:00Z',
-      helpful: 5,
-      verified: false
-    }
-  ];
+  reviews: Review[] = [];
+  loading = false;
+  error: string | null = null;
 
   filteredReviews: Review[] = [];
 
@@ -537,8 +509,28 @@ export class ReviewsComponent implements OnInit {
     return Math.round((totalRating / this.reviews.length) * 10) / 10;
   }
 
+  constructor(private apiService: ApiService) {}
+
   ngOnInit(): void {
-    this.filteredReviews = [...this.reviews];
+    this.loadReviews();
+  }
+
+  loadReviews(): void {
+    this.loading = true;
+    this.error = null;
+
+    this.apiService.getReviews().subscribe({
+      next: (reviews) => {
+        this.reviews = reviews;
+        this.filteredReviews = [...this.reviews];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading reviews:', error);
+        this.error = 'Failed to load reviews';
+        this.loading = false;
+      }
+    });
   }
 
   filterReviews(): void {
