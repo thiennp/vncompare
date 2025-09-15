@@ -196,7 +196,8 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = 'https://api.vncompare.com/api/v1';
+  private readonly baseUrl = 'https://api.vncompare.com/v1';
+  private readonly isApiAvailable = false; // Set to true when API is deployed
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
 
@@ -718,6 +719,10 @@ export class ApiService {
   // Utility methods
   isAuthenticated(): boolean {
     return this.tokenSubject.value !== null;
+  }
+
+  isApiReady(): boolean {
+    return this.isApiAvailable;
   }
 
   getCurrentToken(): string | null {
