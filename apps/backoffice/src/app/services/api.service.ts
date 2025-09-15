@@ -196,8 +196,8 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = 'https://api.vncompare.com/v1';
-  private readonly isApiAvailable = false; // Set to true when API is deployed
+  private readonly baseUrl = 'https://api-1cfol46e8-thien-nguyens-projects-abdd38ab.vercel.app/api/v1';
+  private readonly isApiAvailable = true; // Set to true when API is deployed
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
 
