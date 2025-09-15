@@ -63,6 +63,14 @@
     {
       "source": "/robots.txt",
       "destination": "/api/robots"
+    },
+    {
+      "source": "/backoffice",
+      "destination": "/backoffice/browser/index.html"
+    },
+    {
+      "source": "/backoffice/(.*)",
+      "destination": "/backoffice/browser/$1"
     }
   ],
 
