@@ -47,6 +47,9 @@ export interface Product {
   stock?: number;
   coverageRate?: number;
   imageUrl?: string;
+  totalSales?: number;
+  totalRevenue?: number;
+  weeklySales?: number[];
 }
 
 export interface User {
@@ -170,10 +173,13 @@ export interface DashboardMetrics {
   totalOrders: number;
   activeProducts: number;
   serviceAreas: number;
+  newCustomers: number;
+  productsSold: number;
   revenueChange: number;
   ordersChange: number;
   productsChange: number;
   areasChange: number;
+  customersChange: number;
 }
 
 export interface PaginatedResponse<T> {
@@ -190,7 +196,7 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl = 'https://api.vncompare.com/api/v1';
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
 
@@ -659,6 +665,52 @@ export class ApiService {
           return response.data;
         }
         throw new Error(response.message || 'Failed to fetch top products');
+      })
+    );
+  }
+
+  getAnalyticsChartData(period: string): Observable<{
+    revenueData: number[];
+    ordersData: number[];
+    labels: string[];
+  }> {
+    return this.http.get<ApiResponse<{
+      revenueData: number[];
+      ordersData: number[];
+      labels: string[];
+    }>>(`${this.baseUrl}/analytics/chart-data?period=${period}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch chart data');
+      })
+    );
+  }
+
+  getRegionalAnalytics(): Observable<{
+    regions: Array<{
+      name: string;
+      orders: number;
+      revenue: number;
+    }>;
+  }> {
+    return this.http.get<ApiResponse<{
+      regions: Array<{
+        name: string;
+        orders: number;
+        revenue: number;
+      }>;
+    }>>(`${this.baseUrl}/analytics/regional`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch regional analytics');
       })
     );
   }
