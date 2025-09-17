@@ -1,15 +1,23 @@
 {
-  "name": "vncompare-api",
+  "name": "vncompare-monorepo",
   "version": "1.0.0",
-  "description": "VNCompare API for backoffice",
-  "main": "api/index.js",
+  "description": "VNCompare.com - Paint Comparison Platform for Vietnam",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "start": "node api/index.js",
-    "dev": "node api/index.js"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "cd apps/web && npm start",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean",
+    "db:seed": "cd apps/web && npm run db:seed",
+    "db:reset": "cd apps/web && npm run db:reset"
   },
-  "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
+  "devDependencies": {
+    "turbo": "^1.10.0"
   },
   "engines": {
     "node": ">=18.0.0"
