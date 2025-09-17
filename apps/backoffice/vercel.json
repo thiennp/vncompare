@@ -4,7 +4,11 @@
   "outputDirectory": "dist/backoffice",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/backoffice/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/backoffice",
       "destination": "/index.html"
     }
   ],

@@ -520,8 +520,8 @@ export class ReviewsComponent implements OnInit {
     this.error = null;
 
     this.apiService.getReviews().subscribe({
-      next: (reviews) => {
-        this.reviews = reviews;
+      next: (response) => {
+        this.reviews = response.data;
         this.filteredReviews = [...this.reviews];
         this.loading = false;
       },
