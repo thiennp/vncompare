@@ -62,7 +62,7 @@ model Ward {
 // Products and Pricing
 model Product {
   id            Int               @id @default(autoincrement())
-  name          String            @unique
+  name          String
   brand         String?
   category      String?
   description   String?
@@ -76,6 +76,7 @@ model Product {
   coverage      ProductCoverage[]
   orders        Order[]
 
+  @@unique([name])
   @@map("products")
 }
 
