@@ -4,13 +4,9 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '10')
-    const page = parseInt(searchParams.get('page') || '1')
-    const category = searchParams.get('category')
-    const brand = searchParams.get('brand')
-    const search = searchParams.get('search')
 
-    // Mock products data
-    const allProducts = [
+    // Mock featured products data
+    const featuredProducts = [
       {
         id: '1',
         name: 'Sơn Dulux Weathershield',
@@ -106,48 +102,81 @@ export async function GET(request: Request) {
         isActive: true,
         createdAt: '2024-01-25T00:00:00Z',
         updatedAt: '2024-01-25T00:00:00Z'
+      },
+      {
+        id: '4',
+        name: 'Sơn Nippon Spotless',
+        description: 'Sơn nội thất chống bám bẩn, dễ lau chùi',
+        brand: 'Nippon',
+        category: {
+          id: '2',
+          name: 'Sơn nội thất',
+          slug: 'noi-that'
+        },
+        supplier: {
+          id: '4',
+          companyName: 'Công ty Nippon Paint Việt Nam',
+          rating: 4.5
+        },
+        sku: 'NIPPON-SP-004',
+        color: 'Xanh lá',
+        finish: 'Mờ',
+        coverage: 14,
+        volume: 18,
+        price: 420000,
+        discountPrice: 390000,
+        currentPrice: 390000,
+        discountPercentage: 7,
+        images: ['/images/nippon-spotless.jpg'],
+        rating: 4.5,
+        totalReviews: 67,
+        isFeatured: true,
+        isActive: true,
+        createdAt: '2024-01-30T00:00:00Z',
+        updatedAt: '2024-01-30T00:00:00Z'
+      },
+      {
+        id: '5',
+        name: 'Sơn Maxilite Industrial',
+        description: 'Sơn công nghiệp chống ăn mòn cao cấp',
+        brand: 'Maxilite',
+        category: {
+          id: '4',
+          name: 'Sơn công nghiệp',
+          slug: 'cong-nghiep'
+        },
+        supplier: {
+          id: '5',
+          companyName: 'Công ty Maxilite Việt Nam',
+          rating: 4.4
+        },
+        sku: 'MAXILITE-IN-005',
+        color: 'Xám',
+        finish: 'Mờ',
+        coverage: 8,
+        volume: 20,
+        price: 680000,
+        discountPrice: 620000,
+        currentPrice: 620000,
+        discountPercentage: 9,
+        images: ['/images/maxilite-industrial.jpg'],
+        rating: 4.4,
+        totalReviews: 23,
+        isFeatured: true,
+        isActive: true,
+        createdAt: '2024-02-01T00:00:00Z',
+        updatedAt: '2024-02-01T00:00:00Z'
       }
     ]
 
-    // Filter products based on query parameters
-    let filteredProducts = allProducts
-
-    if (category) {
-      filteredProducts = filteredProducts.filter(p => 
-        p.category.slug === category || p.category.name.toLowerCase().includes(category.toLowerCase())
-      )
-    }
-
-    if (brand) {
-      filteredProducts = filteredProducts.filter(p => 
-        p.brand.toLowerCase().includes(brand.toLowerCase())
-      )
-    }
-
-    if (search) {
-      filteredProducts = filteredProducts.filter(p => 
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
-        p.description.toLowerCase().includes(search.toLowerCase()) ||
-        p.brand.toLowerCase().includes(search.toLowerCase())
-      )
-    }
-
-    // Pagination
-    const startIndex = (page - 1) * limit
-    const endIndex = startIndex + limit
-    const paginatedProducts = filteredProducts.slice(startIndex, endIndex)
+    // Return limited number of featured products
+    const limitedProducts = featuredProducts.slice(0, limit)
 
     return NextResponse.json({
       success: true,
-      message: 'Products retrieved successfully',
+      message: 'Featured products retrieved successfully',
       data: {
-        products: paginatedProducts,
-        pagination: {
-          page,
-          limit,
-          total: filteredProducts.length,
-          totalPages: Math.ceil(filteredProducts.length / limit)
-        }
+        products: limitedProducts
       },
       meta: {
         timestamp: new Date().toISOString(),
@@ -155,12 +184,12 @@ export async function GET(request: Request) {
       }
     })
   } catch (error) {
-    console.error('Error fetching products:', error)
+    console.error('Error fetching featured products:', error)
     return NextResponse.json({
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: 'Failed to fetch products',
+        message: 'Failed to fetch featured products',
         details: []
       },
       meta: {
