@@ -682,14 +682,18 @@ export class AnalyticsComponent implements OnInit {
 
     // Load analytics data from API
     this.apiService.getDashboardAnalytics().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.totalRevenue = data.totalRevenue || 0;
         this.totalOrders = data.totalOrders || 0;
         this.newCustomers = data.newCustomers || 0;
         this.productsSold = data.productsSold || 0;
+        this.revenueChange = data.revenueChange || 0;
+        this.ordersChange = data.ordersChange || 0;
+        this.customersChange = data.customersChange || 0;
+        this.productsChange = data.productsChange || 0;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading analytics data:', error);
         this.error = 'Failed to load analytics data';
         this.loading = false;
@@ -698,20 +702,20 @@ export class AnalyticsComponent implements OnInit {
 
     // Load chart data
     this.apiService.getAnalyticsChartData(this.selectedPeriod).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.revenueData = data.revenueData || [];
         this.ordersData = data.ordersData || [];
         this.chartLabels = data.labels || [];
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading chart data:', error);
       }
     });
 
     // Load top products
     this.apiService.getTopProducts(3).subscribe({
-      next: (products) => {
-        this.topProducts = products.map(product => ({
+      next: (products: any[]) => {
+        this.topProducts = products.map((product: any) => ({
           name: product.name,
           brand: product.brand,
           sales: product.totalSales || 0,
@@ -720,17 +724,17 @@ export class AnalyticsComponent implements OnInit {
           maxWeeklySales: product.weeklySales ? Math.max(...product.weeklySales) : 0
         }));
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading top products:', error);
       }
     });
 
     // Load regional data
     this.apiService.getRegionalAnalytics().subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.topRegions = data.regions || [];
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading regional data:', error);
       }
     });
