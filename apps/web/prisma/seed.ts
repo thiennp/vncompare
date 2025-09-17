@@ -305,11 +305,27 @@ async function seedSuppliers() {
   ]
 
   for (const supplierData of suppliers) {
-    await prisma.supplier.upsert({
-      where: { name: supplierData.name },
-      update: {},
-      create: supplierData
-    })
+    try {
+      // First try to find existing supplier
+      const existingSupplier = await prisma.supplier.findFirst({
+        where: { name: supplierData.name }
+      })
+      
+      if (existingSupplier) {
+        // Update existing supplier
+        await prisma.supplier.update({
+          where: { id: existingSupplier.id },
+          data: supplierData
+        })
+      } else {
+        // Create new supplier
+        await prisma.supplier.create({
+          data: supplierData
+        })
+      }
+    } catch (error) {
+      console.log(`Skipping supplier ${supplierData.name}: ${error}`)
+    }
   }
 
   console.log('✅ Suppliers seeded')
