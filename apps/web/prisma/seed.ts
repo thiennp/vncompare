@@ -198,11 +198,23 @@ async function seedProducts() {
 
   for (const productData of products) {
     try {
-      await prisma.product.upsert({
-        where: { name: productData.name },
-        update: {},
-        create: productData
+      // First try to find existing product
+      const existingProduct = await prisma.product.findFirst({
+        where: { name: productData.name }
       })
+      
+      if (existingProduct) {
+        // Update existing product
+        await prisma.product.update({
+          where: { id: existingProduct.id },
+          data: productData
+        })
+      } else {
+        // Create new product
+        await prisma.product.create({
+          data: productData
+        })
+      }
     } catch (error) {
       console.log(`Skipping product ${productData.name}: ${error}`)
     }
