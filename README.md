@@ -273,3 +273,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **VNCompare.com** - Making paint shopping in Vietnam easier, smarter, and more affordable! 🎨🇻🇳
+# Contributors updated
