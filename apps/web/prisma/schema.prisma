@@ -62,7 +62,7 @@ model Ward {
 // Products and Pricing
 model Product {
   id            Int               @id @default(autoincrement())
-  name          String
+  name          String            @unique
   brand         String?
   category      String?
   description   String?
@@ -94,7 +94,7 @@ model ProductCoverage {
 // Suppliers and Service Areas
 model Supplier {
   id           Int            @id @default(autoincrement())
-  name         String
+  name         String         @unique
   businessInfo String?        @map("business_info") // Changed from Json to String for SQLite
   contactInfo  String?        @map("contact_info")  // Changed from Json to String for SQLite
   isVerified   Boolean        @default(false) @map("is_verified")
