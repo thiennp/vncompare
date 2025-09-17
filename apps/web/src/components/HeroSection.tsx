@@ -48,7 +48,7 @@ export default function HeroSection() {
 
 
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-white to-green-50 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       
@@ -57,7 +57,7 @@ export default function HeroSection() {
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             So sánh giá{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">
               sơn
             </span>{' '}
             hàng đầu Việt Nam
@@ -109,98 +109,83 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Comparison Table Preview */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-          <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+        {/* Check24-style Comparison Cards */}
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                                 <GitCompare className="w-5 h-5 mr-2 text-blue-600" />
+              <h3 className="text-xl font-bold text-white flex items-center">
+                <GitCompare className="w-6 h-6 mr-3" />
                 So sánh giá sơn nội thất
               </h3>
-              <div className="flex items-center space-x-2">
-                <button className="flex items-center text-sm text-gray-600 hover:text-blue-600">
-                  <Filter className="w-4 h-4 mr-1" />
-                  Lọc
+              <div className="flex items-center space-x-4">
+                <button className="flex items-center text-white hover:text-blue-200 transition-colors">
+                  <Filter className="w-5 h-5 mr-2" />
+                  <span className="font-medium">Lọc</span>
                 </button>
-                <span className="text-sm text-gray-500">3 sản phẩm</span>
+                <div className="bg-white/20 rounded-full px-3 py-1">
+                  <span className="text-sm font-medium text-white">3 sản phẩm</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sản phẩm
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Giá tốt nhất
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Đánh giá
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tính năng
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    So sánh
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {loading ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center">
-                      <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                        <span className="ml-2 text-gray-600">Đang tải sản phẩm...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : comparisonData.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                      Không có sản phẩm nào
-                    </td>
-                  </tr>
-                ) : (
-                  comparisonData.map((product, index) => (
-                    <tr key={product.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-green-100 rounded-lg flex items-center justify-center mr-3">
-                            <span className="text-lg">🎨</span>
-                          </div>
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                            <div className="text-sm text-gray-500">{product.brand} • {product.coverage}m²/lít</div>
-                          </div>
+          <div className="p-6">
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span className="ml-3 text-gray-600 font-medium">Đang tải sản phẩm...</span>
+              </div>
+            ) : comparisonData.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <div className="text-lg font-medium">Không có sản phẩm nào</div>
+                <div className="text-sm">Vui lòng thử lại sau</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {comparisonData.map((product, index) => (
+                  <div key={product.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    {/* Product Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center mr-3">
+                          <span className="text-xl">🎨</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 text-sm leading-tight">{product.name}</h4>
+                          <p className="text-xs text-gray-500 mt-1">{product.brand}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
                         <div className="text-lg font-bold text-gray-900">
                           {product.currentPrice.toLocaleString('vi-VN')} ₫
                         </div>
                         {product.discountPrice && product.discountPrice < product.price && (
-                          <>
-                            <div className="text-sm text-gray-500 line-through">
-                              {product.price.toLocaleString('vi-VN')} ₫
-                            </div>
-                            <div className="text-xs text-green-600 font-medium">
-                              -{product.discountPercentage || Math.round(((product.price - product.currentPrice) / product.price) * 100)}%
-                            </div>
-                          </>
+                          <div className="text-xs text-green-600 font-medium">
+                            -{product.discountPercentage || Math.round(((product.price - product.currentPrice) / product.price) * 100)}%
+                          </div>
                         )}
-                      </td>
-                      <td className="px-6 py-4">
+                      </div>
+                    </div>
+
+                    {/* Product Details */}
+                    <div className="space-y-3 mb-4">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Độ phủ:</span>
+                        <span className="font-medium">{product.coverage}m²/lít</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Thể tích:</span>
+                        <span className="font-medium">{product.volume}L</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Đánh giá:</span>
                         <div className="flex items-center">
-                          <div className="flex items-center">
+                          <div className="flex items-center mr-1">
                             {[...Array(5)].map((_, i) => (
                               <svg
                                 key={i}
                                 className={cn(
-                                  "w-4 h-4",
+                                  "w-3 h-3",
                                   i < Math.floor(product.rating)
                                     ? "text-yellow-400 fill-current"
                                     : "text-gray-300"
@@ -211,68 +196,65 @@ export default function HeroSection() {
                               </svg>
                             ))}
                           </div>
-                          <span className="text-sm text-gray-500 ml-1">({product.totalReviews})</span>
+                          <span className="text-xs text-gray-500">({product.totalReviews})</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-1">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {product.finish}
-                          </span>
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {product.color}
-                          </span>
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                            {product.volume}L
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex space-x-2">
-                          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                            Mua ngay
-                          </button>
-                          <button className="border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors">
-                            So sánh
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
 
-          <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-600">
-                Hiển thị 3 trong số 200+ sản phẩm
+                    {/* Features */}
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {product.finish}
+                      </span>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {product.color}
+                      </span>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="space-y-2">
+                      <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        Mua ngay
+                      </button>
+                      <button className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                        Thêm vào so sánh
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <button className="text-blue-600 hover:text-blue-700 font-medium">
-                Xem tất cả kết quả →
-              </button>
+            )}
+
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  Hiển thị 3 trong số 200+ sản phẩm
+                </div>
+                <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                  Xem tất cả kết quả →
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Stats - Check24 Style */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">500+</div>
-            <div className="text-gray-600">Sản phẩm sơn</div>
+          <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
+            <div className="text-gray-600 font-medium">Sản phẩm sơn</div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-green-600">50+</div>
-            <div className="text-gray-600">Nhà cung cấp</div>
+          <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <div className="text-3xl font-bold text-blue-600 mb-2">50+</div>
+            <div className="text-gray-600 font-medium">Nhà cung cấp</div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-purple-600">30%</div>
-            <div className="text-gray-600">Tiết kiệm trung bình</div>
+          <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <div className="text-3xl font-bold text-blue-600 mb-2">30%</div>
+            <div className="text-gray-600 font-medium">Tiết kiệm trung bình</div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-orange-600">10K+</div>
-            <div className="text-gray-600">So sánh mỗi tháng</div>
+          <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <div className="text-3xl font-bold text-blue-600 mb-2">10K+</div>
+            <div className="text-gray-600 font-medium">So sánh mỗi tháng</div>
           </div>
         </div>
       </div>
