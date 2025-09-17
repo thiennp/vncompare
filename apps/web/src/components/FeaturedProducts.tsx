@@ -215,7 +215,9 @@ export default function FeaturedProducts() {
                     <td className="px-6 py-4">
                       <div className="space-y-1">
                         <div className="text-sm">
-                          <div className="font-medium text-gray-900">{product.supplier.companyName}</div>
+                          <div className="font-medium text-gray-900">
+                            {product.supplier?.companyName || 'Nhà cung cấp không xác định'}
+                          </div>
                           <div className="text-gray-500">{product.currentPrice.toLocaleString('vi-VN')} ₫</div>
                           <div className="text-xs text-green-600">Miễn phí vận chuyển</div>
                         </div>

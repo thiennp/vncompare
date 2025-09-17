@@ -10,7 +10,7 @@ export interface Product {
     name: string;
     slug: string;
   };
-  supplier: {
+  supplier?: {
     id: string;
     companyName: string;
     rating: number;
