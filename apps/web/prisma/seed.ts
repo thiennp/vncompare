@@ -197,11 +197,15 @@ async function seedProducts() {
   ]
 
   for (const productData of products) {
-    await prisma.product.upsert({
-      where: { name: productData.name },
-      update: {},
-      create: productData
-    })
+    try {
+      await prisma.product.upsert({
+        where: { name: productData.name },
+        update: {},
+        create: productData
+      })
+    } catch (error) {
+      console.log(`Skipping product ${productData.name}: ${error}`)
+    }
   }
 
   console.log('✅ Products seeded')
