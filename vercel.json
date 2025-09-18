@@ -5,7 +5,6 @@
   "installCommand": "cd apps/web && npm install",
   "devCommand": "cd apps/web && npm run dev",
   "framework": "nextjs",
-  "rootDirectory": "apps/web",
   "rewrites": [
     {
       "source": "/api/(.*)",
