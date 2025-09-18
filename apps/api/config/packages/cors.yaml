@@ -1,0 +1,11 @@
+framework:
+    cors:
+        allow_origins: 
+            - 'https://vncompare.com'
+            - 'https://www.vncompare.com'
+            - 'http://localhost:3000'
+            - 'http://localhost:3001'
+        allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+        allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+        allow_credentials: true
+        max_age: 3600
