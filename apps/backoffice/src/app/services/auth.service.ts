@@ -42,7 +42,7 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_BASE_URL = 'http://localhost:8000/api/v1';
+  private readonly API_BASE_URL = 'https://api-1cfol46e8-thien-nguyens-projects-abdd38ab.vercel.app/api/v1';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 

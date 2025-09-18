@@ -17,13 +17,13 @@ const iconMap: { [key: string]: any } = {
 
 // Color mapping for categories
 const colorMap: { [key: string]: string } = {
-  'noi-that': 'bg-blue-100 text-blue-600',
-  'ngoai-that': 'bg-green-100 text-green-600',
-  'chuyen-dung': 'bg-purple-100 text-purple-600',
-  'cong-nghiep': 'bg-orange-100 text-orange-600',
-  'trang-tri': 'bg-pink-100 text-pink-600',
-  'thien-nhien': 'bg-emerald-100 text-emerald-600',
-  'default': 'bg-gray-100 text-gray-600'
+  'noi-that': 'bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 border border-blue-300',
+  'ngoai-that': 'bg-gradient-to-br from-green-100 to-green-200 text-green-700 border border-green-300',
+  'chuyen-dung': 'bg-gradient-to-br from-purple-100 to-purple-200 text-purple-700 border border-purple-300',
+  'cong-nghiep': 'bg-gradient-to-br from-orange-100 to-orange-200 text-orange-700 border border-orange-300',
+  'trang-tri': 'bg-gradient-to-br from-pink-100 to-pink-200 text-pink-700 border border-pink-300',
+  'thien-nhien': 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 border border-emerald-300',
+  'default': 'bg-gradient-to-br from-gray-100 to-gray-200 text-gray-700 border border-gray-300'
 }
 
 export default function CategorySection() {
@@ -83,7 +83,7 @@ export default function CategorySection() {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">
@@ -125,7 +125,7 @@ export default function CategorySection() {
               return (
                 <div
                   key={category.id}
-                  className="bg-white border border-gray-100 rounded-lg p-5 hover:border-gray-200 transition-colors cursor-pointer group"
+                  className="bg-gradient-to-br from-white via-blue-50 to-purple-50 border border-purple-200 rounded-xl p-6 hover:border-purple-400 transition-all duration-300 cursor-pointer group hover:shadow-xl hover:scale-105"
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between mb-3">
@@ -191,11 +191,11 @@ export default function CategorySection() {
 
                   {/* Action Buttons */}
                   <div className="flex space-x-2">
-                    <button className="flex-1 bg-blue-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center">
+                    <button className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-3 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center">
                       <Users className="w-4 h-4 mr-1" />
                       So sánh ngay
                     </button>
-                    <button className="px-3 py-2 border border-gray-200 rounded-md text-sm hover:bg-gray-50 transition-colors">
+                    <button className="px-3 py-2 border border-purple-200 rounded-full text-sm hover:bg-purple-50 transition-all duration-200 transform hover:scale-105 bg-gradient-to-r from-white to-purple-50">
                       Chi tiết
                     </button>
                   </div>

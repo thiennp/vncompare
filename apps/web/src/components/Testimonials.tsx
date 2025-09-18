@@ -34,7 +34,7 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -49,11 +49,11 @@ export default function Testimonials() {
           {testimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow"
+              className="bg-gradient-to-br from-white via-purple-50 to-blue-50 rounded-xl p-6 hover:shadow-xl transition-all duration-300 border border-purple-200 hover:border-purple-400 hover:scale-105"
             >
               {/* Quote Icon */}
               <div className="mb-4">
-                <Quote className="w-8 h-8 text-blue-600" />
+                <Quote className="w-8 h-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600" />
               </div>
 
               {/* Rating */}
@@ -77,7 +77,7 @@ export default function Testimonials() {
 
               {/* Author */}
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold mr-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full flex items-center justify-center font-semibold mr-4 shadow-lg">
                   {testimonial.avatar}
                 </div>
                 <div>
@@ -94,7 +94,7 @@ export default function Testimonials() {
         </div>
 
         {/* Stats */}
-        <div className="mt-16 bg-blue-600 rounded-2xl p-8 text-white">
+        <div className="mt-16 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl p-8 text-white shadow-xl">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl font-bold mb-2">10,000+</div>

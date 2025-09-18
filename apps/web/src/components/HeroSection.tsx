@@ -48,16 +48,27 @@ export default function HeroSection() {
 
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      
+      {/* Floating Paint Drops */}
+      <div className="absolute top-20 left-10 w-6 h-6 bg-paint-red rounded-full animate-float opacity-60"></div>
+      <div className="absolute top-40 right-20 w-4 h-4 bg-paint-blue rounded-full animate-float opacity-60" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-60 left-1/4 w-5 h-5 bg-paint-green rounded-full animate-float opacity-60" style={{animationDelay: '2s'}}></div>
+      <div className="absolute top-80 right-1/3 w-3 h-3 bg-paint-yellow rounded-full animate-float opacity-60" style={{animationDelay: '0.5s'}}></div>
+      <div className="absolute top-32 right-1/2 w-4 h-4 bg-paint-purple rounded-full animate-float opacity-60" style={{animationDelay: '1.5s'}}></div>
+      
+      {/* Paint Splash Effects */}
+      <div className="absolute top-10 right-10 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl animate-paint-splash"></div>
+      <div className="absolute bottom-20 left-20 w-16 h-16 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-xl animate-paint-splash" style={{animationDelay: '1s'}}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         <div className="text-center mb-8">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             So sánh giá{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-color-shift">
               sơn
             </span>{' '}
             hàng đầu Việt Nam
@@ -72,18 +83,18 @@ export default function HeroSection() {
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+                <Search className="h-5 w-5 text-purple-400" />
               </div>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm sơn, thương hiệu hoặc loại sơn..."
-                className="w-full pl-12 pr-4 py-4 text-lg border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-lg"
+                className="w-full pl-12 pr-4 py-4 text-lg border border-purple-200 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-lg bg-gradient-to-r from-white to-purple-50 transition-all duration-200"
               />
               <button
                 type="submit"
-                className="absolute right-2 top-2 bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors"
+                className="absolute right-2 top-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
               >
                 So sánh ngay
               </button>
@@ -92,26 +103,41 @@ export default function HeroSection() {
 
           {/* Category Pills */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={cn(
-                  "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                  selectedCategory === category.id
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
-                )}
-              >
-                {category.name} ({category.count})
-              </button>
-            ))}
+            {categories.map((category, index) => {
+              const colors = [
+                'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-300 hover:from-blue-200 hover:to-blue-300',
+                'bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-300 hover:from-green-200 hover:to-green-300',
+                'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border-purple-300 hover:from-purple-200 hover:to-purple-300',
+                'bg-gradient-to-r from-pink-100 to-pink-200 text-pink-700 border-pink-300 hover:from-pink-200 hover:to-pink-300',
+                'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 border-orange-300 hover:from-orange-200 hover:to-orange-300',
+                'bg-gradient-to-r from-teal-100 to-teal-200 text-teal-700 border-teal-300 hover:from-teal-200 hover:to-teal-300'
+              ];
+              const selectedColors = [
+                'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg',
+                'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg',
+                'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg',
+                'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-lg',
+                'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg',
+                'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg'
+              ];
+              const colorClass = selectedCategory === category.id ? selectedColors[index % selectedColors.length] : colors[index % colors.length];
+              
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`px-4 py-2 ${colorClass} rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg`}
+                >
+                  {category.name} ({category.count})
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Check24-style Comparison Cards */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+        <div className="bg-white rounded-xl shadow-xl border border-purple-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-6 py-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold text-white flex items-center">
                 <GitCompare className="w-6 h-6 mr-3" />

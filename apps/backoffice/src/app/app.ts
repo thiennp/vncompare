@@ -1,7 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthService, User } from './services/auth.service';
+import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -22,10 +26,13 @@ import { FormsModule } from '@angular/forms';
           <span class="app-title">VNCompare Backoffice</span>
         </div>
         <div class="toolbar-right">
-          <div class="user-menu">
-            <span class="user-name">{{ currentUser?.firstName || 'Admin' }}</span>
+          <div class="user-menu" *ngIf="isAuthenticated(); else loginButton">
+            <span class="user-name">{{ currentUser()?.firstName || 'Guest' }}</span>
             <button class="btn btn-outline" (click)="logout()">Logout</button>
           </div>
+          <ng-template #loginButton>
+            <button class="btn btn-primary" (click)="openLoginDialog()">Login</button>
+          </ng-template>
         </div>
       </div>
 
@@ -320,10 +327,26 @@ import { FormsModule } from '@angular/forms';
     }
   `]
 })
-export class App {
+export class App implements OnInit, OnDestroy {
   title = 'VNCompare Backoffice';
   isSidebarOpen = signal(true);
-  currentUser: any = { firstName: 'Admin', lastName: 'User' };
+  currentUser = signal<User | null>(null);
+  private userSubscription?: Subscription;
+
+  constructor(private authService: AuthService, private dialog: MatDialog) {}
+
+  ngOnInit(): void {
+    // Subscribe to user changes
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+      this.currentUser.set(user);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
 
   toggleSidebar(): void {
     this.isSidebarOpen.update(open => !open);
@@ -334,7 +357,23 @@ export class App {
   }
 
   logout(): void {
-    console.log('Logout clicked');
-    // Implement logout logic
+    this.authService.logout();
+  }
+
+  isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  openLoginDialog(): void {
+    const dialogRef = this.dialog.open(LoginDialogComponent, {
+      width: '400px',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.success) {
+        console.log('Login successful');
+      }
+    });
   }
 }

@@ -100,7 +100,7 @@ export default function FeaturedProducts() {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3">
@@ -112,14 +112,14 @@ export default function FeaturedProducts() {
         </div>
 
         {/* Comparison Controls */}
-        <div className="bg-white rounded-lg p-4 mb-6 border border-gray-100">
+        <div className="bg-gradient-to-r from-white to-purple-50 rounded-xl p-6 mb-6 border border-purple-200 shadow-lg">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-gray-600">Sắp xếp theo:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border border-gray-200 rounded-md px-3 py-2 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                className="border border-purple-200 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-gradient-to-r from-white to-purple-50 transition-all duration-200"
               >
                 <option value="price">Giá thấp nhất</option>
                 <option value="rating">Đánh giá cao nhất</option>
@@ -132,7 +132,7 @@ export default function FeaturedProducts() {
                 {selectedProducts.length} sản phẩm được chọn
               </span>
               {selectedProducts.length > 0 && (
-                <button className="bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center">
+                <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center">
                   <GitCompare className="w-4 h-4 mr-1" />
                   So sánh ({selectedProducts.length})
                 </button>
@@ -142,10 +142,10 @@ export default function FeaturedProducts() {
         </div>
 
         {/* Products Comparison Table */}
-        <div className="bg-white rounded-lg border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-br from-white to-purple-50 rounded-xl border border-purple-200 overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gradient-to-r from-purple-100 to-blue-100">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Sản phẩm
@@ -167,9 +167,9 @@ export default function FeaturedProducts() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
+              <tbody className="bg-white divide-y divide-purple-100">
                 {sortedProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr key={product.id} className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-200">
                     {/* Product Info */}
                     <td className="px-4 py-3">
                       <div className="flex items-center">
@@ -179,8 +179,8 @@ export default function FeaturedProducts() {
                           onChange={() => toggleProductSelection(product.id)}
                           className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
-                        <div className="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center mr-3">
-                          <span className="text-sm">🎨</span>
+                        <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mr-3 border border-purple-200">
+                          <span className="text-lg">🎨</span>
                         </div>
                         <div>
                           <div className="text-sm font-medium text-gray-900">{product.name}</div>
@@ -260,11 +260,11 @@ export default function FeaturedProducts() {
 
                     {/* Actions */}
                     <td className="px-4 py-3">
-                      <div className="flex space-x-1">
-                        <button className="bg-blue-600 text-white px-3 py-1 rounded-md text-xs font-medium hover:bg-blue-700 transition-colors">
+                      <div className="flex space-x-2">
+                        <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md">
                           Mua ngay
                         </button>
-                        <button className="border border-gray-200 text-gray-600 px-2 py-1 rounded-md text-xs hover:bg-gray-50 transition-colors">
+                        <button className="border border-purple-200 text-purple-600 px-3 py-1 rounded-full text-xs hover:bg-purple-50 transition-all duration-200 transform hover:scale-105 bg-gradient-to-r from-white to-purple-50">
                           Chi tiết
                         </button>
                       </div>
