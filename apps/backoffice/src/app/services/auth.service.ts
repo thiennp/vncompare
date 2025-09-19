@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 export interface LoginRequest {
   email: string;
@@ -67,6 +67,37 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
+    // Temporary mock authentication for development
+    if (credentials.email === 'nguyenphongthien@gmail.com' && credentials.password === 'Kimtuoc2') {
+      const mockResponse: LoginResponse = {
+        user: {
+          id: 1,
+          email: 'nguyenphongthien@gmail.com',
+          firstName: 'Phong',
+          lastName: 'Thien',
+          phone: '0901234566',
+          roles: ['ROLE_ADMIN'],
+          isActive: true,
+          emailVerified: true,
+          createdAt: new Date().toISOString(),
+          lastLoginAt: new Date().toISOString()
+        },
+        token: 'mock-jwt-token-' + Date.now(),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      };
+
+      // Store mock data
+      localStorage.setItem('auth_token', mockResponse.token);
+      localStorage.setItem('user_data', JSON.stringify(mockResponse.user));
+      this.currentUserSubject.next(mockResponse.user);
+
+      return new Observable(observer => {
+        observer.next(mockResponse);
+        observer.complete();
+      });
+    }
+
+    // Try real API call as fallback
     return this.http.post<LoginResponse>(`${this.API_BASE_URL}/auth/login`, credentials)
       .pipe(
         tap(response => {
@@ -74,6 +105,13 @@ export class AuthService {
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('user_data', JSON.stringify(response.user));
           this.currentUserSubject.next(response.user);
+        }),
+        catchError(error => {
+          console.error('Login error:', error);
+          if (error.status === 0 || error.name === 'HttpErrorResponse') {
+            throw new Error('Unable to connect to the server. Please check if the API is running and try again.');
+          }
+          throw error;
         })
       );
   }
