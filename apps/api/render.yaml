@@ -28,7 +28,7 @@ services:
       - key: JWT_PUBLIC_KEY
         value: %kernel.project_dir%/config/jwt/public.pem
       - key: CORS_ALLOW_ORIGIN
-        value: https://vncompare.com,https://www.vncompare.com,http://localhost:3000
+        value: https://vncompare.com,https://www.vncompare.com,https://admin.vncompare.com,https://vncompare-backoffice.netlify.app,http://localhost:3000
 
 databases:
   - name: vncompare-db
