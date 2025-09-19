@@ -496,6 +496,14 @@ class AppFixtures extends Fixture
                 'roles' => ['ROLE_ADMIN']
             ],
             [
+                'email' => 'nguyenphongthien@gmail.com',
+                'firstName' => 'Phong',
+                'lastName' => 'Thien',
+                'phone' => '0901234566',
+                'roles' => ['ROLE_ADMIN'],
+                'password' => 'Kimtuoc2'
+            ],
+            [
                 'email' => 'customer1@example.com',
                 'firstName' => 'Nguyễn',
                 'lastName' => 'Văn A',
@@ -520,12 +528,14 @@ class AppFixtures extends Fixture
 
         foreach ($users as $userData) {
             $user = new User();
+            $password = $userData['password'] ?? 'password123';
+            
             $user->setEmail($userData['email'])
                  ->setFirstName($userData['firstName'])
                  ->setLastName($userData['lastName'])
                  ->setPhone($userData['phone'])
                  ->setRoles($userData['roles'])
-                 ->setPassword($this->passwordHasher->hashPassword($user, 'password123'))
+                 ->setPassword($this->passwordHasher->hashPassword($user, $password))
                  ->setIsActive(true)
                  ->setEmailVerified(true);
             
