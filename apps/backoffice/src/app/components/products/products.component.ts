@@ -33,6 +33,42 @@ import { ApiService, Product as ApiProduct, ProductListResponse } from '../../se
         </div>
       </div>
 
+      <!-- Filters and Search -->
+      <div class="filters-section" *ngIf="!loading || products.length > 0">
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Search products..." 
+            [(ngModel)]="searchTerm"
+            (input)="filterProducts()"
+            class="search-input">
+        </div>
+        <div class="filter-controls">
+          <select [(ngModel)]="categoryFilter" (change)="filterProducts()" class="filter-select">
+            <option value="">All Categories</option>
+            <option value="Interior Paint">Interior Paint</option>
+            <option value="Exterior Paint">Exterior Paint</option>
+            <option value="Primer">Primer</option>
+            <option value="Specialty Paint">Specialty Paint</option>
+          </select>
+          <select [(ngModel)]="brandFilter" (change)="filterProducts()" class="filter-select">
+            <option value="">All Brands</option>
+            <option value="Dulux">Dulux</option>
+            <option value="Jotun">Jotun</option>
+            <option value="Kova">Kova</option>
+            <option value="Nippon">Nippon</option>
+          </select>
+          <select [(ngModel)]="statusFilter" (change)="filterProducts()" class="filter-select">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <button class="btn btn-outline" (click)="clearFilters()">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+
       <!-- Loading State -->
       <div class="loading-state" *ngIf="loading && !error">
         <div class="loading-spinner"></div>
@@ -54,7 +90,7 @@ import { ApiService, Product as ApiProduct, ProductListResponse } from '../../se
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of products">
+            <tr *ngFor="let product of filteredProducts">
               <td class="product-cell">
                 <div class="product-info">
                   <div class="product-image">
@@ -130,6 +166,67 @@ import { ApiService, Product as ApiProduct, ProductListResponse } from '../../se
     .header-actions {
       display: flex;
       gap: 12px;
+    }
+
+    .filters-section {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: var(--ios-system-background);
+      border-radius: var(--ios-radius-2xl);
+      border: 0.5px solid var(--ios-opaque-separator);
+      box-shadow: var(--ios-shadow-sm);
+    }
+
+    .search-box {
+      flex: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 0.5px solid var(--ios-opaque-separator);
+      border-radius: var(--ios-radius-lg);
+      font-size: 15px;
+      font-family: var(--ios-font-family);
+      background-color: var(--ios-system-background);
+      color: var(--ios-label);
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--ios-system-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--ios-placeholder-text);
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 12px 16px;
+      border: 0.5px solid var(--ios-opaque-separator);
+      border-radius: var(--ios-radius-lg);
+      background: var(--ios-system-background);
+      font-size: 15px;
+      font-family: var(--ios-font-family);
+      color: var(--ios-label);
+      min-width: 150px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--ios-system-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
     }
 
     .error-message {
@@ -382,6 +479,21 @@ import { ApiService, Product as ApiProduct, ProductListResponse } from '../../se
         gap: 16px;
       }
 
+      .filters-section {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .filter-controls {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .filter-select {
+        min-width: 120px;
+        flex: 1;
+      }
+
       .products-table {
         font-size: 14px;
       }
@@ -402,6 +514,13 @@ export class ProductsComponent implements OnInit {
   loading = false;
   error: string | null = null;
   products: ApiProduct[] = [];
+  filteredProducts: ApiProduct[] = [];
+  
+  // Filter properties
+  searchTerm = '';
+  categoryFilter = '';
+  brandFilter = '';
+  statusFilter = '';
 
   constructor(private apiService: ApiService) {}
 
@@ -416,6 +535,7 @@ export class ProductsComponent implements OnInit {
     this.apiService.getProducts({ limit: 50, page: 1 }).subscribe({
       next: (response: ProductListResponse) => {
         this.products = response.products;
+        this.filteredProducts = [...this.products];
         this.loading = false;
       },
       error: (error) => {
@@ -424,6 +544,35 @@ export class ProductsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  filterProducts(): void {
+    this.filteredProducts = this.products.filter(product => {
+      const matchesSearch = !this.searchTerm || 
+        product.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        product.sku.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        product.brand.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        product.color.toLowerCase().includes(this.searchTerm.toLowerCase());
+      
+      const matchesCategory = !this.categoryFilter || 
+        (product.category && product.category.name === this.categoryFilter);
+      
+      const matchesBrand = !this.brandFilter || product.brand === this.brandFilter;
+      
+      const matchesStatus = !this.statusFilter || 
+        (this.statusFilter === 'active' && product.isActive) ||
+        (this.statusFilter === 'inactive' && !product.isActive);
+      
+      return matchesSearch && matchesCategory && matchesBrand && matchesStatus;
+    });
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.categoryFilter = '';
+    this.brandFilter = '';
+    this.statusFilter = '';
+    this.filteredProducts = [...this.products];
   }
 
 

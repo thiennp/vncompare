@@ -33,6 +33,34 @@ import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/a
         </div>
       </div>
 
+      <!-- Filters and Search -->
+      <div class="filters-section" *ngIf="!loading || users.length > 0">
+        <div class="search-box">
+          <input 
+            type="text" 
+            placeholder="Search users..." 
+            [(ngModel)]="searchTerm"
+            (input)="filterUsers()"
+            class="search-input">
+        </div>
+        <div class="filter-controls">
+          <select [(ngModel)]="roleFilter" (change)="filterUsers()" class="filter-select">
+            <option value="">All Roles</option>
+            <option value="ADMIN">Admin</option>
+            <option value="USER">User</option>
+            <option value="SUPPLIER">Supplier</option>
+          </select>
+          <select [(ngModel)]="statusFilter" (change)="filterUsers()" class="filter-select">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <button class="btn btn-outline" (click)="clearFilters()">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+
       <!-- Loading State -->
       <div class="loading-state" *ngIf="loading && !error">
         <div class="loading-spinner"></div>
@@ -54,7 +82,7 @@ import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/a
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of users">
+            <tr *ngFor="let user of filteredUsers">
               <td class="user-cell">
                 <div class="user-info">
                   <div class="user-avatar">
@@ -127,6 +155,67 @@ import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/a
     .header-actions {
       display: flex;
       gap: 12px;
+    }
+
+    .filters-section {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: var(--ios-system-background);
+      border-radius: var(--ios-radius-2xl);
+      border: 0.5px solid var(--ios-opaque-separator);
+      box-shadow: var(--ios-shadow-sm);
+    }
+
+    .search-box {
+      flex: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 0.5px solid var(--ios-opaque-separator);
+      border-radius: var(--ios-radius-lg);
+      font-size: 15px;
+      font-family: var(--ios-font-family);
+      background-color: var(--ios-system-background);
+      color: var(--ios-label);
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--ios-system-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--ios-placeholder-text);
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 12px 16px;
+      border: 0.5px solid var(--ios-opaque-separator);
+      border-radius: var(--ios-radius-lg);
+      background: var(--ios-system-background);
+      font-size: 15px;
+      font-family: var(--ios-font-family);
+      color: var(--ios-label);
+      min-width: 150px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--ios-system-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
     }
 
     .error-message {
@@ -378,6 +467,21 @@ import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/a
         gap: 16px;
       }
 
+      .filters-section {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .filter-controls {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .filter-select {
+        min-width: 120px;
+        flex: 1;
+      }
+
       .users-table {
         font-size: 14px;
       }
@@ -398,6 +502,12 @@ export class UsersComponent implements OnInit {
   loading = false;
   error: string | null = null;
   users: ApiUser[] = [];
+  filteredUsers: ApiUser[] = [];
+  
+  // Filter properties
+  searchTerm = '';
+  roleFilter = '';
+  statusFilter = '';
 
   constructor(private apiService: ApiService) {}
 
@@ -412,6 +522,7 @@ export class UsersComponent implements OnInit {
     this.apiService.getUsers({ limit: 50, page: 1 }).subscribe({
       next: (response: PaginatedResponse<ApiUser>) => {
         this.users = response.data;
+        this.filteredUsers = [...this.users];
         this.loading = false;
       },
       error: (error) => {
@@ -475,6 +586,32 @@ export class UsersComponent implements OnInit {
         totalSpent: 0
       }
     ];
+    this.filteredUsers = [...this.users];
+  }
+
+  filterUsers(): void {
+    this.filteredUsers = this.users.filter(user => {
+      const matchesSearch = !this.searchTerm || 
+        user.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        user.phone.includes(this.searchTerm);
+      
+      const matchesRole = !this.roleFilter || user.role === this.roleFilter;
+      
+      const matchesStatus = !this.statusFilter || 
+        (this.statusFilter === 'active' && user.isActive) ||
+        (this.statusFilter === 'inactive' && !user.isActive);
+      
+      return matchesSearch && matchesRole && matchesStatus;
+    });
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.roleFilter = '';
+    this.statusFilter = '';
+    this.filteredUsers = [...this.users];
   }
 
   addUser(): void {

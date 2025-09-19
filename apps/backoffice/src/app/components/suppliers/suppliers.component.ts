@@ -74,6 +74,9 @@ interface SupplierDocument {
             <option value="3">3+ Stars</option>
             <option value="2">2+ Stars</option>
           </select>
+          <button class="btn btn-outline" (click)="clearFilters()">
+            Clear Filters
+          </button>
         </div>
       </div>
 
@@ -223,9 +226,10 @@ interface SupplierDocument {
       gap: 16px;
       margin-bottom: 24px;
       padding: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      background: var(--ios-system-background);
+      border-radius: var(--ios-radius-2xl);
+      border: 0.5px solid var(--ios-opaque-separator);
+      box-shadow: var(--ios-shadow-sm);
     }
 
     .search-box {
@@ -235,23 +239,47 @@ interface SupplierDocument {
     .search-input {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
+      border: 0.5px solid var(--ios-opaque-separator);
+      border-radius: var(--ios-radius-lg);
+      font-size: 15px;
+      font-family: var(--ios-font-family);
+      background-color: var(--ios-system-background);
+      color: var(--ios-label);
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--ios-system-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--ios-placeholder-text);
     }
 
     .filter-controls {
       display: flex;
       gap: 12px;
+      align-items: center;
     }
 
     .filter-select {
       padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: white;
-      font-size: 14px;
+      border: 0.5px solid var(--ios-opaque-separator);
+      border-radius: var(--ios-radius-lg);
+      background: var(--ios-system-background);
+      font-size: 15px;
+      font-family: var(--ios-font-family);
+      color: var(--ios-label);
       min-width: 150px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--ios-system-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
     }
 
     .suppliers-table-container {
@@ -622,13 +650,21 @@ export class SuppliersComponent implements OnInit {
 
   filterSuppliers(): void {
     this.filteredSuppliers = this.suppliers.filter(supplier => {
-      const matchesSearch = supplier.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           supplier.email.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesSearch = !this.searchTerm || 
+        supplier.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        supplier.email.toLowerCase().includes(this.searchTerm.toLowerCase());
       const matchesStatus = !this.statusFilter || supplier.status === this.statusFilter;
       const matchesRating = !this.ratingFilter || supplier.rating >= parseFloat(this.ratingFilter);
       
       return matchesSearch && matchesStatus && matchesRating;
     });
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = '';
+    this.ratingFilter = '';
+    this.filteredSuppliers = [...this.suppliers];
   }
 
   getStars(rating: number): string {
