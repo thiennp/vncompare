@@ -5,8 +5,8 @@ services:
     plan: free
     buildCommand: |
       cd apps/api
-      composer install --no-dev --optimize-autoloader
-      php bin/console cache:clear --env=prod --no-debug
+      chmod +x deploy-render.sh
+      ./deploy-render.sh
     startCommand: |
       cd apps/api
       php -S 0.0.0.0:$PORT -t public
