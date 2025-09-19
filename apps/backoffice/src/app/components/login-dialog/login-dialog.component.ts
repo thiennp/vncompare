@@ -28,6 +28,23 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
       <h2 mat-dialog-title>Login to VNCompare Backoffice</h2>
       
       <mat-dialog-content>
+        <!-- OAuth Login Section -->
+        <div class="oauth-section">
+          <button mat-raised-button 
+                  color="primary" 
+                  class="oauth-button"
+                  (click)="onOAuthLogin()"
+                  [disabled]="isLoading">
+            <mat-icon>account_circle</mat-icon>
+            Login with OAuth
+          </button>
+        </div>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <!-- Traditional Login Form -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
@@ -82,12 +99,12 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
           Cancel
         </button>
         <button mat-raised-button 
-                color="primary" 
+                color="accent" 
                 type="submit"
                 (click)="onSubmit()"
                 [disabled]="loginForm.invalid || isLoading">
           <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="!isLoading">Login with Email</span>
         </button>
       </mat-dialog-actions>
     </div>
@@ -137,6 +154,40 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
       color: #333;
       font-weight: 500;
     }
+
+    .oauth-section {
+      margin-bottom: 16px;
+    }
+
+    .oauth-button {
+      width: 100%;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 16px 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: #e0e0e0;
+    }
+
+    .divider span {
+      background-color: white;
+      padding: 0 16px;
+      color: #666;
+      font-size: 14px;
+    }
   `]
 })
 export class LoginDialogComponent {
@@ -183,5 +234,18 @@ export class LoginDialogComponent {
 
   onCancel(): void {
     this.dialogRef.close({ success: false });
+  }
+
+  onOAuthLogin(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    try {
+      this.authService.initiateOAuthLogin();
+    } catch (error) {
+      this.isLoading = false;
+      this.errorMessage = 'OAuth login failed. Please try again.';
+      console.error('OAuth login error:', error);
+    }
   }
 }

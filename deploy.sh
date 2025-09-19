@@ -97,7 +97,7 @@ check_env() {
 
 # Deploy to Vercel
 deploy_vercel() {
-    print_status "Deploying to Vercel..."
+    print_status "Deploying web app to Vercel..."
     
     if ! command -v vercel &> /dev/null; then
         print_status "Installing Vercel CLI..."
@@ -108,7 +108,23 @@ deploy_vercel() {
     vercel --prod
     cd ../..
     
-    print_success "Deployment completed"
+    print_success "Web app deployment completed"
+}
+
+# Deploy backoffice to Netlify
+deploy_backoffice() {
+    print_status "Deploying backoffice to Netlify..."
+    
+    if ! command -v netlify &> /dev/null; then
+        print_status "Installing Netlify CLI..."
+        npm install -g netlify-cli
+    fi
+    
+    cd apps/backoffice
+    ./deploy.sh
+    cd ../..
+    
+    print_success "Backoffice deployment completed"
 }
 
 # Setup database
@@ -141,10 +157,12 @@ main() {
     build_project
     setup_database
     deploy_vercel
+    deploy_backoffice
     
     print_success "🎉 Deployment completed successfully!"
-    print_status "Your site should be available at: https://vncompare.com"
-    print_status "Check Vercel dashboard for deployment status"
+    print_status "Your web app is available at: https://vncompare.com"
+    print_status "Your backoffice is available at: https://admin.vncompare.com"
+    print_status "Check Vercel and Netlify dashboards for deployment status"
 }
 
 # Development setup function
@@ -177,6 +195,10 @@ case "${1:-deploy}" in
         install_dependencies
         build_project
         ;;
+    "backoffice")
+        check_dependencies
+        deploy_backoffice
+        ;;
     "test")
         check_dependencies
         install_dependencies
@@ -187,11 +209,12 @@ case "${1:-deploy}" in
         echo "Usage: $0 [command]"
         echo ""
         echo "Commands:"
-        echo "  deploy  - Full production deployment (default)"
-        echo "  dev     - Setup development environment"
-        echo "  build   - Build the project only"
-        echo "  test    - Run type checking and linting"
-        echo "  help    - Show this help message"
+        echo "  deploy     - Full production deployment (default)"
+        echo "  dev        - Setup development environment"
+        echo "  build      - Build the project only"
+        echo "  backoffice - Deploy backoffice only to Netlify"
+        echo "  test       - Run type checking and linting"
+        echo "  help       - Show this help message"
         ;;
     *)
         print_error "Unknown command: $1"

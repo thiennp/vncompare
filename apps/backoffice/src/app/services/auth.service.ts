@@ -38,13 +38,28 @@ export interface User {
   lastLoginAt?: string;
 }
 
+export interface OAuthConfig {
+  clientId: string;
+  redirectUri: string;
+  scope: string;
+  responseType: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_BASE_URL = 'https://api-1cfol46e8-thien-nguyens-projects-abdd38ab.vercel.app/api/v1';
+  private readonly API_BASE_URL = 'https://api.vncompare.com/api/v1';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+  
+  // OAuth Configuration
+  private readonly oauthConfig: OAuthConfig = {
+    clientId: 'baBSjc9FRYLO09U5b7nSURc3yfxoPrdYdf_CHU7XLT0',
+    redirectUri: 'http://admin.vncompare.com',
+    scope: 'openid profile email',
+    responseType: 'code'
+  };
 
   constructor(private http: HttpClient) {
     // Check for stored token on service initialization
@@ -92,5 +107,41 @@ export class AuthService {
         this.logout();
       }
     }
+  }
+
+  // OAuth Methods
+  initiateOAuthLogin(): void {
+    const authUrl = `${this.API_BASE_URL}/auth/oauth/authorize?` +
+      `client_id=${this.oauthConfig.clientId}&` +
+      `redirect_uri=${encodeURIComponent(this.oauthConfig.redirectUri)}&` +
+      `scope=${encodeURIComponent(this.oauthConfig.scope)}&` +
+      `response_type=${this.oauthConfig.responseType}&` +
+      `state=${this.generateState()}`;
+    
+    window.location.href = authUrl;
+  }
+
+  handleOAuthCallback(code: string, state: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.API_BASE_URL}/auth/oauth/token`, {
+      code,
+      state,
+      client_id: this.oauthConfig.clientId,
+      redirect_uri: this.oauthConfig.redirectUri
+    }).pipe(
+      tap(response => {
+        localStorage.setItem('auth_token', response.token);
+        localStorage.setItem('user_data', JSON.stringify(response.user));
+        this.currentUserSubject.next(response.user);
+      })
+    );
+  }
+
+  private generateState(): string {
+    return Math.random().toString(36).substring(2, 15) + 
+           Math.random().toString(36).substring(2, 15);
+  }
+
+  getOAuthConfig(): OAuthConfig {
+    return { ...this.oauthConfig };
   }
 }

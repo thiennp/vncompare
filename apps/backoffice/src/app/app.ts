@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
     FormsModule
   ],
   template: `
-    <div class="app-container">
+    <div class="app-container" *ngIf="isAuthenticated(); else loginScreen">
       <!-- Top Navigation -->
       <div class="app-toolbar">
         <div class="toolbar-left">
@@ -26,13 +26,10 @@ import { Subscription } from 'rxjs';
           <span class="app-title">VNCompare Backoffice</span>
         </div>
         <div class="toolbar-right">
-          <div class="user-menu" *ngIf="isAuthenticated(); else loginButton">
+          <div class="user-menu">
             <span class="user-name">{{ currentUser()?.firstName || 'Guest' }}</span>
             <button class="btn btn-outline" (click)="logout()">Logout</button>
           </div>
-          <ng-template #loginButton>
-            <button class="btn btn-primary" (click)="openLoginDialog()">Login</button>
-          </ng-template>
         </div>
       </div>
 
@@ -103,6 +100,24 @@ import { Subscription } from 'rxjs';
         </main>
       </div>
     </div>
+
+    <!-- Login Screen -->
+    <ng-template #loginScreen>
+      <div class="login-screen">
+        <div class="login-container">
+          <div class="login-header">
+            <h1>VNCompare Backoffice</h1>
+            <p>Please login to access the admin panel</p>
+          </div>
+          <div class="login-actions">
+            <button class="btn btn-primary btn-large" (click)="openLoginDialog()">
+              <span class="btn-icon">🔐</span>
+              Login to Backoffice
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   `,
   styles: [`
     .app-container {
@@ -306,6 +321,50 @@ import { Subscription } from 'rxjs';
       margin-right: 8px;
     }
 
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 12px;
+      padding: 48px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .login-header h1 {
+      color: #333;
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+
+    .login-header p {
+      color: #666;
+      font-size: 1rem;
+      margin: 0 0 32px 0;
+    }
+
+    .btn-large {
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      min-width: 200px;
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+
     @media (max-width: 768px) {
       .sidebar {
         position: fixed;
@@ -323,6 +382,15 @@ import { Subscription } from 'rxjs';
 
       .main-content {
         padding: 16px;
+      }
+
+      .login-container {
+        padding: 32px 24px;
+        margin: 0 16px;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
       }
     }
   `]

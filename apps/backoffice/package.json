@@ -4,9 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "npm run build && netlify deploy --prod --dir=dist/backoffice",
+    "deploy:preview": "npm run build && netlify deploy --dir=dist/backoffice"
   },
   "prettier": {
     "printWidth": 100,
@@ -46,6 +49,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "netlify-cli": "^17.0.0",
     "typescript": "~5.9.2"
   }
 }
