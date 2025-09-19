@@ -197,27 +197,11 @@ async function seedProducts() {
   ]
 
   for (const productData of products) {
-    try {
-      // First try to find existing product
-      const existingProduct = await prisma.product.findFirst({
-        where: { name: productData.name }
-      })
-      
-      if (existingProduct) {
-        // Update existing product
-        await prisma.product.update({
-          where: { id: existingProduct.id },
-          data: productData
-        })
-      } else {
-        // Create new product
-        await prisma.product.create({
-          data: productData
-        })
-      }
-    } catch (error) {
-      console.log(`Skipping product ${productData.name}: ${error}`)
-    }
+    await prisma.product.upsert({
+      where: { name: productData.name },
+      update: {},
+      create: productData
+    })
   }
 
   console.log('✅ Products seeded')
@@ -305,27 +289,11 @@ async function seedSuppliers() {
   ]
 
   for (const supplierData of suppliers) {
-    try {
-      // First try to find existing supplier
-      const existingSupplier = await prisma.supplier.findFirst({
-        where: { name: supplierData.name }
-      })
-      
-      if (existingSupplier) {
-        // Update existing supplier
-        await prisma.supplier.update({
-          where: { id: existingSupplier.id },
-          data: supplierData
-        })
-      } else {
-        // Create new supplier
-        await prisma.supplier.create({
-          data: supplierData
-        })
-      }
-    } catch (error) {
-      console.log(`Skipping supplier ${supplierData.name}: ${error}`)
-    }
+    await prisma.supplier.upsert({
+      where: { name: supplierData.name },
+      update: {},
+      create: supplierData
+    })
   }
 
   console.log('✅ Suppliers seeded')
