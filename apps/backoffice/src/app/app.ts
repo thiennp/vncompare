@@ -120,152 +120,237 @@ import { Subscription } from 'rxjs';
     </ng-template>
   `,
   styles: [`
+    :root {
+      --ios-blue: #007AFF;
+      --ios-green: #34C759;
+      --ios-orange: #FF9500;
+      --ios-red: #FF3B30;
+      --ios-purple: #AF52DE;
+      --ios-pink: #FF2D92;
+      --ios-teal: #5AC8FA;
+      --ios-indigo: #5856D6;
+      --ios-gray: #8E8E93;
+      --ios-gray2: #AEAEB2;
+      --ios-gray3: #C7C7CC;
+      --ios-gray4: #D1D1D6;
+      --ios-gray5: #E5E5EA;
+      --ios-gray6: #F2F2F7;
+      --ios-label: #000000;
+      --ios-secondary-label: #3C3C43;
+      --ios-tertiary-label: #3C3C43;
+      --ios-quaternary-label: #2C2C2E;
+      --ios-separator: #3C3C43;
+      --ios-opaque-separator: #C6C6C8;
+      --ios-system-background: #FFFFFF;
+      --ios-secondary-system-background: #F2F2F7;
+      --ios-tertiary-system-background: #FFFFFF;
+      --ios-grouped-background: #F2F2F7;
+      --ios-secondary-grouped-background: #FFFFFF;
+      --ios-tertiary-grouped-background: #F2F2F7;
+      --ios-fill: #787880;
+      --ios-secondary-fill: #787880;
+      --ios-tertiary-fill: #787880;
+      --ios-quaternary-fill: #787880;
+      --ios-placeholder-text: #3C3C43;
+      --ios-system-blue: #007AFF;
+      --ios-system-green: #34C759;
+      --ios-system-indigo: #5856D6;
+      --ios-system-orange: #FF9500;
+      --ios-system-pink: #FF2D92;
+      --ios-system-purple: #AF52DE;
+      --ios-system-red: #FF3B30;
+      --ios-system-teal: #5AC8FA;
+      --ios-system-yellow: #FFCC00;
+      --ios-system-gray: #8E8E93;
+      --ios-system-gray2: #AEAEB2;
+      --ios-system-gray3: #C7C7CC;
+      --ios-system-gray4: #D1D1D6;
+      --ios-system-gray5: #E5E5EA;
+      --ios-system-gray6: #F2F2F7;
+    }
+
+    * {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
     .app-container {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background-color: #f8fafc;
+      background-color: var(--ios-grouped-background);
     }
 
     .app-toolbar {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 0 24px;
-      height: 64px;
+      background: var(--ios-system-background);
+      color: var(--ios-label);
+      padding: 0 20px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-bottom: 0.5px solid var(--ios-separator);
       position: sticky;
       top: 0;
       z-index: 1000;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .toolbar-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .menu-toggle {
       background: none;
       border: none;
-      color: white;
+      color: var(--ios-label);
       cursor: pointer;
       padding: 8px;
-      border-radius: 4px;
-      transition: background-color 0.2s;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .menu-toggle:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: var(--ios-system-gray6);
+    }
+
+    .menu-toggle:active {
+      background-color: var(--ios-system-gray5);
+      transform: scale(0.95);
     }
 
     .hamburger {
       display: block;
-      width: 20px;
+      width: 18px;
       height: 2px;
-      background-color: white;
+      background-color: var(--ios-label);
       position: relative;
+      border-radius: 1px;
     }
 
     .hamburger::before,
     .hamburger::after {
       content: '';
       position: absolute;
-      width: 20px;
+      width: 18px;
       height: 2px;
-      background-color: white;
-      transition: transform 0.2s;
+      background-color: var(--ios-label);
+      transition: transform 0.2s ease;
+      border-radius: 1px;
     }
 
     .hamburger::before {
-      top: -6px;
+      top: -5px;
     }
 
     .hamburger::after {
-      top: 6px;
+      top: 5px;
     }
 
     .app-title {
-      font-size: 1.25rem;
+      font-size: 17px;
       font-weight: 600;
+      color: var(--ios-label);
+      letter-spacing: -0.4px;
     }
 
     .toolbar-right {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .user-menu {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .user-name {
       font-weight: 500;
+      font-size: 15px;
+      color: var(--ios-secondary-label);
     }
 
     .main-layout {
       display: flex;
       flex: 1;
-      min-height: calc(100vh - 64px);
+      min-height: calc(100vh - 60px);
     }
 
     .sidebar {
       width: 280px;
-      background: white;
-      border-right: 1px solid #e2e8f0;
-      transition: width 0.3s ease;
+      background: var(--ios-system-background);
+      border-right: 0.5px solid var(--ios-separator);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       overflow: hidden;
     }
 
     .sidebar.collapsed {
-      width: 64px;
+      width: 60px;
     }
 
     .nav-menu {
       list-style: none;
       padding: 0;
       margin: 0;
+      padding-top: 8px;
     }
 
     .nav-item {
-      border-bottom: 1px solid #f1f5f9;
+      margin: 0 8px 4px 8px;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
-      padding: 16px 24px;
-      color: #64748b;
+      padding: 12px 16px;
+      color: var(--ios-secondary-label);
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       gap: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
     }
 
     .nav-link:hover {
-      background-color: #f8fafc;
-      color: #334155;
+      background-color: var(--ios-system-gray6);
+      color: var(--ios-label);
     }
 
     .nav-item.active .nav-link {
-      background-color: #e0e7ff;
-      color: #3730a3;
-      border-right: 3px solid #3730a3;
+      background-color: var(--ios-system-blue);
+      color: white;
+    }
+
+    .nav-item.active .nav-link:hover {
+      background-color: var(--ios-system-blue);
+      opacity: 0.9;
     }
 
     .nav-icon {
-      font-size: 1.25rem;
-      width: 24px;
+      font-size: 16px;
+      width: 20px;
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .nav-text {
       font-weight: 500;
-      transition: opacity 0.3s;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
     }
 
     .sidebar.collapsed .nav-text {
@@ -276,45 +361,57 @@ import { Subscription } from 'rxjs';
 
     .main-content {
       flex: 1;
-      padding: 24px;
-      background-color: #f8fafc;
+      padding: 20px;
+      background-color: var(--ios-grouped-background);
       overflow-y: auto;
     }
 
     .btn {
-      padding: 8px 16px;
-      border: 1px solid transparent;
-      border-radius: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      min-height: 36px;
+      letter-spacing: -0.2px;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
     }
 
     .btn-outline {
-      background-color: transparent;
-      border-color: rgba(255, 255, 255, 0.3);
-      color: white;
+      background-color: var(--ios-system-gray6);
+      color: var(--ios-label);
+      border: 0.5px solid var(--ios-opaque-separator);
     }
 
     .btn-outline:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.5);
+      background-color: var(--ios-system-gray5);
+    }
+
+    .btn-outline:active {
+      background-color: var(--ios-system-gray4);
     }
 
     .btn-primary {
-      background-color: #3730a3;
+      background-color: var(--ios-system-blue);
       color: white;
-      border-color: #3730a3;
     }
 
     .btn-primary:hover {
-      background-color: #312e81;
-      border-color: #312e81;
+      background-color: #0056CC;
+    }
+
+    .btn-primary:active {
+      background-color: #004BB5;
     }
 
     .btn:not(:last-child) {
@@ -326,54 +423,63 @@ import { Subscription } from 'rxjs';
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--ios-grouped-background);
       padding: 20px;
     }
 
     .login-container {
-      background: white;
-      border-radius: 12px;
-      padding: 48px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      background: var(--ios-system-background);
+      border-radius: 16px;
+      padding: 40px 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       text-align: center;
       max-width: 400px;
       width: 100%;
+      border: 0.5px solid var(--ios-opaque-separator);
     }
 
     .login-header h1 {
-      color: #333;
-      font-size: 2rem;
-      font-weight: 600;
+      color: var(--ios-label);
+      font-size: 28px;
+      font-weight: 700;
       margin: 0 0 8px 0;
+      letter-spacing: -0.6px;
     }
 
     .login-header p {
-      color: #666;
-      font-size: 1rem;
+      color: var(--ios-secondary-label);
+      font-size: 16px;
       margin: 0 0 32px 0;
+      line-height: 1.4;
     }
 
     .btn-large {
       padding: 16px 32px;
-      font-size: 1.1rem;
+      font-size: 17px;
       font-weight: 600;
       min-width: 200px;
+      border-radius: 12px;
     }
 
     .btn-icon {
-      margin-right: 8px;
-      font-size: 1.2rem;
+      font-size: 18px;
     }
 
     @media (max-width: 768px) {
+      .app-toolbar {
+        height: 56px;
+        padding: 0 16px;
+      }
+
       .sidebar {
         position: fixed;
         left: 0;
-        top: 64px;
-        height: calc(100vh - 64px);
+        top: 56px;
+        height: calc(100vh - 56px);
         z-index: 999;
         transform: translateX(-100%);
-        transition: transform 0.3s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 280px;
       }
 
       .sidebar:not(.collapsed) {
@@ -387,10 +493,49 @@ import { Subscription } from 'rxjs';
       .login-container {
         padding: 32px 24px;
         margin: 0 16px;
+        border-radius: 12px;
       }
 
       .login-header h1 {
-        font-size: 1.5rem;
+        font-size: 24px;
+      }
+
+      .nav-item {
+        margin: 0 4px 2px 4px;
+      }
+
+      .nav-link {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .app-toolbar {
+        padding: 0 12px;
+      }
+
+      .app-title {
+        font-size: 16px;
+      }
+
+      .main-content {
+        padding: 12px;
+      }
+
+      .login-container {
+        padding: 24px 20px;
+        margin: 0 12px;
+      }
+
+      .login-header h1 {
+        font-size: 22px;
+      }
+
+      .btn-large {
+        padding: 14px 28px;
+        font-size: 16px;
+        min-width: 180px;
       }
     }
   `]

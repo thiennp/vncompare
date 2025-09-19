@@ -110,16 +110,35 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
     </div>
   `,
   styles: [`
+    :host {
+      --ios-blue: #007AFF;
+      --ios-green: #34C759;
+      --ios-red: #FF3B30;
+      --ios-gray: #8E8E93;
+      --ios-gray2: #AEAEB2;
+      --ios-gray3: #C7C7CC;
+      --ios-gray4: #D1D1D6;
+      --ios-gray5: #E5E5EA;
+      --ios-gray6: #F2F2F7;
+      --ios-label: #000000;
+      --ios-secondary-label: #3C3C43;
+      --ios-separator: #3C3C43;
+      --ios-opaque-separator: #C6C6C8;
+      --ios-system-background: #FFFFFF;
+      --ios-grouped-background: #F2F2F7;
+    }
+
     .login-dialog {
       min-width: 400px;
       max-width: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     .login-form {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      padding: 16px 0;
+      gap: 20px;
+      padding: 20px 0;
     }
 
     .full-width {
@@ -127,22 +146,49 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
     }
 
     .error-message {
-      color: #f44336;
-      font-size: 14px;
+      color: var(--ios-red);
+      font-size: 15px;
       margin-top: 8px;
-      padding: 8px;
-      background-color: #ffebee;
-      border-radius: 4px;
-      border-left: 4px solid #f44336;
+      padding: 12px 16px;
+      background-color: #FFEBEE;
+      border-radius: 10px;
+      border: 0.5px solid #FFCDD2;
+      font-weight: 500;
     }
 
     mat-dialog-actions {
-      padding: 16px 0;
+      padding: 20px 0 0 0;
       margin: 0;
+      gap: 12px;
+      justify-content: flex-end;
     }
 
     mat-dialog-actions button {
-      margin-left: 8px;
+      margin: 0;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      min-height: 36px;
+      padding: 10px 20px;
+      letter-spacing: -0.2px;
+    }
+
+    mat-dialog-actions button[mat-button] {
+      color: var(--ios-blue);
+      background-color: transparent;
+    }
+
+    mat-dialog-actions button[mat-raised-button] {
+      background-color: var(--ios-blue);
+      color: white;
+    }
+
+    mat-dialog-actions button[mat-raised-button]:hover {
+      background-color: #0056CC;
+    }
+
+    mat-dialog-actions button:active {
+      transform: scale(0.96);
     }
 
     mat-spinner {
@@ -150,25 +196,41 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
     }
 
     h2 {
-      margin: 0 0 16px 0;
-      color: #333;
-      font-weight: 500;
+      margin: 0 0 20px 0;
+      color: var(--ios-label);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.4px;
     }
 
     .oauth-section {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .oauth-button {
       width: 100%;
       height: 48px;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 600;
+      border-radius: 12px;
+      background-color: var(--ios-blue);
+      color: white;
+      border: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .oauth-button:hover {
+      background-color: #0056CC;
+    }
+
+    .oauth-button:active {
+      transform: scale(0.96);
+      background-color: #004BB5;
     }
 
     .divider {
       text-align: center;
-      margin: 16px 0;
+      margin: 20px 0;
       position: relative;
     }
 
@@ -178,15 +240,69 @@ import { AuthService, LoginRequest } from '../../services/auth.service';
       top: 50%;
       left: 0;
       right: 0;
-      height: 1px;
-      background-color: #e0e0e0;
+      height: 0.5px;
+      background-color: var(--ios-opaque-separator);
     }
 
     .divider span {
-      background-color: white;
+      background-color: var(--ios-system-background);
       padding: 0 16px;
-      color: #666;
-      font-size: 14px;
+      color: var(--ios-secondary-label);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    ::ng-deep .mat-mdc-form-field {
+      .mat-mdc-text-field-wrapper {
+        border-radius: 10px;
+        background-color: var(--ios-system-background);
+      }
+
+      .mat-mdc-form-field-focus-overlay {
+        background-color: transparent;
+      }
+
+      .mat-mdc-form-field-outline {
+        color: var(--ios-opaque-separator);
+      }
+
+      .mat-mdc-form-field-outline-thick {
+        color: var(--ios-blue);
+      }
+
+      .mat-mdc-input-element {
+        font-size: 15px;
+        color: var(--ios-label);
+        padding: 16px 12px;
+      }
+
+      .mat-mdc-form-field-label {
+        color: var(--ios-secondary-label);
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      .mat-mdc-form-field-label.mdc-floating-label--float-above {
+        color: var(--ios-blue);
+      }
+
+      .mat-mdc-form-field-hint {
+        color: var(--ios-secondary-label);
+        font-size: 13px;
+      }
+
+      .mat-mdc-form-field-error {
+        color: var(--ios-red);
+        font-size: 13px;
+        font-weight: 500;
+      }
+    }
+
+    ::ng-deep .mat-mdc-dialog-container {
+      .mdc-dialog__surface {
+        border-radius: 16px;
+        background-color: var(--ios-system-background);
+      }
     }
   `]
 })
