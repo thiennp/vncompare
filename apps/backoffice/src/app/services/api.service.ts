@@ -239,40 +239,6 @@ export class ApiService {
 
   // Authentication methods
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    // Temporary mock authentication for development
-    if (credentials.email === 'nguyenphongthien@gmail.com' && credentials.password === 'Kimtuoc2') {
-      const mockResponse: LoginResponse = {
-        user: {
-          id: '1',
-          email: 'nguyenphongthien@gmail.com',
-          firstName: 'Phong',
-          lastName: 'Thien',
-          phone: '0901234566',
-          role: 'ADMIN',
-          roles: ['ROLE_ADMIN'],
-          isActive: true,
-          emailVerified: true,
-          createdAt: '2024-01-01T00:00:00Z',
-          lastLoginAt: new Date().toISOString()
-        },
-        token: 'mock-jwt-token-' + Date.now(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-      };
-
-      // Store mock data
-      this.tokenSubject.next(mockResponse.token);
-      localStorage.setItem('vncompare_token', mockResponse.token);
-      localStorage.setItem('vncompare_user', JSON.stringify(mockResponse.user));
-
-      return new Observable(observer => {
-        setTimeout(() => {
-          observer.next(mockResponse);
-          observer.complete();
-        }, 500);
-      });
-    }
-
-    // Try real API call as fallback
     return this.http.post<ApiResponse<LoginResponse>>(`${this.baseUrl}/auth/login`, credentials)
       .pipe(
         map(response => {
@@ -498,110 +464,28 @@ export class ApiService {
     status?: string;
     search?: string;
   }): Observable<PaginatedResponse<User>> {
-    // Temporary mock data for development
-    const mockUsers: User[] = [
-      {
-        id: '1',
-        email: 'nguyenphongthien@gmail.com',
-        firstName: 'Phong',
-        lastName: 'Thien',
-        phone: '0901234566',
-        role: 'ADMIN',
-        roles: ['ROLE_ADMIN'],
-        isActive: true,
-        emailVerified: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        lastLoginAt: new Date().toISOString()
-      },
-      {
-        id: '2',
-        email: 'admin@vncompare.com',
-        firstName: 'Admin',
-        lastName: 'VNCompare',
-        phone: '0901234567',
-        role: 'ADMIN',
-        roles: ['ROLE_ADMIN'],
-        isActive: true,
-        emailVerified: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        lastLoginAt: '2024-01-15T10:30:00Z'
-      },
-      {
-        id: '3',
-        email: 'user@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '0901234568',
-        role: 'USER',
-        roles: ['ROLE_USER'],
-        isActive: true,
-        emailVerified: true,
-        createdAt: '2024-01-02T00:00:00Z',
-        lastLoginAt: '2024-01-14T15:20:00Z'
-      },
-      {
-        id: '4',
-        email: 'supplier@example.com',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        phone: '0901234569',
-        role: 'SUPPLIER',
-        roles: ['ROLE_SUPPLIER'],
-        isActive: true,
-        emailVerified: true,
-        createdAt: '2024-01-03T00:00:00Z',
-        lastLoginAt: '2024-01-13T09:15:00Z'
-      }
-    ];
-
-    let filteredUsers = mockUsers;
-
-    // Apply filters
-    if (params?.search) {
-      const searchLower = params.search.toLowerCase();
-      filteredUsers = filteredUsers.filter(user => 
-        user.email.toLowerCase().includes(searchLower) ||
-        user.firstName.toLowerCase().includes(searchLower) ||
-        user.lastName.toLowerCase().includes(searchLower)
-      );
+    let httpParams = new HttpParams();
+    
+    if (params) {
+      Object.keys(params).forEach(key => {
+        const value = params[key as keyof typeof params];
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
+        }
+      });
     }
 
-    if (params?.role) {
-      filteredUsers = filteredUsers.filter(user => 
-        user.role === params.role || (user.roles && user.roles.includes(params.role!))
-      );
-    }
-
-    if (params?.status) {
-      const isActive = params.status === 'active';
-      filteredUsers = filteredUsers.filter(user => 
-        user.isActive === isActive
-      );
-    }
-
-    // Apply pagination
-    const page = params?.page || 1;
-    const limit = params?.limit || 10;
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-
-    const mockResponse: PaginatedResponse<User> = {
-      data: paginatedUsers,
-      pagination: {
-        page,
-        limit,
-        total: filteredUsers.length,
-        totalPages: Math.ceil(filteredUsers.length / limit)
-      }
-    };
-
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next(mockResponse);
-        observer.complete();
-      }, 300); // Simulate network delay
-    });
+    return this.http.get<ApiResponse<PaginatedResponse<User>>>(`${this.baseUrl}/users`, {
+      headers: this.getHeaders(),
+      params: httpParams
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch users');
+      })
+    );
   }
 
   updateUser(id: string, user: Partial<User>): Observable<User> {
@@ -767,45 +651,16 @@ export class ApiService {
 
   // Analytics methods (Admin only)
   getDashboardAnalytics(): Observable<DashboardMetrics> {
-    // Temporary mock data for development
-    const mockMetrics: DashboardMetrics = {
-      totalRevenue: 125430.50,
-      totalOrders: 3421,
-      activeProducts: 89,
-      serviceAreas: 5,
-      newCustomers: 89,
-      productsSold: 3421,
-      revenueChange: 12.5,
-      ordersChange: 8.3,
-      productsChange: 15.2,
-      areasChange: 0,
-      customersChange: 18.7,
-      // Additional metrics
-      totalUsers: 1247,
-      totalProducts: 89,
-      activeSuppliers: 23,
-      pendingOrders: 45,
-      completedOrders: 3201,
-      cancelledOrders: 175,
-      monthlyRevenue: 45230.75,
-      monthlyOrders: 1234,
-      monthlyUsers: 89,
-      conversionRate: 12.5,
-      averageOrderValue: 36.65,
-      topSellingCategory: 'Electronics',
-      recentActivity: [
-        { type: 'order', message: 'New order #1234 received', timestamp: new Date().toISOString() },
-        { type: 'user', message: 'New user registered', timestamp: new Date(Date.now() - 300000).toISOString() },
-        { type: 'product', message: 'Product "iPhone 15" added', timestamp: new Date(Date.now() - 600000).toISOString() }
-      ]
-    };
-
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next(mockMetrics);
-        observer.complete();
-      }, 400);
-    });
+    return this.http.get<ApiResponse<DashboardMetrics>>(`${this.baseUrl}/analytics/dashboard`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch analytics');
+      })
+    );
   }
 
   getRevenueAnalytics(period: string): Observable<any> {

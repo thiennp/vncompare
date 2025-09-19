@@ -8,6 +8,11 @@ use App\Entity\Supplier;
 use App\Entity\User;
 use App\Entity\Review;
 use App\Entity\Address;
+use App\Entity\Order;
+use App\Entity\OrderItem;
+use App\Entity\OrderTracking;
+use App\Entity\Price;
+use App\Entity\Shipping;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -30,10 +35,22 @@ class AppFixtures extends Fixture
         $suppliers = $this->createSuppliers($manager);
         
         // Create products
-        $this->createProducts($manager, $categories, $suppliers);
+        $products = $this->createProducts($manager, $categories, $suppliers);
         
         // Create sample users
-        $this->createSampleUsers($manager);
+        $users = $this->createSampleUsers($manager);
+        
+        // Create addresses for users
+        $this->createAddresses($manager, $users);
+        
+        // Create orders
+        $this->createOrders($manager, $users, $products);
+        
+        // Create reviews
+        $this->createReviews($manager, $users, $products);
+        
+        // Create prices
+        $this->createPrices($manager, $products);
         
         $manager->flush();
     }
@@ -211,7 +228,7 @@ class AppFixtures extends Fixture
         return $suppliers;
     }
 
-    private function createProducts(ObjectManager $manager, array $categories, array $suppliers): void
+    private function createProducts(ObjectManager $manager, array $categories, array $suppliers): array
     {
         $products = [
             // KOVA Products
@@ -461,6 +478,7 @@ class AppFixtures extends Fixture
             ]
         ];
 
+        $productEntities = [];
         foreach ($products as $productData) {
             $product = new Product();
             $product->setName($productData['name'])
@@ -482,12 +500,15 @@ class AppFixtures extends Fixture
                    ->setTags($productData['tags']);
             
             $manager->persist($product);
+            $productEntities[] = $product;
         }
+        
+        return $productEntities;
     }
 
-    private function createSampleUsers(ObjectManager $manager): void
+    private function createSampleUsers(ObjectManager $manager): array
     {
-        $users = [
+        $usersData = [
             [
                 'email' => 'admin@vncompare.com',
                 'firstName' => 'Admin',
@@ -523,10 +544,60 @@ class AppFixtures extends Fixture
                 'lastName' => 'Văn C',
                 'phone' => '0901234570',
                 'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer4@example.com',
+                'firstName' => 'Phạm',
+                'lastName' => 'Thị D',
+                'phone' => '0901234571',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer5@example.com',
+                'firstName' => 'Hoàng',
+                'lastName' => 'Văn E',
+                'phone' => '0901234572',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer6@example.com',
+                'firstName' => 'Vũ',
+                'lastName' => 'Thị F',
+                'phone' => '0901234573',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer7@example.com',
+                'firstName' => 'Đặng',
+                'lastName' => 'Văn G',
+                'phone' => '0901234574',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer8@example.com',
+                'firstName' => 'Bùi',
+                'lastName' => 'Thị H',
+                'phone' => '0901234575',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer9@example.com',
+                'firstName' => 'Phan',
+                'lastName' => 'Văn I',
+                'phone' => '0901234576',
+                'roles' => ['ROLE_USER']
+            ],
+            [
+                'email' => 'customer10@example.com',
+                'firstName' => 'Võ',
+                'lastName' => 'Thị J',
+                'phone' => '0901234577',
+                'roles' => ['ROLE_USER']
             ]
         ];
 
-        foreach ($users as $userData) {
+        $users = [];
+        foreach ($usersData as $userData) {
             $user = new User();
             $password = $userData['password'] ?? 'password123';
             
@@ -540,6 +611,253 @@ class AppFixtures extends Fixture
                  ->setEmailVerified(true);
             
             $manager->persist($user);
+            $users[] = $user;
+        }
+        
+        return $users;
+    }
+
+    private function createAddresses(ObjectManager $manager, array $users): void
+    {
+        $addresses = [
+            [
+                'user' => 0, // admin@vncompare.com
+                'type' => 'HOME',
+                'street' => '123 Nguyễn Huệ',
+                'ward' => 'Bến Nghé',
+                'district' => 'Quận 1',
+                'city' => 'Hồ Chí Minh',
+                'postalCode' => '700000',
+                'isDefault' => true
+            ],
+            [
+                'user' => 1, // nguyenphongthien@gmail.com
+                'type' => 'HOME',
+                'street' => '456 Lê Lợi',
+                'ward' => 'Phường 1',
+                'district' => 'Quận 3',
+                'city' => 'Hồ Chí Minh',
+                'postalCode' => '700000',
+                'isDefault' => true
+            ],
+            [
+                'user' => 2, // customer1@example.com
+                'type' => 'HOME',
+                'street' => '789 Trần Hưng Đạo',
+                'ward' => 'Phường 2',
+                'district' => 'Quận 5',
+                'city' => 'Hồ Chí Minh',
+                'postalCode' => '700000',
+                'isDefault' => true
+            ],
+            [
+                'user' => 3, // customer2@example.com
+                'type' => 'HOME',
+                'street' => '321 Lý Tự Trọng',
+                'ward' => 'Phường 3',
+                'district' => 'Quận 1',
+                'city' => 'Hồ Chí Minh',
+                'postalCode' => '700000',
+                'isDefault' => true
+            ],
+            [
+                'user' => 4, // customer3@example.com
+                'type' => 'HOME',
+                'street' => '654 Điện Biên Phủ',
+                'ward' => 'Phường 4',
+                'district' => 'Quận Bình Thạnh',
+                'city' => 'Hồ Chí Minh',
+                'postalCode' => '700000',
+                'isDefault' => true
+            ]
+        ];
+
+        foreach ($addresses as $addressData) {
+            $address = new Address();
+            $address->setUser($users[$addressData['user']])
+                   ->setType($addressData['type'])
+                   ->setStreet($addressData['street'])
+                   ->setWard($addressData['ward'])
+                   ->setDistrict($addressData['district'])
+                   ->setCity($addressData['city'])
+                   ->setPostalCode($addressData['postalCode'])
+                   ->setIsDefault($addressData['isDefault']);
+            
+            $manager->persist($address);
+        }
+    }
+
+    private function createOrders(ObjectManager $manager, array $users, array $products): void
+    {
+        $orders = [
+            [
+                'user' => 2, // customer1@example.com
+                'status' => 'COMPLETED',
+                'totalAmount' => 1500000.00,
+                'items' => [
+                    ['product' => 0, 'quantity' => 2, 'price' => 750000.00], // KOVA Premium Interior
+                ]
+            ],
+            [
+                'user' => 3, // customer2@example.com
+                'status' => 'PENDING',
+                'totalAmount' => 2200000.00,
+                'items' => [
+                    ['product' => 1, 'quantity' => 1, 'price' => 850000.00], // KOVA Weathershield
+                    ['product' => 2, 'quantity' => 1, 'price' => 1100000.00], // Jotun Lady Interior
+                ]
+            ],
+            [
+                'user' => 4, // customer3@example.com
+                'status' => 'SHIPPED',
+                'totalAmount' => 1800000.00,
+                'items' => [
+                    ['product' => 3, 'quantity' => 1, 'price' => 1250000.00], // Jotun Weatherguard
+                    ['product' => 4, 'quantity' => 1, 'price' => 550000.00], // Dulux Easycare Interior
+                ]
+            ],
+            [
+                'user' => 5, // customer4@example.com
+                'status' => 'COMPLETED',
+                'totalAmount' => 800000.00,
+                'items' => [
+                    ['product' => 5, 'quantity' => 2, 'price' => 400000.00], // Maxilite Economy Interior
+                ]
+            ],
+            [
+                'user' => 6, // customer5@example.com
+                'status' => 'CANCELLED',
+                'totalAmount' => 1000000.00,
+                'items' => [
+                    ['product' => 6, 'quantity' => 1, 'price' => 1000000.00], // Nippon Odour-less
+                ]
+            ]
+        ];
+
+        foreach ($orders as $orderData) {
+            $order = new Order();
+            $order->setUser($users[$orderData['user']])
+                  ->setStatus($orderData['status'])
+                  ->setTotalAmount($orderData['totalAmount'])
+                  ->setCreatedAt(new \DateTime())
+                  ->setUpdatedAt(new \DateTime());
+            
+            $manager->persist($order);
+
+            // Create order items
+            foreach ($orderData['items'] as $itemData) {
+                $orderItem = new OrderItem();
+                $orderItem->setOrder($order)
+                         ->setProduct($products[$itemData['product']])
+                         ->setQuantity($itemData['quantity'])
+                         ->setPrice($itemData['price']);
+                
+                $manager->persist($orderItem);
+            }
+
+            // Create order tracking
+            $tracking = new OrderTracking();
+            $tracking->setOrder($order)
+                    ->setStatus($orderData['status'])
+                    ->setMessage('Order ' . strtolower($orderData['status']))
+                    ->setCreatedAt(new \DateTime());
+            
+            $manager->persist($tracking);
+        }
+    }
+
+    private function createReviews(ObjectManager $manager, array $users, array $products): void
+    {
+        $reviews = [
+            [
+                'user' => 2, // customer1@example.com
+                'product' => 0, // KOVA Premium Interior
+                'rating' => 5,
+                'title' => 'Sơn rất tốt',
+                'content' => 'Sơn KOVA Premium Interior rất tốt, màu sắc đẹp và bền. Tôi rất hài lòng với sản phẩm này.',
+                'helpful' => 12,
+                'verified' => true
+            ],
+            [
+                'user' => 3, // customer2@example.com
+                'product' => 1, // KOVA Weathershield
+                'rating' => 4,
+                'title' => 'Chất lượng tốt',
+                'content' => 'Sơn chống thấm tốt, phù hợp với khí hậu Việt Nam. Giá cả hợp lý.',
+                'helpful' => 8,
+                'verified' => true
+            ],
+            [
+                'user' => 4, // customer3@example.com
+                'product' => 2, // Jotun Lady Interior
+                'rating' => 5,
+                'title' => 'Không mùi, rất tốt',
+                'content' => 'Sơn Jotun Lady không mùi, thân thiện với môi trường. Rất phù hợp cho gia đình có trẻ nhỏ.',
+                'helpful' => 15,
+                'verified' => true
+            ],
+            [
+                'user' => 5, // customer4@example.com
+                'product' => 3, // Jotun Weatherguard
+                'rating' => 4,
+                'title' => 'Chống thấm tốt',
+                'content' => 'Sơn chống thấm rất hiệu quả, màu sắc bền lâu. Đáng giá tiền.',
+                'helpful' => 6,
+                'verified' => true
+            ],
+            [
+                'user' => 6, // customer5@example.com
+                'product' => 4, // Dulux Easycare Interior
+                'rating' => 3,
+                'title' => 'Tạm được',
+                'content' => 'Sơn Dulux Easycare tạm được, dễ lau chùi nhưng giá hơi cao.',
+                'helpful' => 3,
+                'verified' => false
+            ]
+        ];
+
+        foreach ($reviews as $reviewData) {
+            $review = new Review();
+            $review->setUser($users[$reviewData['user']])
+                  ->setProduct($products[$reviewData['product']])
+                  ->setRating($reviewData['rating'])
+                  ->setTitle($reviewData['title'])
+                  ->setContent($reviewData['content'])
+                  ->setHelpful($reviewData['helpful'])
+                  ->setVerified($reviewData['verified'])
+                  ->setCreatedAt(new \DateTime())
+                  ->setUpdatedAt(new \DateTime());
+            
+            $manager->persist($review);
+        }
+    }
+
+    private function createPrices(ObjectManager $manager, array $products): void
+    {
+        foreach ($products as $index => $product) {
+            // Create base price
+            $basePrice = new Price();
+            $basePrice->setProduct($product)
+                     ->setType('BASE')
+                     ->setAmount($product->getPrice())
+                     ->setCurrency('VND')
+                     ->setIsActive(true)
+                     ->setCreatedAt(new \DateTime());
+            
+            $manager->persist($basePrice);
+
+            // Create discount price if exists
+            if ($product->getDiscountPrice()) {
+                $discountPrice = new Price();
+                $discountPrice->setProduct($product)
+                             ->setType('DISCOUNT')
+                             ->setAmount($product->getDiscountPrice())
+                             ->setCurrency('VND')
+                             ->setIsActive(true)
+                             ->setCreatedAt(new \DateTime());
+                
+                $manager->persist($discountPrice);
+            }
         }
     }
 }
