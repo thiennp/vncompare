@@ -5,14 +5,16 @@ export function middleware(request: NextRequest) {
 
   // Handle admin subdomain
   if (hostname === 'admin.vncompare.com') {
-    // If accessing admin subdomain, serve the backoffice
+    // If accessing admin subdomain root, serve the backoffice index
     if (pathname === '/') {
       return NextResponse.rewrite(new URL('/backoffice/browser/index.html', request.url))
     }
     
-    // Handle all other paths under admin subdomain
+    // Handle all other paths under admin subdomain - rewrite to backoffice assets
     if (pathname.startsWith('/')) {
-      return NextResponse.rewrite(new URL(`/backoffice/browser${pathname}`, request.url))
+      // Remove leading slash and rewrite to backoffice browser directory
+      const assetPath = pathname.startsWith('/') ? pathname.substring(1) : pathname
+      return NextResponse.rewrite(new URL(`/backoffice/browser/${assetPath}`, request.url))
     }
   }
 
