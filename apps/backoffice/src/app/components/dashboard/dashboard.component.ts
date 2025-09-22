@@ -30,7 +30,7 @@ interface RecentOrder {
       <div class="dashboard-header">
         <h1>Dashboard</h1>
         <p>Welcome back! Here's what's happening with your business today.</p>
-        <button class="btn btn-outline" (click)="loadDashboardData()" [disabled]="loading">
+        <button class="btn btn-outline" (click)="refreshData()" [disabled]="loading">
           {{ loading ? 'Loading...' : 'Refresh' }}
         </button>
       </div>
@@ -40,7 +40,7 @@ interface RecentOrder {
         <div class="error-content">
           <span class="error-icon">⚠️</span>
           <span>{{ error }}</span>
-          <button class="btn btn-sm btn-outline" (click)="loadDashboardData()">Retry</button>
+          <button class="btn btn-sm btn-outline" (click)="refreshData()">Retry</button>
         </div>
       </div>
 
@@ -621,14 +621,24 @@ export class DashboardComponent implements OnInit {
   topProducts: ApiProduct[] = [];
   recentOrders: RecentOrder[] = [];
   lowStockProducts: any[] = [];
+  
+  private isDataLoaded = false;
+  private isLoading = false;
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    this.loadDashboardData();
+    if (!this.isDataLoaded && !this.isLoading) {
+      this.loadDashboardData();
+    }
   }
 
   loadDashboardData(): void {
+    if (this.isLoading) {
+      return; // Prevent multiple simultaneous calls
+    }
+    
+    this.isLoading = true;
     this.loading = true;
     this.error = null;
 
@@ -638,12 +648,16 @@ export class DashboardComponent implements OnInit {
         this.dashboardData = data;
         this.updateMetrics(data);
         this.loading = false;
+        this.isLoading = false;
+        this.isDataLoaded = true;
       },
       error: (error) => {
         console.error('Error loading dashboard data:', error);
         // Show mock data when API is not available
         this.loadMockData();
         this.loading = false;
+        this.isLoading = false;
+        this.isDataLoaded = true;
       }
     });
 
@@ -694,6 +708,12 @@ export class DashboardComponent implements OnInit {
         this.loadMockLowStockProducts();
       }
     });
+  }
+
+  refreshData(): void {
+    this.isDataLoaded = false;
+    this.isLoading = false;
+    this.loadDashboardData();
   }
 
   updateMetrics(data: DashboardMetrics): void {

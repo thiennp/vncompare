@@ -1,0 +1,14 @@
+# Ignore everything except the web app
+apps/admin/
+apps/api/
+apps/backoffice/
+packages/
+node_modules/
+.git/
+.gitignore
+*.md
+*.sh
+.env*
+!apps/web/
+!apps/web/.*
+!apps/web/**/*
