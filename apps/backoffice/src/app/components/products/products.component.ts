@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService, Product as ApiProduct, ProductListResponse } from '../../services/api.service';
 
 @Component({
@@ -522,7 +523,10 @@ export class ProductsComponent implements OnInit {
   brandFilter = '';
   statusFilter = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -577,7 +581,7 @@ export class ProductsComponent implements OnInit {
 
 
   addProduct(): void {
-    console.log('Add product clicked');
+    this.router.navigate(['/products/add']);
   }
 
   viewProduct(product: ApiProduct): void {

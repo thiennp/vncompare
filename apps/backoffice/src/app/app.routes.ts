@@ -6,6 +6,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'products', component: ProductsComponent },
+  { path: 'products/add', loadComponent: () => import('./components/products/add-product/add-product.component').then(m => m.AddProductComponent) },
   { path: 'orders', loadComponent: () => import('./components/orders/orders.component').then(m => m.OrdersComponent) },
   { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
   { path: 'suppliers', loadComponent: () => import('./components/suppliers/suppliers.component').then(m => m.SuppliersComponent) },
