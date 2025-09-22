@@ -12,10 +12,10 @@ package = "@netlify/angular-runtime"
 [plugins.inputs]
 
 [build]
-publish = "/Users/thiennguyen/studyvn/apps/backoffice/dist/backoffice/browser"
-publishOrigin = "config"
+publish = "/Users/study/vncompare/apps/backoffice/dist/backoffice/browser"
+publishOrigin = "inline"
 commandOrigin = "config"
-base = "/Users/thiennguyen/studyvn/apps/backoffice"
+base = "/Users/study/vncompare/apps/backoffice"
 command = "npm run build"
 
 [build.environment]
