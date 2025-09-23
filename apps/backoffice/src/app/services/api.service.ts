@@ -960,6 +960,102 @@ export class ApiService {
     );
   }
 
+  // Additional missing methods
+  
+  // Product methods
+  toggleProductStatus(id: string): Observable<Product> {
+    return this.http.patch<ApiResponse<Product>>(`${this.baseUrl}/products/${id}/toggle-status`, {}, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to toggle product status');
+      })
+    );
+  }
+
+  // Supplier methods
+  getSupplier(id: string): Observable<Supplier> {
+    return this.http.get<ApiResponse<Supplier>>(`${this.baseUrl}/suppliers/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch supplier');
+      })
+    );
+  }
+
+  deleteSupplier(id: string): Observable<void> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/suppliers/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to delete supplier');
+      })
+    );
+  }
+
+  // User methods
+  getUser(id: string): Observable<User> {
+    return this.http.get<ApiResponse<User>>(`${this.baseUrl}/users/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch user');
+      })
+    );
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/users/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to delete user');
+      })
+    );
+  }
+
+  // Error handling utility
+  handleError(error: any): string {
+    if (error.error && error.error.message) {
+      return error.error.message;
+    }
+    if (error.message) {
+      return error.message;
+    }
+    if (error.status === 0) {
+      return 'Unable to connect to the server. Please check your internet connection.';
+    }
+    if (error.status === 401) {
+      return 'Authentication required. Please log in again.';
+    }
+    if (error.status === 403) {
+      return 'You do not have permission to perform this action.';
+    }
+    if (error.status === 404) {
+      return 'The requested resource was not found.';
+    }
+    if (error.status >= 500) {
+      return 'Server error. Please try again later.';
+    }
+    return 'An unexpected error occurred. Please try again.';
+  }
+
   // Utility methods
   isAuthenticated(): boolean {
     return this.tokenSubject.value !== null;

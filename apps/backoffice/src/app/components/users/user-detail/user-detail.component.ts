@@ -73,7 +73,7 @@ import { ApiService, User as ApiUser } from '../../../services/api.service';
               </div>
               <div class="status-item">
                 <label>Last Login:</label>
-                <span>{{ formatDate(user.lastLoginAt) }}</span>
+                <span>{{ user.lastLoginAt ? formatDate(user.lastLoginAt) : 'Never' }}</span>
               </div>
               <div class="status-item">
                 <label>Created:</label>

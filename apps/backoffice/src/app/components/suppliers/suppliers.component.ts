@@ -579,7 +579,6 @@ export class SuppliersComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-<<<<<<< HEAD
   suppliers: Supplier[] = [];
   filteredSuppliers: Supplier[] = [];
 
@@ -678,52 +677,20 @@ export class SuppliersComponent implements OnInit {
       documents: []
     }
   ];
-=======
-  loading = false;
-  error: string | null = null;
-  suppliers: any[] = [];
->>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
-
-  filteredSuppliers: Supplier[] = [];
-
-  constructor(private api: ApiService, private router: Router) {}
-
   get totalSuppliers(): number {
     return this.suppliers.length;
   }
 
   get verifiedSuppliers(): number {
-    return this.normalizeList(this.suppliers).filter(supplier => supplier.status === 'verified').length;
+    return this.suppliers.filter(supplier => supplier.status === 'verified').length;
   }
 
   get pendingSuppliers(): number {
-    return this.normalizeList(this.suppliers).filter(supplier => supplier.status === 'pending').length;
+    return this.suppliers.filter(supplier => supplier.status === 'pending').length;
   }
 
   get totalRevenue(): number {
-    return this.normalizeList(this.suppliers).reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
-  }
-
-  ngOnInit(): void {
-    this.loadSuppliers();
-  }
-
-  loadSuppliers(): void {
-    this.loading = true;
-    this.error = null;
-    this.api.getSuppliers({ limit: 50, page: 1 }).subscribe({
-      next: (res: PaginatedResponse<any> | any) => {
-        const list = (res && (res as any).data) ? (res as any).data : ((res && (res as any).suppliers) ? (res as any).suppliers : []);
-        this.suppliers = Array.isArray(list) ? list : [];
-        this.filterSuppliers();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Failed to load suppliers', err);
-        this.error = 'Failed to load suppliers';
-        this.loading = false;
-      }
-    });
+    return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
   }
 
   private normalizeList(list: any[]): Supplier[] {
@@ -813,7 +780,6 @@ export class SuppliersComponent implements OnInit {
   }
 
   suspendSupplier(supplier: Supplier): void {
-<<<<<<< HEAD
     if (confirm(`Are you sure you want to suspend "${supplier.name}"?`)) {
       this.apiService.updateSupplierStatus(supplier.id, 'suspended').subscribe({
         next: (updatedSupplier) => {
@@ -834,51 +800,10 @@ export class SuppliersComponent implements OnInit {
   }
 
   addSupplier(): void {
-    // Navigate to add supplier page
-=======
-    this.api.verifySupplier(supplier.id, false).subscribe({
-      next: () => {
-        supplier.status = 'suspended';
-      },
-      error: (err) => {
-        console.error('Suspend supplier failed', err);
-      }
-    });
-  }
-
-  addSupplier(): void {
->>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
     this.router.navigate(['/suppliers/add']);
   }
 
   exportSuppliers(): void {
-<<<<<<< HEAD
-    // Export suppliers to CSV
-    const csvContent = this.generateCSV();
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'suppliers.csv';
-    link.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  private generateCSV(): string {
-    const headers = ['Name', 'Email', 'Phone', 'Address', 'Status', 'Products Count', 'Total Revenue', 'Rating'];
-    const rows = this.filteredSuppliers.map(supplier => [
-      supplier.name,
-      supplier.email,
-      supplier.phone,
-      `${supplier.address}, ${supplier.city}, ${supplier.province}`,
-      supplier.status,
-      supplier.productsCount,
-      supplier.totalRevenue,
-      supplier.rating
-    ]);
-    
-    return [headers, ...rows].map(row => row.join(',')).join('\n');
-=======
     const headers = ['ID','Name','Email','Phone','Address','City','Province','Status','Products','Revenue','Rating','Joined'];
     const rows = this.filteredSuppliers.map(s => [
       s.id,
@@ -902,6 +827,5 @@ export class SuppliersComponent implements OnInit {
     a.download = 'suppliers.csv';
     a.click();
     URL.revokeObjectURL(url);
->>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
   }
 }
