@@ -8,10 +8,10 @@ redirectsOrigin = "config"
 # Angular runtime plugin removed due to routing conflicts
 
 [build]
-publish = "/Users/thiennguyen/studyvn/dist/backoffice/browser"
+publish = "/Users/thiennguyen/studyvn/apps/backoffice/dist/backoffice/browser"
 publishOrigin = "config"
 commandOrigin = "config"
-base = "/Users/thiennguyen/studyvn"
+base = "/Users/thiennguyen/studyvn/apps/backoffice"
 command = "npm run build"
 
 [build.environment]
