@@ -6,15 +6,7 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# Explicitly disable ALL Angular-related plugins
-[[plugins]]
-  package = "@netlify/angular-runtime"
-  [plugins.inputs]
-    enabled = false
-
-# Force disable Angular detection
-[build.processing]
-  skip_processing = false
+# No plugins - force static site build
 
 # SPA redirects for Angular
 [[redirects]]
