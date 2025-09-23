@@ -6,7 +6,18 @@
 [build.environment]
   NODE_VERSION = "18"
 
-# No plugins - force static site build
+# Force disable all plugins
+[build.processing]
+  skip_processing = true
+
+# Explicitly disable Angular detection
+[build.processing.css]
+  bundle = false
+  minify = false
+
+[build.processing.js]
+  bundle = false
+  minify = false
 
 # SPA redirects for Angular
 [[redirects]]
