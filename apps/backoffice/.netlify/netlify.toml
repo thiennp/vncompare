@@ -1,5 +1,20 @@
-headers = []
-redirects = []
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [functions]
 
@@ -12,13 +27,12 @@ package = "@netlify/angular-runtime"
 [plugins.inputs]
 
 [build]
-publish = "/Users/thiennguyen/studyvn/apps/backoffice/dist/backoffice/browser"
-publishOrigin = "inline"
-commandOrigin = "ui"
-base = "/Users/thiennguyen/studyvn/apps/backoffice"
-command = "turbo run build --filter backoffice"
+base = "apps/backoffice"
+publish = "apps/backoffice/dist/backoffice"
+command = "npm run build --prefix apps/backoffice"
 
 [build.environment]
+NODE_VERSION = "18"
 
 [build.processing]
 
