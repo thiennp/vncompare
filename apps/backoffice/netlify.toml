@@ -1,10 +1,16 @@
 [build]
   base = "."
   publish = "dist/backoffice/browser"
-  command = "npm run build"
+  command = "npm run build --prefix apps/backoffice"
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Explicitly disable Angular runtime plugin
+[[plugins]]
+  package = "@netlify/angular-runtime"
+  [plugins.inputs]
+    enabled = false
 
 # SPA redirects for Angular
 [[redirects]]
