@@ -1,8 +1,10 @@
-# Ignore Angular detection
+# Ignore Angular detection completely
+angular.json
+angular.json.temp
 apps/backoffice/angular.json
 apps/backoffice/angular.json.backup
 
-# Ignore other Angular files that might trigger detection
+# Ignore all Angular files that might trigger detection
 apps/backoffice/src/app/app.module.ts
 apps/backoffice/src/app/app.component.ts
 apps/backoffice/src/app/app.component.html
@@ -10,3 +12,14 @@ apps/backoffice/src/app/app.component.css
 apps/backoffice/src/app/app.component.spec.ts
 apps/backoffice/src/app/app.routes.ts
 apps/backoffice/src/app/app.config.ts
+
+# Ignore Angular CLI files
+apps/backoffice/.angular
+apps/backoffice/angular.json
+apps/backoffice/tsconfig.json
+apps/backoffice/tsconfig.app.json
+apps/backoffice/tsconfig.spec.json
+
+# Force Netlify to treat this as a static site
+apps/backoffice/src/app/app.module.ts
+apps/backoffice/src/app/app.component.ts
