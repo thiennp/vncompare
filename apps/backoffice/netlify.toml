@@ -6,6 +6,7 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Note: _redirects file in build output takes precedence
 [[redirects]]
   from = "/*"
   to = "/index.html"

@@ -5,11 +5,7 @@ redirectsOrigin = "config"
 
 [functions."*"]
 
-[[plugins]]
-origin = "default"
-package = "@netlify/angular-runtime"
-
-[plugins.inputs]
+# Angular runtime plugin removed due to routing conflicts
 
 [build]
 publish = "/Users/thiennguyen/studyvn/dist/backoffice/browser"
