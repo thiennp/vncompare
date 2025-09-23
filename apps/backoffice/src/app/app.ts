@@ -1,6 +1,7 @@
 import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService, User } from './services/auth.service';
@@ -13,7 +14,8 @@ import { Subscription } from 'rxjs';
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
   template: `
     <div class="app-container" *ngIf="isAuthenticated(); else loginScreen">

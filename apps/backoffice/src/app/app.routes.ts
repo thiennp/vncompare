@@ -14,6 +14,7 @@ export const routes: Routes = [
   { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
   { path: 'users/:id', loadComponent: () => import('./components/users/user-detail/user-detail.component').then(m => m.UserDetailComponent) },
   { path: 'suppliers', loadComponent: () => import('./components/suppliers/suppliers.component').then(m => m.SuppliersComponent) },
+  { path: 'suppliers/add', loadComponent: () => import('./components/suppliers/add-supplier/add-supplier.component').then(m => m.AddSupplierComponent) },
   { path: 'suppliers/:id', loadComponent: () => import('./components/suppliers/supplier-detail/supplier-detail.component').then(m => m.SupplierDetailComponent) },
   { path: 'addresses', loadComponent: () => import('./components/addresses/addresses.component').then(m => m.AddressesComponent) },
   { path: 'addresses/:id', loadComponent: () => import('./components/addresses/address-detail/address-detail.component').then(m => m.AddressDetailComponent) },

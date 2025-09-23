@@ -579,6 +579,7 @@ export class SuppliersComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
+<<<<<<< HEAD
   suppliers: Supplier[] = [];
   filteredSuppliers: Supplier[] = [];
 
@@ -677,35 +678,80 @@ export class SuppliersComponent implements OnInit {
       documents: []
     }
   ];
+=======
+  loading = false;
+  error: string | null = null;
+  suppliers: any[] = [];
+>>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
 
   filteredSuppliers: Supplier[] = [];
+
+  constructor(private api: ApiService, private router: Router) {}
 
   get totalSuppliers(): number {
     return this.suppliers.length;
   }
 
   get verifiedSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'verified').length;
+    return this.normalizeList(this.suppliers).filter(supplier => supplier.status === 'verified').length;
   }
 
   get pendingSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'pending').length;
+    return this.normalizeList(this.suppliers).filter(supplier => supplier.status === 'pending').length;
   }
 
   get totalRevenue(): number {
-    return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
+    return this.normalizeList(this.suppliers).reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
   }
 
   ngOnInit(): void {
-    this.filteredSuppliers = [...this.suppliers];
+    this.loadSuppliers();
+  }
+
+  loadSuppliers(): void {
+    this.loading = true;
+    this.error = null;
+    this.api.getSuppliers({ limit: 50, page: 1 }).subscribe({
+      next: (res: PaginatedResponse<any> | any) => {
+        const list = (res && (res as any).data) ? (res as any).data : ((res && (res as any).suppliers) ? (res as any).suppliers : []);
+        this.suppliers = Array.isArray(list) ? list : [];
+        this.filterSuppliers();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load suppliers', err);
+        this.error = 'Failed to load suppliers';
+        this.loading = false;
+      }
+    });
+  }
+
+  private normalizeList(list: any[]): Supplier[] {
+    return list.map((s: any) => ({
+      id: s.id,
+      name: s.name ?? s.companyName ?? '—',
+      email: s.email ?? '',
+      phone: s.phone ?? '',
+      address: s.address ?? '',
+      city: s.city ?? '',
+      province: s.province ?? '',
+      status: s.status ?? (s.isVerified ? 'verified' : 'pending'),
+      productsCount: s.productsCount ?? s.totalProducts ?? 0,
+      totalRevenue: s.totalRevenue ?? 0,
+      rating: s.rating ?? 0,
+      joinedAt: s.joinedAt ?? s.createdAt ?? '',
+      lastActiveAt: s.lastActiveAt ?? '',
+      documents: []
+    }));
   }
 
   filterSuppliers(): void {
-    this.filteredSuppliers = this.suppliers.filter(supplier => {
+    const normalized = this.normalizeList(this.suppliers);
+    this.filteredSuppliers = normalized.filter(supplier => {
       const matchesSearch = !this.searchTerm || 
         supplier.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         supplier.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesStatus = !this.statusFilter || supplier.status === this.statusFilter;
+      const matchesStatus = !this.statusFilter || supplier.status === this.statusFilter as any;
       const matchesRating = !this.ratingFilter || supplier.rating >= parseFloat(this.ratingFilter);
       
       return matchesSearch && matchesStatus && matchesRating;
@@ -716,7 +762,7 @@ export class SuppliersComponent implements OnInit {
     this.searchTerm = '';
     this.statusFilter = '';
     this.ratingFilter = '';
-    this.filteredSuppliers = [...this.suppliers];
+    this.filteredSuppliers = [...this.normalizeList(this.suppliers)];
   }
 
   getStars(rating: number): string {
@@ -740,6 +786,7 @@ export class SuppliersComponent implements OnInit {
   }
 
   verifySupplier(supplier: Supplier): void {
+<<<<<<< HEAD
     this.apiService.updateSupplierStatus(supplier.id, 'verified').subscribe({
       next: (updatedSupplier) => {
         // Update supplier in local array
@@ -753,11 +800,20 @@ export class SuppliersComponent implements OnInit {
       error: (error) => {
         console.error('Error verifying supplier:', error);
         alert('Failed to verify supplier: ' + this.apiService.handleError(error));
+=======
+    this.api.verifySupplier(supplier.id, true).subscribe({
+      next: () => {
+        supplier.status = 'verified';
+      },
+      error: (err) => {
+        console.error('Verify supplier failed', err);
+>>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
       }
     });
   }
 
   suspendSupplier(supplier: Supplier): void {
+<<<<<<< HEAD
     if (confirm(`Are you sure you want to suspend "${supplier.name}"?`)) {
       this.apiService.updateSupplierStatus(supplier.id, 'suspended').subscribe({
         next: (updatedSupplier) => {
@@ -779,10 +835,24 @@ export class SuppliersComponent implements OnInit {
 
   addSupplier(): void {
     // Navigate to add supplier page
+=======
+    this.api.verifySupplier(supplier.id, false).subscribe({
+      next: () => {
+        supplier.status = 'suspended';
+      },
+      error: (err) => {
+        console.error('Suspend supplier failed', err);
+      }
+    });
+  }
+
+  addSupplier(): void {
+>>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
     this.router.navigate(['/suppliers/add']);
   }
 
   exportSuppliers(): void {
+<<<<<<< HEAD
     // Export suppliers to CSV
     const csvContent = this.generateCSV();
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -808,5 +878,30 @@ export class SuppliersComponent implements OnInit {
     ]);
     
     return [headers, ...rows].map(row => row.join(',')).join('\n');
+=======
+    const headers = ['ID','Name','Email','Phone','Address','City','Province','Status','Products','Revenue','Rating','Joined'];
+    const rows = this.filteredSuppliers.map(s => [
+      s.id,
+      s.name,
+      s.email,
+      s.phone,
+      s.address,
+      s.city,
+      s.province,
+      s.status,
+      s.productsCount,
+      s.totalRevenue,
+      s.rating,
+      s.joinedAt
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'suppliers.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+>>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
   }
 }

@@ -32,7 +32,8 @@ echo "✅ Build completed successfully!"
 # Deploy to Netlify
 echo "🌐 Deploying to Netlify..."
 if command -v netlify &> /dev/null; then
-    netlify deploy --prod --dir=dist/backoffice
+    # Deploy the already-built directory without running Netlify Build (avoids angular runtime plugin path issues)
+    netlify deploy --prod --dir=dist/backoffice --build false
     echo "✅ Deployment completed successfully!"
     echo "🌍 Your backoffice is now live at admin.vncompare.com"
 else

@@ -533,7 +533,8 @@ export class ApiService {
       });
     }
 
-    return this.http.get<ApiResponse<PaginatedResponse<Supplier>>>(`${this.baseUrl}/suppliers`, {
+    // Temporarily use test endpoint until database is fully set up
+    return this.http.get<ApiResponse<PaginatedResponse<Supplier>>>(`${this.baseUrl}/test/suppliers`, {
       headers: this.getHeaders(),
       params: httpParams
     }).pipe(
@@ -542,6 +543,35 @@ export class ApiService {
           return response.data;
         }
         throw new Error(response.message || 'Failed to fetch suppliers');
+      })
+    );
+  }
+
+  createSupplier(payload: any): Observable<any> {
+    // Temporarily use test endpoint until database is fully set up
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/test/suppliers`, payload, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to create supplier');
+      })
+    );
+  }
+
+  verifySupplier(id: string, verified: boolean = true): Observable<Supplier> {
+    // Temporarily use test endpoint until database is fully set up
+    return this.http.post<ApiResponse<{ supplier: Supplier }>>(`${this.baseUrl}/test/suppliers/${id}/verify`, { verified }, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          // Some backends wrap supplier; normalize
+          return (response.data as any).supplier ?? (response.data as any);
+        }
+        throw new Error(response.message || 'Failed to verify supplier');
       })
     );
   }

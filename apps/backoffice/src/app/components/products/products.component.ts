@@ -95,7 +95,7 @@ import { ApiService, Product as ApiProduct, ProductListResponse } from '../../se
               <td class="product-cell">
                 <div class="product-info">
                   <div class="product-image">
-                    <img [src]="product.images[0] || '/assets/placeholder-product.png'" [alt]="product.name" onerror="this.src='/assets/placeholder-product.png'">
+                    <img [src]="getProductImage(product)" [alt]="product.name" (error)="onImageError($event)" loading="lazy">
                   </div>
                   <div class="product-details">
                     <div class="product-name">{{ product.name }}</div>
@@ -516,6 +516,8 @@ export class ProductsComponent implements OnInit {
   error: string | null = null;
   products: ApiProduct[] = [];
   filteredProducts: ApiProduct[] = [];
+  // Inline SVG data URL to avoid missing asset loops
+  fallbackImage = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%239ca3af">No Image</text></svg>';
   
   // Filter properties
   searchTerm = '';
@@ -654,6 +656,25 @@ export class ProductsComponent implements OnInit {
 
   addProduct(): void {
     this.router.navigate(['/products/add']);
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement | null;
+    if (!img) { return; }
+    // Prevent infinite loop: if already set to fallback, remove handler
+    if (img.src === this.fallbackImage) {
+      img.onerror = null;
+      return;
+    }
+    img.src = this.fallbackImage;
+  }
+
+  getProductImage(product: ApiProduct): string {
+    const candidate = (product?.images && product.images.length > 0) ? product.images[0] : '';
+    if (!candidate) { return this.fallbackImage; }
+    // Simple allowlist check to avoid obviously invalid requests
+    const isAllowedScheme = candidate.startsWith('http://') || candidate.startsWith('https://') || candidate.startsWith('/assets/') || candidate.startsWith('data:');
+    return isAllowedScheme ? candidate : this.fallbackImage;
   }
 
   viewProduct(product: ApiProduct): void {

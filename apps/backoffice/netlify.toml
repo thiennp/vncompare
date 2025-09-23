@@ -1,7 +1,7 @@
 [build]
-  publish = "dist/backoffice/browser"
-  command = "npm run build"
-  base = "."
+  base = "apps/backoffice"
+  publish = "apps/backoffice/dist/backoffice"
+  command = "npm run build --prefix apps/backoffice"
 
 [build.environment]
   NODE_VERSION = "18"
