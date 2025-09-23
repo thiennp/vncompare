@@ -357,42 +357,36 @@ async function seedOrders() {
   const orders = [
     {
       userId: users[0].id,
-      productId: products[0].id,
-      supplierId: suppliers[0].id,
-      quantity: 2,
-      totalPrice: products[0].basePrice! * 2,
+      totalAmount: products[0].basePrice! * 2,
       shippingAddress: JSON.stringify({
         name: 'Nguyễn Văn A',
         phone: '0901234567',
         address: '123 Đường ABC, Phường 1, Quận 1, TP.HCM'
       }),
-      status: 'completed'
+      status: 'completed',
+      paymentStatus: 'paid'
     },
     {
       userId: users[1].id,
-      productId: products[1].id,
-      supplierId: suppliers[1].id,
-      quantity: 1,
-      totalPrice: products[1].basePrice! * 1,
+      totalAmount: products[1].basePrice! * 1,
       shippingAddress: JSON.stringify({
         name: 'Trần Thị B',
         phone: '0901234568',
         address: '456 Đường DEF, Phường 2, Quận 2, TP.HCM'
       }),
-      status: 'pending'
+      status: 'pending',
+      paymentStatus: 'pending'
     },
     {
       userId: users[2].id,
-      productId: products[2].id,
-      supplierId: suppliers[2].id,
-      quantity: 3,
-      totalPrice: products[2].basePrice! * 3,
+      totalAmount: products[2].basePrice! * 3,
       shippingAddress: JSON.stringify({
         name: 'Lê Văn C',
         phone: '0901234569',
         address: '789 Đường GHI, Phường 3, Quận 3, TP.HCM'
       }),
-      status: 'shipped'
+      status: 'shipped',
+      paymentStatus: 'paid'
     }
   ]
 

@@ -69,14 +69,13 @@ export async function POST(request: NextRequest) {
     // Calculate delivery fee based on distance and weight
     const baseFee = 50000; // Base delivery fee
     const weightFee = Math.ceil(totalWeight / 5) * 10000; // Additional fee per 5kg
-    const distanceFee = serviceArea.distance ? serviceArea.distance * 2000 : 0; // 2000 VND per km
+    const distanceFee = 0; // Simplified for demo - no distance calculation
     
     const deliveryFee = baseFee + weightFee + distanceFee;
 
     // Calculate estimated delivery time
     const baseTime = 1; // Base delivery time in days
-    const distanceTime = serviceArea.distance ? Math.ceil(serviceArea.distance / 50) : 0; // Additional day per 50km
-    const estimatedDeliveryTime = baseTime + distanceTime;
+    const estimatedDeliveryTime = baseTime;
 
     return NextResponse.json({
       success: true,
@@ -84,8 +83,8 @@ export async function POST(request: NextRequest) {
         isServiceable: true,
         address: {
           province: serviceArea.province.name,
-          district: serviceArea.district.name,
-          ward: serviceArea.ward.name
+          district: serviceArea.district?.name || '',
+          ward: serviceArea.ward?.name || ''
         },
         orderDetails: {
           totalWeight: Math.ceil(totalWeight * 100) / 100,
@@ -97,7 +96,7 @@ export async function POST(request: NextRequest) {
         breakdown: {
           baseFee,
           weightFee,
-          distanceFee: distanceFee,
+          distanceFee: 0,
           totalFee: deliveryFee
         }
       }

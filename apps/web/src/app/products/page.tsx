@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter, Star, ShoppingCart, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useCart } from '@/components/CartProvider';
 
 interface Product {
   id: number;
@@ -26,6 +27,7 @@ interface Product {
 }
 
 export default function ProductsPage() {
+  const { addItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,16 +102,15 @@ export default function ProductsPage() {
   };
 
   const getUniqueCategories = () => {
-    return [...new Set(products.map(product => product.category))].filter(Boolean);
+    return Array.from(new Set(products.map(product => product.category))).filter(Boolean);
   };
 
   const getUniqueBrands = () => {
-    return [...new Set(products.map(product => product.brand))].filter(Boolean);
+    return Array.from(new Set(products.map(product => product.brand))).filter(Boolean);
   };
 
   const addToCart = (product: Product) => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product);
+    addItem(product, 1);
   };
 
   if (loading) {

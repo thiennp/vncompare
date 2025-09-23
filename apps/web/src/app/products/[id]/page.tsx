@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Star, ShoppingCart, Heart, Share2, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useCart } from '@/components/CartProvider';
+import ReviewForm from '@/components/ReviewForm';
 
 interface Product {
   id: number;
@@ -42,6 +44,7 @@ interface Review {
 export default function ProductDetailPage() {
   const params = useParams();
   const productId = params.id;
+  const { addItem } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -87,8 +90,9 @@ export default function ProductDetailPage() {
   };
 
   const addToCart = () => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product, 'quantity:', quantity);
+    if (product) {
+      addItem(product, quantity);
+    }
   };
 
   const calculateDiscount = () => {
@@ -289,6 +293,16 @@ export default function ProductDetailPage() {
         {/* Reviews Section */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
+          
+          {/* Review Form */}
+          <div className="mb-8">
+            <ReviewForm 
+              productId={product.id} 
+              onReviewSubmitted={() => {
+                loadReviews();
+              }}
+            />
+          </div>
           
           {reviews.length > 0 ? (
             <div className="space-y-4">
