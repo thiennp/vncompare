@@ -28,7 +28,7 @@ package = "@netlify/angular-runtime"
 
 [build]
 base = "apps/backoffice"
-publish = "apps/backoffice/dist/backoffice"
+publish = "apps/backoffice/dist/backoffice/browser"
 command = "npm run build --prefix apps/backoffice"
 
 [build.environment]
