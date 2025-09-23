@@ -677,40 +677,6 @@ export class SuppliersComponent implements OnInit {
       documents: []
     }
   ];
-  get totalSuppliers(): number {
-    return this.suppliers.length;
-  }
-
-  get verifiedSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'verified').length;
-  }
-
-  get pendingSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'pending').length;
-  }
-
-  get totalRevenue(): number {
-    return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
-  }
-
-  private normalizeList(list: any[]): Supplier[] {
-    return list.map((s: any) => ({
-      id: s.id,
-      name: s.name ?? s.companyName ?? '—',
-      email: s.email ?? '',
-      phone: s.phone ?? '',
-      address: s.address ?? '',
-      city: s.city ?? '',
-      province: s.province ?? '',
-      status: s.status ?? (s.isVerified ? 'verified' : 'pending'),
-      productsCount: s.productsCount ?? s.totalProducts ?? 0,
-      totalRevenue: s.totalRevenue ?? 0,
-      rating: s.rating ?? 0,
-      joinedAt: s.joinedAt ?? s.createdAt ?? '',
-      lastActiveAt: s.lastActiveAt ?? '',
-      documents: []
-    }));
-  }
 
   filterSuppliers(): void {
     const normalized = this.normalizeList(this.suppliers);
@@ -753,7 +719,6 @@ export class SuppliersComponent implements OnInit {
   }
 
   verifySupplier(supplier: Supplier): void {
-<<<<<<< HEAD
     this.apiService.updateSupplierStatus(supplier.id, 'verified').subscribe({
       next: (updatedSupplier) => {
         // Update supplier in local array
@@ -767,14 +732,6 @@ export class SuppliersComponent implements OnInit {
       error: (error) => {
         console.error('Error verifying supplier:', error);
         alert('Failed to verify supplier: ' + this.apiService.handleError(error));
-=======
-    this.api.verifySupplier(supplier.id, true).subscribe({
-      next: () => {
-        supplier.status = 'verified';
-      },
-      error: (err) => {
-        console.error('Verify supplier failed', err);
->>>>>>> f003a0325a027c0d96d09b87694601c9a9ea2994
       }
     });
   }
@@ -827,5 +784,40 @@ export class SuppliersComponent implements OnInit {
     a.download = 'suppliers.csv';
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  private normalizeList(list: any[]): Supplier[] {
+    return list.map((s: any) => ({
+      id: s.id,
+      name: s.name ?? s.companyName ?? '—',
+      email: s.email ?? '',
+      phone: s.phone ?? '',
+      address: s.address ?? '',
+      city: s.city ?? '',
+      province: s.province ?? '',
+      status: s.status ?? 'pending',
+      productsCount: s.productsCount ?? 0,
+      totalRevenue: s.totalRevenue ?? 0,
+      rating: s.rating ?? 0,
+      joinedAt: s.joinedAt ?? new Date().toISOString(),
+      lastActiveAt: s.lastActiveAt ?? new Date().toISOString(),
+      documents: s.documents ?? []
+    }));
+  }
+
+  get totalSuppliers(): number {
+    return this.suppliers.length;
+  }
+
+  get verifiedSuppliers(): number {
+    return this.suppliers.filter(supplier => supplier.status === 'verified').length;
+  }
+
+  get pendingSuppliers(): number {
+    return this.suppliers.filter(supplier => supplier.status === 'pending').length;
+  }
+
+  get totalRevenue(): number {
+    return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
   }
 }
