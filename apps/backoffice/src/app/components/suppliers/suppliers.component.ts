@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService, Supplier as ApiSupplier, PaginatedResponse } from '../../services/api.service';
 
 interface Supplier {
   id: string;
@@ -574,8 +576,58 @@ export class SuppliersComponent implements OnInit {
   searchTerm = '';
   statusFilter = '';
   ratingFilter = '';
+  loading = false;
+  error: string | null = null;
 
-  suppliers: Supplier[] = [
+  suppliers: Supplier[] = [];
+  filteredSuppliers: Supplier[] = [];
+
+  constructor(
+    private apiService: ApiService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loadSuppliers();
+  }
+
+  loadSuppliers(): void {
+    this.loading = true;
+    this.error = null;
+
+    this.apiService.getSuppliers({ limit: 50, page: 1 }).subscribe({
+      next: (response: PaginatedResponse<ApiSupplier>) => {
+        this.suppliers = response.data.map(supplier => ({
+          id: supplier.id,
+          name: supplier.name,
+          email: supplier.email,
+          phone: supplier.phone,
+          address: supplier.address,
+          city: supplier.city,
+          province: supplier.province,
+          status: supplier.status as 'pending' | 'verified' | 'suspended' | 'rejected',
+          productsCount: supplier.productsCount,
+          totalRevenue: supplier.totalRevenue,
+          rating: supplier.rating,
+          joinedAt: supplier.joinedAt,
+          lastActiveAt: supplier.lastActiveAt,
+          documents: []
+        }));
+        this.filteredSuppliers = [...this.suppliers];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading suppliers:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
+        // Fallback to mock data
+        this.loadMockData();
+      }
+    });
+  }
+
+  loadMockData(): void {
+    this.suppliers = [
     {
       id: 'SUP-001',
       name: 'Dulux Vietnam',
@@ -678,28 +730,83 @@ export class SuppliersComponent implements OnInit {
   }
 
   viewSupplier(supplier: Supplier): void {
-    console.log('View supplier:', supplier);
+    // Navigate to supplier detail view
+    this.router.navigate(['/suppliers', supplier.id]);
   }
 
   editSupplier(supplier: Supplier): void {
-    console.log('Edit supplier:', supplier);
+    // Navigate to edit supplier page
+    this.router.navigate(['/suppliers', supplier.id, 'edit']);
   }
 
   verifySupplier(supplier: Supplier): void {
-    supplier.status = 'verified';
-    console.log('Verify supplier:', supplier);
+    this.apiService.updateSupplierStatus(supplier.id, 'verified').subscribe({
+      next: (updatedSupplier) => {
+        // Update supplier in local array
+        const index = this.suppliers.findIndex(s => s.id === supplier.id);
+        if (index !== -1) {
+          this.suppliers[index].status = 'verified';
+          this.filteredSuppliers = [...this.suppliers];
+        }
+        console.log('Supplier verified successfully');
+      },
+      error: (error) => {
+        console.error('Error verifying supplier:', error);
+        alert('Failed to verify supplier: ' + this.apiService.handleError(error));
+      }
+    });
   }
 
   suspendSupplier(supplier: Supplier): void {
-    supplier.status = 'suspended';
-    console.log('Suspend supplier:', supplier);
+    if (confirm(`Are you sure you want to suspend "${supplier.name}"?`)) {
+      this.apiService.updateSupplierStatus(supplier.id, 'suspended').subscribe({
+        next: (updatedSupplier) => {
+          // Update supplier in local array
+          const index = this.suppliers.findIndex(s => s.id === supplier.id);
+          if (index !== -1) {
+            this.suppliers[index].status = 'suspended';
+            this.filteredSuppliers = [...this.suppliers];
+          }
+          console.log('Supplier suspended successfully');
+        },
+        error: (error) => {
+          console.error('Error suspending supplier:', error);
+          alert('Failed to suspend supplier: ' + this.apiService.handleError(error));
+        }
+      });
+    }
   }
 
   addSupplier(): void {
-    console.log('Add supplier clicked');
+    // Navigate to add supplier page
+    this.router.navigate(['/suppliers/add']);
   }
 
   exportSuppliers(): void {
-    console.log('Export suppliers clicked');
+    // Export suppliers to CSV
+    const csvContent = this.generateCSV();
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'suppliers.csv';
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private generateCSV(): string {
+    const headers = ['Name', 'Email', 'Phone', 'Address', 'Status', 'Products Count', 'Total Revenue', 'Rating'];
+    const rows = this.filteredSuppliers.map(supplier => [
+      supplier.name,
+      supplier.email,
+      supplier.phone,
+      `${supplier.address}, ${supplier.city}, ${supplier.province}`,
+      supplier.status,
+      supplier.productsCount,
+      supplier.totalRevenue,
+      supplier.rating
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
   }
 }

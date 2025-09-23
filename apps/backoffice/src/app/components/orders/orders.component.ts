@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService, Order as ApiOrder, PaginatedResponse } from '../../services/api.service';
 
 @Component({
@@ -409,7 +410,10 @@ export class OrdersComponent implements OnInit {
   error: string | null = null;
   orders: ApiOrder[] = [];
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadOrders();
@@ -426,7 +430,7 @@ export class OrdersComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading orders:', error);
-        this.error = 'Failed to load orders';
+        this.error = this.apiService.handleError(error);
         this.loading = false;
         // Fallback to mock data
         this.loadMockData();
@@ -497,14 +501,34 @@ export class OrdersComponent implements OnInit {
   }
 
   createOrder(): void {
-    console.log('Create order clicked');
+    // Navigate to create order page
+    this.router.navigate(['/orders/create']);
   }
 
   viewOrder(order: ApiOrder): void {
-    console.log('View order:', order);
+    // Navigate to order detail view
+    this.router.navigate(['/orders', order.id]);
   }
 
   editOrder(order: ApiOrder): void {
-    console.log('Edit order:', order);
+    // Navigate to edit order page
+    this.router.navigate(['/orders', order.id, 'edit']);
+  }
+
+  updateOrderStatus(order: ApiOrder, newStatus: string): void {
+    this.apiService.updateOrderStatus(order.id, newStatus).subscribe({
+      next: (updatedOrder) => {
+        // Update order in local array
+        const index = this.orders.findIndex(o => o.id === order.id);
+        if (index !== -1) {
+          this.orders[index] = updatedOrder;
+        }
+        console.log('Order status updated successfully');
+      },
+      error: (error) => {
+        console.error('Error updating order status:', error);
+        alert('Failed to update order status: ' + this.apiService.handleError(error));
+      }
+    });
   }
 }

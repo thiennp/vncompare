@@ -85,6 +85,18 @@ import { Subscription } from 'rxjs';
                 <span class="nav-text">Analytics</span>
               </a>
             </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/coverage-calculator')">
+              <a routerLink="/coverage-calculator" class="nav-link">
+                <span class="nav-icon">🎨</span>
+                <span class="nav-text">Coverage Calculator</span>
+              </a>
+            </li>
+            <li class="nav-item" [class.active]="currentRoute().startsWith('/shipping-calculator')">
+              <a routerLink="/shipping-calculator" class="nav-link">
+                <span class="nav-icon">🚚</span>
+                <span class="nav-text">Shipping Calculator</span>
+              </a>
+            </li>
             <li class="nav-item" [class.active]="currentRoute().startsWith('/settings')">
               <a routerLink="/settings" class="nav-link">
                 <span class="nav-icon">⚙️</span>

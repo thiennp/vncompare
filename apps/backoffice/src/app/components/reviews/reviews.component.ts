@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 
 interface Review {
@@ -537,7 +538,10 @@ export class ReviewsComponent implements OnInit {
     return Math.round((totalRating / this.reviews.length) * 10) / 10;
   }
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadReviews();
@@ -547,7 +551,7 @@ export class ReviewsComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.apiService.getReviews().subscribe({
+    this.apiService.getReviews({ limit: 50, page: 1 }).subscribe({
       next: (response) => {
         this.reviews = response.data;
         this.filteredReviews = [...this.reviews];
@@ -555,10 +559,63 @@ export class ReviewsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading reviews:', error);
-        this.error = 'Failed to load reviews';
+        this.error = this.apiService.handleError(error);
         this.loading = false;
+        // Load mock data as fallback
+        this.loadMockData();
       }
     });
+  }
+
+  loadMockData(): void {
+    this.reviews = [
+      {
+        id: 'REV-001',
+        productId: 'PROD-001',
+        productName: 'Dulux Weathershield Exterior Paint',
+        customerName: 'Nguyen Van A',
+        customerEmail: 'nguyenvana@email.com',
+        rating: 5,
+        title: 'Excellent quality paint',
+        comment: 'This paint is amazing! It covers well and looks great. Highly recommended.',
+        status: 'approved',
+        createdAt: '2024-01-10T00:00:00Z',
+        updatedAt: '2024-01-10T00:00:00Z',
+        helpful: 12,
+        verified: true
+      },
+      {
+        id: 'REV-002',
+        productId: 'PROD-002',
+        productName: 'Jotun Lady Interior Paint',
+        customerName: 'Tran Thi B',
+        customerEmail: 'tranthib@email.com',
+        rating: 4,
+        title: 'Good paint, easy to apply',
+        comment: 'The paint goes on smoothly and dries quickly. Color is exactly as expected.',
+        status: 'pending',
+        createdAt: '2024-01-12T00:00:00Z',
+        updatedAt: '2024-01-12T00:00:00Z',
+        helpful: 8,
+        verified: true
+      },
+      {
+        id: 'REV-003',
+        productId: 'PROD-003',
+        productName: 'Kova Premium Primer',
+        customerName: 'Le Van C',
+        customerEmail: 'levanc@email.com',
+        rating: 3,
+        title: 'Average primer',
+        comment: 'It works okay but could be better. Takes longer to dry than expected.',
+        status: 'rejected',
+        createdAt: '2024-01-14T00:00:00Z',
+        updatedAt: '2024-01-14T00:00:00Z',
+        helpful: 2,
+        verified: false
+      }
+    ];
+    this.filteredReviews = [...this.reviews];
   }
 
   filterReviews(): void {
@@ -587,26 +644,81 @@ export class ReviewsComponent implements OnInit {
   }
 
   approveReview(review: Review): void {
-    review.status = 'approved';
-    console.log('Approve review:', review);
+    this.apiService.updateReviewStatus(review.id, 'approved').subscribe({
+      next: (updatedReview) => {
+        // Update review in local array
+        const index = this.reviews.findIndex(r => r.id === review.id);
+        if (index !== -1) {
+          this.reviews[index].status = 'approved';
+          this.filteredReviews = [...this.reviews];
+        }
+        console.log('Review approved successfully');
+      },
+      error: (error) => {
+        console.error('Error approving review:', error);
+        alert('Failed to approve review: ' + this.apiService.handleError(error));
+      }
+    });
   }
 
   rejectReview(review: Review): void {
-    review.status = 'rejected';
-    console.log('Reject review:', review);
+    this.apiService.updateReviewStatus(review.id, 'rejected').subscribe({
+      next: (updatedReview) => {
+        // Update review in local array
+        const index = this.reviews.findIndex(r => r.id === review.id);
+        if (index !== -1) {
+          this.reviews[index].status = 'rejected';
+          this.filteredReviews = [...this.reviews];
+        }
+        console.log('Review rejected successfully');
+      },
+      error: (error) => {
+        console.error('Error rejecting review:', error);
+        alert('Failed to reject review: ' + this.apiService.handleError(error));
+      }
+    });
   }
 
   editReview(review: Review): void {
-    console.log('Edit review:', review);
+    // Navigate to edit review page
+    this.router.navigate(['/reviews', review.id, 'edit']);
   }
 
   deleteReview(review: Review): void {
-    if (confirm('Are you sure you want to delete this review?')) {
+    if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+      // Note: The API service doesn't have a deleteReview method yet
+      // This would need to be added to the API service
       console.log('Delete review:', review);
+      alert('Delete functionality not yet implemented in API');
     }
   }
 
   exportReviews(): void {
-    console.log('Export reviews clicked');
+    // Export reviews to CSV
+    const csvContent = this.generateReviewsCSV();
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'reviews.csv';
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  private generateReviewsCSV(): string {
+    const headers = ['Product', 'Customer', 'Rating', 'Title', 'Comment', 'Status', 'Helpful', 'Verified', 'Date'];
+    const rows = this.filteredReviews.map(review => [
+      review.productName,
+      review.customerName,
+      review.rating,
+      review.title,
+      review.comment,
+      review.status,
+      review.helpful,
+      review.verified ? 'Yes' : 'No',
+      new Date(review.createdAt).toLocaleDateString()
+    ]);
+    
+    return [headers, ...rows].map(row => row.join(',')).join('\n');
   }
 }

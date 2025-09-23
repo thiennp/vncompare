@@ -544,10 +544,82 @@ export class ProductsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading products:', error);
-        this.error = 'Failed to load products';
+        this.error = this.apiService.handleError(error);
         this.loading = false;
+        // Load mock data as fallback
+        this.loadMockData();
       }
     });
+  }
+
+  loadMockData(): void {
+    this.products = [
+      {
+        id: 'PROD-001',
+        name: 'Dulux Weathershield Exterior Paint',
+        description: 'High-quality exterior paint with excellent weather resistance',
+        brand: 'Dulux',
+        category: { id: '1', name: 'Exterior Paint', slug: 'exterior-paint' },
+        supplier: { id: 'SUP-001', companyName: 'Dulux Vietnam', rating: 4.8 },
+        sku: 'DLX-WS-001',
+        color: 'White',
+        finish: 'Matte',
+        coverage: 12,
+        volume: 1,
+        price: 1250000,
+        discountPrice: 1100000,
+        images: ['https://example.com/dulux-weathershield.jpg'],
+        rating: 4.5,
+        totalReviews: 23,
+        isFeatured: true,
+        isActive: true,
+        createdAt: '2024-01-01T00:00:00Z',
+        updatedAt: '2024-01-15T10:30:00Z'
+      },
+      {
+        id: 'PROD-002',
+        name: 'Jotun Lady Interior Paint',
+        description: 'Premium interior paint with easy application and washable finish',
+        brand: 'Jotun',
+        category: { id: '2', name: 'Interior Paint', slug: 'interior-paint' },
+        supplier: { id: 'SUP-002', companyName: 'Jotun Vietnam', rating: 4.5 },
+        sku: 'JTN-LD-001',
+        color: 'Blue',
+        finish: 'Satin',
+        coverage: 15,
+        volume: 1,
+        price: 850000,
+        images: ['https://example.com/jotun-lady.jpg'],
+        rating: 4.2,
+        totalReviews: 15,
+        isFeatured: false,
+        isActive: true,
+        createdAt: '2024-01-05T00:00:00Z',
+        updatedAt: '2024-01-14T14:20:00Z'
+      },
+      {
+        id: 'PROD-003',
+        name: 'Kova Premium Primer',
+        description: 'High-adhesion primer for all surfaces',
+        brand: 'Kova',
+        category: { id: '3', name: 'Primer', slug: 'primer' },
+        supplier: { id: 'SUP-003', companyName: 'Kova Paint', rating: 4.9 },
+        sku: 'KVA-PR-001',
+        color: 'White',
+        finish: 'Matte',
+        coverage: 18,
+        volume: 1,
+        price: 650000,
+        images: ['https://example.com/kova-primer.jpg'],
+        rating: 4.7,
+        totalReviews: 8,
+        isFeatured: false,
+        isActive: true,
+        createdAt: '2024-01-10T00:00:00Z',
+        updatedAt: '2024-01-15T09:15:00Z'
+      }
+    ];
+    this.filteredProducts = [...this.products];
   }
 
   filterProducts(): void {
@@ -585,14 +657,47 @@ export class ProductsComponent implements OnInit {
   }
 
   viewProduct(product: ApiProduct): void {
-    console.log('View product:', product);
+    // Navigate to product detail view
+    this.router.navigate(['/products', product.id]);
   }
 
   editProduct(product: ApiProduct): void {
-    console.log('Edit product:', product);
+    // Navigate to edit product page
+    this.router.navigate(['/products', product.id, 'edit']);
   }
 
   deleteProduct(product: ApiProduct): void {
-    console.log('Delete product:', product);
+    if (confirm(`Are you sure you want to delete "${product.name}"? This action cannot be undone.`)) {
+      this.apiService.deleteProduct(product.id).subscribe({
+        next: () => {
+          // Remove product from local array
+          this.products = this.products.filter(p => p.id !== product.id);
+          this.filteredProducts = this.filteredProducts.filter(p => p.id !== product.id);
+          console.log('Product deleted successfully');
+        },
+        error: (error) => {
+          console.error('Error deleting product:', error);
+          alert('Failed to delete product: ' + this.apiService.handleError(error));
+        }
+      });
+    }
+  }
+
+  toggleProductStatus(product: ApiProduct): void {
+    this.apiService.toggleProductStatus(product.id).subscribe({
+      next: (updatedProduct) => {
+        // Update product in local array
+        const index = this.products.findIndex(p => p.id === product.id);
+        if (index !== -1) {
+          this.products[index] = updatedProduct;
+          this.filteredProducts = [...this.products];
+        }
+        console.log('Product status updated successfully');
+      },
+      error: (error) => {
+        console.error('Error updating product status:', error);
+        alert('Failed to update product status: ' + this.apiService.handleError(error));
+      }
+    });
   }
 }

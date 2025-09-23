@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/api.service';
 
 @Component({
@@ -509,7 +510,10 @@ export class UsersComponent implements OnInit {
   roleFilter = '';
   statusFilter = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -527,7 +531,7 @@ export class UsersComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading users:', error);
-        this.error = 'Failed to load users';
+        this.error = this.apiService.handleError(error);
         this.loading = false;
         // Fallback to mock data
         this.loadMockData();
@@ -615,18 +619,38 @@ export class UsersComponent implements OnInit {
   }
 
   addUser(): void {
-    console.log('Add user clicked');
+    // Navigate to add user page
+    this.router.navigate(['/users/add']);
   }
 
   viewUser(user: ApiUser): void {
-    console.log('View user:', user);
+    // Navigate to user detail view
+    this.router.navigate(['/users', user.id]);
   }
 
   editUser(user: ApiUser): void {
-    console.log('Edit user:', user);
+    // Navigate to edit user page
+    this.router.navigate(['/users', user.id, 'edit']);
   }
 
   toggleUserStatus(user: ApiUser): void {
-    console.log('Toggle user status:', user);
+    const action = user.isActive ? 'deactivate' : 'activate';
+    if (confirm(`Are you sure you want to ${action} this user?`)) {
+      this.apiService.toggleUserStatus(user.id).subscribe({
+        next: (updatedUser) => {
+          // Update user in local array
+          const index = this.users.findIndex(u => u.id === user.id);
+          if (index !== -1) {
+            this.users[index] = updatedUser;
+            this.filteredUsers = [...this.users];
+          }
+          console.log('User status updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating user status:', error);
+          alert('Failed to update user status: ' + this.apiService.handleError(error));
+        }
+      });
+    }
   }
 }
