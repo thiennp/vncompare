@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService, PaginatedResponse } from '../../services/api.service';
 
 interface Supplier {
   id: string;
@@ -575,85 +577,78 @@ export class SuppliersComponent implements OnInit {
   statusFilter = '';
   ratingFilter = '';
 
-  suppliers: Supplier[] = [
-    {
-      id: 'SUP-001',
-      name: 'Dulux Vietnam',
-      email: 'contact@dulux.vn',
-      phone: '+84901234567',
-      address: '123 Nguyen Hue Boulevard',
-      city: 'Ho Chi Minh City',
-      province: 'Ho Chi Minh',
-      status: 'verified',
-      productsCount: 25,
-      totalRevenue: 50000000,
-      rating: 4.8,
-      joinedAt: '2024-01-01T00:00:00Z',
-      lastActiveAt: '2024-01-15T10:30:00Z',
-      documents: []
-    },
-    {
-      id: 'SUP-002',
-      name: 'Jotun Vietnam',
-      email: 'info@jotun.vn',
-      phone: '+84901234568',
-      address: '456 Le Loi Street',
-      city: 'Ho Chi Minh City',
-      province: 'Ho Chi Minh',
-      status: 'pending',
-      productsCount: 18,
-      totalRevenue: 25000000,
-      rating: 4.5,
-      joinedAt: '2024-01-05T00:00:00Z',
-      lastActiveAt: '2024-01-14T14:20:00Z',
-      documents: []
-    },
-    {
-      id: 'SUP-003',
-      name: 'Kova Paint',
-      email: 'sales@kova.vn',
-      phone: '+84901234569',
-      address: '789 Tran Hung Dao',
-      city: 'Hanoi',
-      province: 'Hanoi',
-      status: 'verified',
-      productsCount: 32,
-      totalRevenue: 75000000,
-      rating: 4.9,
-      joinedAt: '2024-01-10T00:00:00Z',
-      lastActiveAt: '2024-01-15T09:15:00Z',
-      documents: []
-    }
-  ];
+  loading = false;
+  error: string | null = null;
+  suppliers: any[] = [];
 
   filteredSuppliers: Supplier[] = [];
+
+  constructor(private api: ApiService, private router: Router) {}
 
   get totalSuppliers(): number {
     return this.suppliers.length;
   }
 
   get verifiedSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'verified').length;
+    return this.normalizeList(this.suppliers).filter(supplier => supplier.status === 'verified').length;
   }
 
   get pendingSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'pending').length;
+    return this.normalizeList(this.suppliers).filter(supplier => supplier.status === 'pending').length;
   }
 
   get totalRevenue(): number {
-    return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
+    return this.normalizeList(this.suppliers).reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
   }
 
   ngOnInit(): void {
-    this.filteredSuppliers = [...this.suppliers];
+    this.loadSuppliers();
+  }
+
+  loadSuppliers(): void {
+    this.loading = true;
+    this.error = null;
+    this.api.getSuppliers({ limit: 50, page: 1 }).subscribe({
+      next: (res: PaginatedResponse<any> | any) => {
+        const list = (res && (res as any).data) ? (res as any).data : ((res && (res as any).suppliers) ? (res as any).suppliers : []);
+        this.suppliers = Array.isArray(list) ? list : [];
+        this.filterSuppliers();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load suppliers', err);
+        this.error = 'Failed to load suppliers';
+        this.loading = false;
+      }
+    });
+  }
+
+  private normalizeList(list: any[]): Supplier[] {
+    return list.map((s: any) => ({
+      id: s.id,
+      name: s.name ?? s.companyName ?? '—',
+      email: s.email ?? '',
+      phone: s.phone ?? '',
+      address: s.address ?? '',
+      city: s.city ?? '',
+      province: s.province ?? '',
+      status: s.status ?? (s.isVerified ? 'verified' : 'pending'),
+      productsCount: s.productsCount ?? s.totalProducts ?? 0,
+      totalRevenue: s.totalRevenue ?? 0,
+      rating: s.rating ?? 0,
+      joinedAt: s.joinedAt ?? s.createdAt ?? '',
+      lastActiveAt: s.lastActiveAt ?? '',
+      documents: []
+    }));
   }
 
   filterSuppliers(): void {
-    this.filteredSuppliers = this.suppliers.filter(supplier => {
+    const normalized = this.normalizeList(this.suppliers);
+    this.filteredSuppliers = normalized.filter(supplier => {
       const matchesSearch = !this.searchTerm || 
         supplier.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         supplier.email.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesStatus = !this.statusFilter || supplier.status === this.statusFilter;
+      const matchesStatus = !this.statusFilter || supplier.status === this.statusFilter as any;
       const matchesRating = !this.ratingFilter || supplier.rating >= parseFloat(this.ratingFilter);
       
       return matchesSearch && matchesStatus && matchesRating;
@@ -664,7 +659,7 @@ export class SuppliersComponent implements OnInit {
     this.searchTerm = '';
     this.statusFilter = '';
     this.ratingFilter = '';
-    this.filteredSuppliers = [...this.suppliers];
+    this.filteredSuppliers = [...this.normalizeList(this.suppliers)];
   }
 
   getStars(rating: number): string {
@@ -686,20 +681,54 @@ export class SuppliersComponent implements OnInit {
   }
 
   verifySupplier(supplier: Supplier): void {
-    supplier.status = 'verified';
-    console.log('Verify supplier:', supplier);
+    this.api.verifySupplier(supplier.id, true).subscribe({
+      next: () => {
+        supplier.status = 'verified';
+      },
+      error: (err) => {
+        console.error('Verify supplier failed', err);
+      }
+    });
   }
 
   suspendSupplier(supplier: Supplier): void {
-    supplier.status = 'suspended';
-    console.log('Suspend supplier:', supplier);
+    this.api.verifySupplier(supplier.id, false).subscribe({
+      next: () => {
+        supplier.status = 'suspended';
+      },
+      error: (err) => {
+        console.error('Suspend supplier failed', err);
+      }
+    });
   }
 
   addSupplier(): void {
-    console.log('Add supplier clicked');
+    this.router.navigate(['/suppliers/add']);
   }
 
   exportSuppliers(): void {
-    console.log('Export suppliers clicked');
+    const headers = ['ID','Name','Email','Phone','Address','City','Province','Status','Products','Revenue','Rating','Joined'];
+    const rows = this.filteredSuppliers.map(s => [
+      s.id,
+      s.name,
+      s.email,
+      s.phone,
+      s.address,
+      s.city,
+      s.province,
+      s.status,
+      s.productsCount,
+      s.totalRevenue,
+      s.rating,
+      s.joinedAt
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'suppliers.csv';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }

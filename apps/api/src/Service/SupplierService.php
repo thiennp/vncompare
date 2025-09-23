@@ -16,9 +16,7 @@ class SupplierService
 
     public function getSuppliers(array $filters): array
     {
-        $queryBuilder = $this->supplierRepository->createQueryBuilder('s')
-            ->where('s.isVerified = :verified')
-            ->setParameter('verified', true);
+        $queryBuilder = $this->supplierRepository->createQueryBuilder('s');
 
         // Apply filters
         if (!empty($filters['province'])) {

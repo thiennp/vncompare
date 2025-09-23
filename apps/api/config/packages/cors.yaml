@@ -1,13 +1,9 @@
-framework:
-    cors:
-        allow_origins: 
-            - 'https://vncompare.com'
-            - 'https://www.vncompare.com'
-            - 'https://admin.vncompare.com'
-            - 'https://vncompare-backoffice.netlify.app'
-            - 'http://localhost:3000'
-            - 'http://localhost:3001'
+nelmio_cors:
+    defaults:
+        allow_origin: ['https://vncompare.com', 'https://www.vncompare.com', 'https://admin.vncompare.com', 'https://vncompare-backoffice.netlify.app', 'http://localhost:3000', 'http://localhost:3001']
         allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
         allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-API-Version']
         allow_credentials: true
         max_age: 3600
+    paths:
+        '^/api/': ~

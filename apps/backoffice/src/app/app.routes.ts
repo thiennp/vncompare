@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'orders', loadComponent: () => import('./components/orders/orders.component').then(m => m.OrdersComponent) },
   { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
   { path: 'suppliers', loadComponent: () => import('./components/suppliers/suppliers.component').then(m => m.SuppliersComponent) },
+  { path: 'suppliers/add', loadComponent: () => import('./components/suppliers/add-supplier/add-supplier.component').then(m => m.AddSupplierComponent) },
   { path: 'addresses', loadComponent: () => import('./components/addresses/addresses.component').then(m => m.AddressesComponent) },
   { path: 'reviews', loadComponent: () => import('./components/reviews/reviews.component').then(m => m.ReviewsComponent) },
   { path: 'analytics', loadComponent: () => import('./components/analytics/analytics.component').then(m => m.AnalyticsComponent) },
