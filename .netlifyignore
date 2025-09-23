@@ -1,0 +1,12 @@
+# Ignore Angular detection
+apps/backoffice/angular.json
+apps/backoffice/angular.json.backup
+
+# Ignore other Angular files that might trigger detection
+apps/backoffice/src/app/app.module.ts
+apps/backoffice/src/app/app.component.ts
+apps/backoffice/src/app/app.component.html
+apps/backoffice/src/app/app.component.css
+apps/backoffice/src/app/app.component.spec.ts
+apps/backoffice/src/app/app.routes.ts
+apps/backoffice/src/app/app.config.ts
