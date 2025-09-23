@@ -102,6 +102,9 @@ model ProductCoverage {
 model Supplier {
   id           Int            @id @default(autoincrement())
   name         String         @unique
+  email        String?        @unique
+  phone        String?
+  address      String?
   businessInfo String?        @map("business_info") // Changed from Json to String for SQLite
   contactInfo  String?        @map("contact_info")  // Changed from Json to String for SQLite
   isVerified   Boolean        @default(false) @map("is_verified")
