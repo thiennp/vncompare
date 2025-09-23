@@ -765,6 +765,201 @@ export class ApiService {
     );
   }
 
+  // Additional API methods for complete functionality
+  
+  // Dashboard methods
+  getDashboardMetrics(): Observable<{
+    totalRevenue: number;
+    totalOrders: number;
+    totalProducts: number;
+    totalUsers: number;
+    totalSuppliers: number;
+    totalReviews: number;
+    revenueGrowth: number;
+    ordersGrowth: number;
+    productsGrowth: number;
+    usersGrowth: number;
+    pendingReviews: number;
+    lowStockProducts: number;
+    pendingSuppliers: number;
+  }> {
+    return this.http.get<ApiResponse<{
+      totalRevenue: number;
+      totalOrders: number;
+      totalProducts: number;
+      totalUsers: number;
+      totalSuppliers: number;
+      totalReviews: number;
+      revenueGrowth: number;
+      ordersGrowth: number;
+      productsGrowth: number;
+      usersGrowth: number;
+      pendingReviews: number;
+      lowStockProducts: number;
+      pendingSuppliers: number;
+    }>>(`${this.baseUrl}/dashboard/metrics`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch dashboard metrics');
+      })
+    );
+  }
+
+  // Supplier document methods
+  getSupplierDocuments(supplierId: string): Observable<Array<{
+    id: string;
+    type: string;
+    fileName: string;
+    fileUrl: string;
+    uploadedAt: string;
+    status: string;
+  }>> {
+    return this.http.get<ApiResponse<Array<{
+      id: string;
+      type: string;
+      fileName: string;
+      fileUrl: string;
+      uploadedAt: string;
+      status: string;
+    }>>>(`${this.baseUrl}/suppliers/${supplierId}/documents`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch supplier documents');
+      })
+    );
+  }
+
+  // Product review methods
+  getProductReviews(productId: string): Observable<Array<{
+    id: string;
+    productId: string;
+    customerName: string;
+    rating: number;
+    title: string;
+    comment: string;
+    status: string;
+    createdAt: string;
+  }>> {
+    return this.http.get<ApiResponse<Array<{
+      id: string;
+      productId: string;
+      customerName: string;
+      rating: number;
+      title: string;
+      comment: string;
+      status: string;
+      createdAt: string;
+    }>>>(`${this.baseUrl}/products/${productId}/reviews`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch product reviews');
+      })
+    );
+  }
+
+  // User order methods
+  getUserOrders(userId: string): Observable<Array<{
+    id: string;
+    customerName: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+  }>> {
+    return this.http.get<ApiResponse<Array<{
+      id: string;
+      customerName: string;
+      totalAmount: number;
+      status: string;
+      createdAt: string;
+    }>>>(`${this.baseUrl}/users/${userId}/orders`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch user orders');
+      })
+    );
+  }
+
+  // Address order methods
+  getAddressOrders(addressId: string): Observable<Array<{
+    id: string;
+    customerName: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+  }>> {
+    return this.http.get<ApiResponse<Array<{
+      id: string;
+      customerName: string;
+      totalAmount: number;
+      status: string;
+      createdAt: string;
+    }>>>(`${this.baseUrl}/addresses/${addressId}/orders`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch address orders');
+      })
+    );
+  }
+
+  // Settings methods
+  getSystemSettings(): Observable<{
+    general: any;
+    business: any;
+    shipping: any;
+    notifications: any;
+    security: any;
+  }> {
+    return this.http.get<ApiResponse<{
+      general: any;
+      business: any;
+      shipping: any;
+      notifications: any;
+      security: any;
+    }>>(`${this.baseUrl}/settings`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch system settings');
+      })
+    );
+  }
+
+  updateSystemSettings(settings: any): Observable<any> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/settings`, settings, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update system settings');
+      })
+    );
+  }
+
   // Utility methods
   isAuthenticated(): boolean {
     return this.tokenSubject.value !== null;

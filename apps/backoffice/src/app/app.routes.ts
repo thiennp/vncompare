@@ -4,7 +4,7 @@ import { ProductsComponent } from './components/products/products.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', loadComponent: () => import('./components/dashboard/dashboard-overview/dashboard-overview.component').then(m => m.DashboardOverviewComponent) },
   { path: 'products', component: ProductsComponent },
   { path: 'products/add', loadComponent: () => import('./components/products/add-product/add-product.component').then(m => m.AddProductComponent) },
   { path: 'products/:id', loadComponent: () => import('./components/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent) },
