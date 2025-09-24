@@ -35,7 +35,7 @@ import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/a
       </div>
 
       <!-- Filters and Search -->
-      <div class="filters-section" *ngIf="!loading || users.length > 0">
+      <div class="filters-section" *ngIf="!loading || (users && users.length > 0)">
         <div class="search-box">
           <input 
             type="text" 
@@ -69,7 +69,7 @@ import { ApiService, User as ApiUser, PaginatedResponse } from '../../services/a
       </div>
 
       <!-- Users Table -->
-      <div class="table-container" *ngIf="!loading || users.length > 0">
+      <div class="table-container" *ngIf="!loading || (users && users.length > 0)">
         <table class="users-table">
           <thead>
             <tr>
@@ -525,21 +525,26 @@ export class UsersComponent implements OnInit {
 
     this.apiService.getUsers({ limit: 50, page: 1 }).subscribe({
       next: (response: PaginatedResponse<ApiUser>) => {
-        this.users = response.data;
+        this.users = response.data || [];
         this.filteredUsers = [...this.users];
         this.loading = false;
       },
       error: (error) => {
         console.error('Error loading users:', error);
         this.error = this.apiService.handleError(error);
+        this.users = [];
+        this.filteredUsers = [];
         this.loading = false;
-        // No fallback data - rely on API only
       }
     });
   }
 
 
   filterUsers(): void {
+    if (!this.users) {
+      this.filteredUsers = [];
+      return;
+    }
     this.filteredUsers = this.users.filter(user => {
       const matchesSearch = !this.searchTerm || 
         user.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
