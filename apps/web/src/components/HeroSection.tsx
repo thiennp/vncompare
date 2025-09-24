@@ -69,22 +69,22 @@ export default function HeroSection() {
           setCategories(data.data)
         } else {
           console.error('Failed to fetch categories:', data.error)
-          // Fallback to hardcoded categories
+          // Fallback to empty categories with 0 counts
           setCategories([
-            { id: 'interior', name: 'Sơn nội thất', productCount: 200, avgPrice: 450000, avgSavings: 15, comparisonCount: 1250, topBrands: ['Dulux', 'Jotun', 'Kova', 'Nippon'], icon: 'home', color: 'blue' },
-            { id: 'exterior', name: 'Sơn ngoại thất', productCount: 150, avgPrice: 380000, avgSavings: 12, comparisonCount: 980, topBrands: ['Dulux', 'Jotun', 'Kova', 'Maxilite'], icon: 'building', color: 'green' },
-            { id: 'specialty', name: 'Sơn chuyên dụng', productCount: 80, avgPrice: 520000, avgSavings: 18, comparisonCount: 450, topBrands: ['Jotun', 'Kova', 'Nippon', 'Maxilite'], icon: 'shield', color: 'purple' },
-            { id: 'industrial', name: 'Sơn công nghiệp', productCount: 90, avgPrice: 680000, avgSavings: 20, comparisonCount: 320, topBrands: ['Jotun', 'Kova', 'Dulux', 'Nippon'], icon: 'building', color: 'orange' }
+            { id: 'interior', name: 'Sơn nội thất', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'home', color: 'blue' },
+            { id: 'exterior', name: 'Sơn ngoại thất', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'building', color: 'green' },
+            { id: 'specialty', name: 'Sơn chuyên dụng', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'shield', color: 'purple' },
+            { id: 'industrial', name: 'Sơn công nghiệp', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'building', color: 'orange' }
           ])
         }
       } catch (error) {
         console.error('Error fetching categories:', error)
-        // Fallback to hardcoded categories
+        // Fallback to empty categories with 0 counts
         setCategories([
-          { id: 'interior', name: 'Sơn nội thất', productCount: 200, avgPrice: 450000, avgSavings: 15, comparisonCount: 1250, topBrands: ['Dulux', 'Jotun', 'Kova', 'Nippon'], icon: 'home', color: 'blue' },
-          { id: 'exterior', name: 'Sơn ngoại thất', productCount: 150, avgPrice: 380000, avgSavings: 12, comparisonCount: 980, topBrands: ['Dulux', 'Jotun', 'Kova', 'Maxilite'], icon: 'building', color: 'green' },
-          { id: 'specialty', name: 'Sơn chuyên dụng', productCount: 80, avgPrice: 520000, avgSavings: 18, comparisonCount: 450, topBrands: ['Jotun', 'Kova', 'Nippon', 'Maxilite'], icon: 'shield', color: 'purple' },
-          { id: 'industrial', name: 'Sơn công nghiệp', productCount: 90, avgPrice: 680000, avgSavings: 20, comparisonCount: 320, topBrands: ['Jotun', 'Kova', 'Dulux', 'Nippon'], icon: 'building', color: 'orange' }
+          { id: 'interior', name: 'Sơn nội thất', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'home', color: 'blue' },
+          { id: 'exterior', name: 'Sơn ngoại thất', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'building', color: 'green' },
+          { id: 'specialty', name: 'Sơn chuyên dụng', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'shield', color: 'purple' },
+          { id: 'industrial', name: 'Sơn công nghiệp', productCount: 0, avgPrice: 0, avgSavings: 0, comparisonCount: 0, topBrands: [], icon: 'building', color: 'orange' }
         ])
       } finally {
         setCategoriesLoading(false)
