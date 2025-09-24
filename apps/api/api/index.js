@@ -26,51 +26,8 @@ const mockDashboardData = {
   customersChange: 22.7
 };
 
-const mockProducts = [
-  {
-    id: '1',
-    name: 'Dulux Weathershield',
-    description: 'Premium exterior paint with weather protection',
-    brand: 'Dulux',
-    category: { id: '1', name: 'Exterior Paint', slug: 'exterior-paint' },
-    supplier: { id: '1', companyName: 'Paint Supply Co', rating: 4.5 },
-    sku: 'DLX-WS-001',
-    color: 'White',
-    finish: 'Matte',
-    coverage: 12,
-    volume: 5,
-    price: 450000,
-    discountPrice: 400000,
-    images: ['https://example.com/paint1.jpg'],
-    rating: 4.3,
-    totalReviews: 127,
-    isFeatured: true,
-    isActive: true,
-    createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z'
-  },
-  {
-    id: '2',
-    name: 'Jotun Lady',
-    description: 'Interior paint with easy application',
-    brand: 'Jotun',
-    category: { id: '2', name: 'Interior Paint', slug: 'interior-paint' },
-    supplier: { id: '2', companyName: 'Color Solutions', rating: 4.2 },
-    sku: 'JTN-LD-002',
-    color: 'Beige',
-    finish: 'Satin',
-    coverage: 14,
-    volume: 3.6,
-    price: 320000,
-    images: ['https://example.com/paint2.jpg'],
-    rating: 4.1,
-    totalReviews: 89,
-    isFeatured: false,
-    isActive: true,
-    createdAt: '2024-01-20T14:30:00Z',
-    updatedAt: '2024-01-20T14:30:00Z'
-  }
-];
+// TODO: Connect to real database instead of mock data
+const mockProducts = [];
 
 const mockOrders = [
   {
@@ -137,17 +94,11 @@ app.get('/api/v1/products', (req, res) => {
         totalPages: Math.ceil(mockProducts.length / limit)
       },
       filters: {
-        categories: [
-          { id: '1', name: 'Exterior Paint', count: 1 },
-          { id: '2', name: 'Interior Paint', count: 1 }
-        ],
-        brands: [
-          { id: '1', name: 'Dulux', count: 1 },
-          { id: '2', name: 'Jotun', count: 1 }
-        ],
+        categories: [],
+        brands: [],
         priceRange: {
-          min: 320000,
-          max: 450000
+          min: 0,
+          max: 0
         }
       }
     },
