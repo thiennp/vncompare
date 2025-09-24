@@ -157,7 +157,7 @@ export default function HeroSection() {
                 <span className="ml-2 text-gray-600">Đang tải danh mục...</span>
               </div>
             ) : (
-              categories.map((category, index) => {
+              categories && Array.isArray(categories) && categories.map((category, index) => {
                 const colors = [
                   'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-300 hover:from-blue-200 hover:to-blue-300',
                   'bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-300 hover:from-green-200 hover:to-green-300',
@@ -223,7 +223,7 @@ export default function HeroSection() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {comparisonData.map((product, index) => (
+                {comparisonData && Array.isArray(comparisonData) && comparisonData.map((product, index) => (
                   <div key={product.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                     {/* Product Header */}
                     <div className="flex items-start justify-between mb-4">

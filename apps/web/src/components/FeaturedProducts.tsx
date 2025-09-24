@@ -215,7 +215,7 @@ export default function FeaturedProducts() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-purple-100">
-                {sortedProducts.map((product) => (
+                {sortedProducts && Array.isArray(sortedProducts) && sortedProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-200">
                     {/* Product Info */}
                     <td className="px-4 py-3">
