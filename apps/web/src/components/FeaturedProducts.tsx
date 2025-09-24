@@ -47,12 +47,56 @@ export default function FeaturedProducts() {
   }
 
 
+  /**
+   * Toggles product selection for comparison
+   * @param productId - The product ID to toggle
+   */
   const toggleProductSelection = (productId: string) => {
     setSelectedProducts(prev => 
       prev.includes(productId) 
         ? prev.filter(id => id !== productId)
         : [...prev, productId]
     )
+  }
+
+  /**
+   * Handles compare selected products button click
+   */
+  const handleCompareSelected = () => {
+    if (selectedProducts.length > 0) {
+      window.location.href = `/compare?products=${selectedProducts.join(',')}`
+    }
+  }
+
+  /**
+   * Handles buy now button click
+   * @param product - The product to buy
+   */
+  const handleBuyNow = (product: Product) => {
+    window.location.href = `/products/${product.id}?action=buy`
+  }
+
+  /**
+   * Handles view details button click
+   * @param product - The product to view details
+   */
+  const handleViewDetails = (product: Product) => {
+    window.location.href = `/products/${product.id}`
+  }
+
+  /**
+   * Handles view all products button click
+   */
+  const handleViewAllProducts = () => {
+    window.location.href = '/products'
+  }
+
+  /**
+   * Handles view more suppliers button click
+   * @param product - The product to view more suppliers for
+   */
+  const handleViewMoreSuppliers = (product: Product) => {
+    window.location.href = `/products/${product.id}?tab=suppliers`
   }
 
   const sortedProducts = [...products].sort((a, b) => {
@@ -132,7 +176,10 @@ export default function FeaturedProducts() {
                 {selectedProducts.length} sản phẩm được chọn
               </span>
               {selectedProducts.length > 0 && (
-                <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center">
+                <button 
+                  onClick={handleCompareSelected}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center"
+                >
                   <GitCompare className="w-4 h-4 mr-1" />
                   So sánh ({selectedProducts.length})
                 </button>
@@ -221,9 +268,12 @@ export default function FeaturedProducts() {
                           <div className="text-xs text-gray-500">{product.currentPrice.toLocaleString('vi-VN')} ₫</div>
                           <div className="text-xs text-green-600">Miễn phí vận chuyển</div>
                         </div>
-                        <div className="text-xs text-blue-600 cursor-pointer">
+                        <button 
+                          onClick={() => handleViewMoreSuppliers(product)}
+                          className="text-xs text-blue-600 cursor-pointer hover:text-blue-700"
+                        >
                           +2 nhà cung cấp khác
-                        </div>
+                        </button>
                       </div>
                     </td>
 
@@ -261,10 +311,16 @@ export default function FeaturedProducts() {
                     {/* Actions */}
                     <td className="px-4 py-3">
                       <div className="flex space-x-2">
-                        <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md">
+                        <button 
+                          onClick={() => handleBuyNow(product)}
+                          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md"
+                        >
                           Mua ngay
                         </button>
-                        <button className="border border-purple-200 text-purple-600 px-3 py-1 rounded-full text-xs hover:bg-purple-50 transition-all duration-200 transform hover:scale-105 bg-gradient-to-r from-white to-purple-50">
+                        <button 
+                          onClick={() => handleViewDetails(product)}
+                          className="border border-purple-200 text-purple-600 px-3 py-1 rounded-full text-xs hover:bg-purple-50 transition-all duration-200 transform hover:scale-105 bg-gradient-to-r from-white to-purple-50"
+                        >
                           Chi tiết
                         </button>
                       </div>
@@ -280,7 +336,10 @@ export default function FeaturedProducts() {
               <div className="text-sm text-gray-500">
                 Hiển thị {sortedProducts.length} trong số 500+ sản phẩm
               </div>
-              <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              <button 
+                onClick={handleViewAllProducts}
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              >
                 Xem tất cả sản phẩm →
               </button>
             </div>

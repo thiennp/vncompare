@@ -33,10 +33,16 @@ export default function HeroSection() {
     fetchProducts()
   }, [])
 
+  /**
+   * Handles search form submission
+   * @param e - Form event
+   */
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement search functionality
-    console.log('Searching for:', searchQuery)
+    if (searchQuery.trim()) {
+      // Navigate to products page with search query
+      window.location.href = `/products?search=${encodeURIComponent(searchQuery.trim())}&category=${selectedCategory}`
+    }
   }
 
   const categories = [

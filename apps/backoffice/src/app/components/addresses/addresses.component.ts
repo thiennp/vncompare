@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface Address {
   id: string;
@@ -663,6 +664,11 @@ export class AddressesComponent implements OnInit {
   provinceFilter = '';
   serviceAreaFilter = '';
 
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {}
+
   addresses: Address[] = [
     {
       id: 'ADDR-001',
@@ -708,20 +714,36 @@ export class AddressesComponent implements OnInit {
     { id: '4', name: 'Hai Chau', code: 'HC', provinceId: '3', wardsCount: 13, serviceAreasCount: 8 }
   ];
 
+  /**
+   * Gets the total number of service areas
+   * @returns The count of service areas
+   */
   get totalServiceAreas(): number {
     return this.addresses.filter(addr => addr.isServiceArea).length;
   }
 
+  /**
+   * Gets the number of covered provinces
+   * @returns The count of unique provinces with service areas
+   */
   get coveredProvinces(): number {
     const uniqueProvinces = new Set(this.addresses.filter(addr => addr.isServiceArea).map(addr => addr.province));
     return uniqueProvinces.size;
   }
 
+  /**
+   * Gets the number of covered districts
+   * @returns The count of unique districts with service areas
+   */
   get coveredDistricts(): number {
     const uniqueDistricts = new Set(this.addresses.filter(addr => addr.isServiceArea).map(addr => addr.district));
     return uniqueDistricts.size;
   }
 
+  /**
+   * Gets the average delivery days for service areas
+   * @returns The average delivery days
+   */
   get averageDeliveryDays(): number {
     const serviceAreas = this.addresses.filter(addr => addr.isServiceArea);
     if (serviceAreas.length === 0) return 0;
@@ -729,14 +751,24 @@ export class AddressesComponent implements OnInit {
     return Math.round(totalDays / serviceAreas.length);
   }
 
+  /**
+   * Angular lifecycle hook - initializes the component
+   */
   ngOnInit(): void {
     this.filteredAddresses = [...this.addresses];
   }
 
+  /**
+   * Sets the active tab
+   * @param tab - The tab name to activate
+   */
   setActiveTab(tab: string): void {
     this.activeTab = tab;
   }
 
+  /**
+   * Filters addresses based on search criteria
+   */
   filterAddresses(): void {
     this.filteredAddresses = this.addresses.filter(address => {
       const matchesSearch = address.street.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -752,47 +784,143 @@ export class AddressesComponent implements OnInit {
     });
   }
 
+  /**
+   * Gets province name by ID
+   * @param provinceId - The province ID
+   * @returns The province name or 'Unknown'
+   */
   getProvinceName(provinceId: string): string {
     const province = this.provinces.find(p => p.id === provinceId);
     return province ? province.name : 'Unknown';
   }
 
+  /**
+   * Navigates to edit address page
+   * @param address - The address to edit
+   */
   editAddress(address: Address): void {
-    console.log('Edit address:', address);
+    this.router.navigate(['/addresses', address.id, 'edit']);
   }
 
+  /**
+   * Toggles service area status for an address
+   * @param address - The address to toggle
+   */
   toggleServiceArea(address: Address): void {
-    address.isServiceArea = !address.isServiceArea;
-    console.log('Toggle service area:', address);
-  }
-
-  deleteAddress(address: Address): void {
-    if (confirm(`Are you sure you want to delete this address?`)) {
-      console.log('Delete address:', address);
+    if (confirm(`Are you sure you want to ${address.isServiceArea ? 'remove from' : 'add to'} service area?`)) {
+      this.apiService.updateAddress(address.id, { isServiceArea: !address.isServiceArea }).subscribe({
+        next: (updatedAddress) => {
+          // Update address in local array
+          const index = this.addresses.findIndex(a => a.id === address.id);
+          if (index !== -1) {
+            this.addresses[index] = updatedAddress;
+            this.filteredAddresses = [...this.addresses];
+          }
+          console.log('Address service area status updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating address:', error);
+          alert('Failed to update address: ' + this.apiService.handleError(error));
+        }
+      });
     }
   }
 
+  /**
+   * Deletes an address
+   * @param address - The address to delete
+   */
+  deleteAddress(address: Address): void {
+    if (confirm(`Are you sure you want to delete this address?`)) {
+      this.apiService.deleteAddress(address.id).subscribe({
+        next: () => {
+          // Remove address from local array
+          this.addresses = this.addresses.filter(a => a.id !== address.id);
+          this.filteredAddresses = this.filteredAddresses.filter(a => a.id !== address.id);
+          console.log('Address deleted successfully');
+        },
+        error: (error) => {
+          console.error('Error deleting address:', error);
+          alert('Failed to delete address: ' + this.apiService.handleError(error));
+        }
+      });
+    }
+  }
+
+  /**
+   * Navigates to add address page
+   */
   addAddress(): void {
-    console.log('Add address clicked');
+    this.router.navigate(['/addresses/add']);
   }
 
+  /**
+   * Exports addresses data to CSV
+   */
   exportAddresses(): void {
-    console.log('Export addresses clicked');
+    const csvContent = this.generateCSV(this.filteredAddresses);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `addresses_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
+  /**
+   * Generates CSV content from addresses array
+   * @param addresses - Array of addresses to export
+   * @returns CSV string
+   */
+  private generateCSV(addresses: Address[]): string {
+    const headers = ['ID', 'Street', 'Ward', 'District', 'Province', 'Postal Code', 'Service Area', 'Delivery Fee', 'Estimated Days'];
+    const rows = addresses.map(addr => [
+      addr.id,
+      addr.street,
+      addr.ward,
+      addr.district,
+      addr.province,
+      addr.postalCode,
+      addr.isServiceArea ? 'Yes' : 'No',
+      addr.deliveryFee,
+      addr.estimatedDays
+    ]);
+    
+    return [headers, ...rows].map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+  }
+
+  /**
+   * Views province details
+   * @param province - The province to view
+   */
   viewProvince(province: Province): void {
-    console.log('View province:', province);
+    this.router.navigate(['/addresses/provinces', province.id]);
   }
 
+  /**
+   * Edits province details
+   * @param province - The province to edit
+   */
   editProvince(province: Province): void {
-    console.log('Edit province:', province);
+    this.router.navigate(['/addresses/provinces', province.id, 'edit']);
   }
 
+  /**
+   * Views district details
+   * @param district - The district to view
+   */
   viewDistrict(district: District): void {
-    console.log('View district:', district);
+    this.router.navigate(['/addresses/districts', district.id]);
   }
 
+  /**
+   * Edits district details
+   * @param district - The district to edit
+   */
   editDistrict(district: District): void {
-    console.log('Edit district:', district);
+    this.router.navigate(['/addresses/districts', district.id, 'edit']);
   }
 }

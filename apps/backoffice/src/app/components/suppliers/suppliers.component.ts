@@ -305,40 +305,131 @@ export class SuppliersComponent implements OnInit {
     private router: Router
   ) {}
 
+  /**
+   * Angular lifecycle hook - initializes the component
+   */
   ngOnInit(): void {
     this.loadSuppliers();
   }
 
+  /**
+   * Loads suppliers data from the API or mock data
+   */
   loadSuppliers(): void {
     // Mock data loaded in constructor
     console.log('Suppliers loaded:', this.suppliers.length);
   }
 
+  /**
+   * Navigates to the add supplier page
+   */
   addSupplier(): void {
     this.router.navigate(['/suppliers/add']);
   }
 
+  /**
+   * Navigates to the supplier detail view
+   * @param supplier - The supplier to view
+   */
   viewSupplier(supplier: Supplier): void {
     this.router.navigate(['/suppliers', supplier.id]);
   }
 
+  /**
+   * Navigates to the edit supplier page
+   * @param supplier - The supplier to edit
+   */
   editSupplier(supplier: Supplier): void {
     this.router.navigate(['/suppliers', supplier.id, 'edit']);
   }
 
+  /**
+   * Verifies a supplier by updating their status
+   * @param supplier - The supplier to verify
+   */
   verifySupplier(supplier: Supplier): void {
-    console.log('Verifying supplier:', supplier.name);
-    // Implementation would go here
+    if (confirm(`Are you sure you want to verify "${supplier.name}"?`)) {
+      this.apiService.verifySupplier(supplier.id, true).subscribe({
+        next: (updatedSupplier) => {
+          // Update supplier in local array
+          const index = this.suppliers.findIndex(s => s.id === supplier.id);
+          if (index !== -1) {
+            this.suppliers[index] = updatedSupplier;
+          }
+          console.log('Supplier verified successfully');
+        },
+        error: (error) => {
+          console.error('Error verifying supplier:', error);
+          alert('Failed to verify supplier: ' + this.apiService.handleError(error));
+        }
+      });
+    }
   }
 
+  /**
+   * Deletes a supplier
+   * @param supplier - The supplier to delete
+   */
+  deleteSupplier(supplier: Supplier): void {
+    if (confirm(`Are you sure you want to delete "${supplier.name}"? This action cannot be undone.`)) {
+      this.apiService.deleteSupplier(supplier.id).subscribe({
+        next: () => {
+          // Remove supplier from local array
+          this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
+          console.log('Supplier deleted successfully');
+        },
+        error: (error) => {
+          console.error('Error deleting supplier:', error);
+          alert('Failed to delete supplier: ' + this.apiService.handleError(error));
+        }
+      });
+    }
+  }
+
+  /**
+   * Toggles supplier status between active and inactive
+   * @param supplier - The supplier to toggle
+   */
+  toggleSupplierStatus(supplier: Supplier): void {
+    const action = supplier.status === 'verified' ? 'deactivate' : 'activate';
+    if (confirm(`Are you sure you want to ${action} this supplier?`)) {
+      this.apiService.updateSupplierStatus(supplier.id, supplier.status === 'verified' ? 'inactive' : 'verified').subscribe({
+        next: (updatedSupplier) => {
+          // Update supplier in local array
+          const index = this.suppliers.findIndex(s => s.id === supplier.id);
+          if (index !== -1) {
+            this.suppliers[index] = updatedSupplier;
+          }
+          console.log('Supplier status updated successfully');
+        },
+        error: (error) => {
+          console.error('Error updating supplier status:', error);
+          alert('Failed to update supplier status: ' + this.apiService.handleError(error));
+        }
+      });
+    }
+  }
+
+  /**
+   * Gets the count of verified suppliers
+   * @returns The number of verified suppliers
+   */
   get verifiedSuppliers(): number {
     return this.suppliers.filter(supplier => supplier.status === 'verified').length;
   }
 
+  /**
+   * Gets the count of pending suppliers
+   * @returns The number of pending suppliers
+   */
   get pendingSuppliers(): number {
     return this.suppliers.filter(supplier => supplier.status === 'pending').length;
   }
 
+  /**
+   * Gets the total revenue from all suppliers
+   * @returns The total revenue amount
+   */
   get totalRevenue(): number {
     return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
   }

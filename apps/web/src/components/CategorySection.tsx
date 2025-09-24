@@ -82,6 +82,29 @@ export default function CategorySection() {
     return `${count}+ so sánh tháng này`
   }
 
+  /**
+   * Handles category comparison button click
+   * @param category - The category to compare
+   */
+  const handleCompareCategory = (category: Category) => {
+    window.location.href = `/products?category=${category.slug}&compare=true`
+  }
+
+  /**
+   * Handles category details button click
+   * @param category - The category to view details
+   */
+  const handleViewCategoryDetails = (category: Category) => {
+    window.location.href = `/categories/${category.slug}`
+  }
+
+  /**
+   * Handles view all categories button click
+   */
+  const handleViewAllCategories = () => {
+    window.location.href = '/categories'
+  }
+
   return (
     <section className="py-16 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -191,11 +214,17 @@ export default function CategorySection() {
 
                   {/* Action Buttons */}
                   <div className="flex space-x-2">
-                    <button className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-3 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center">
+                    <button 
+                      onClick={() => handleCompareCategory(category)}
+                      className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-3 rounded-full text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center"
+                    >
                       <Users className="w-4 h-4 mr-1" />
                       So sánh ngay
                     </button>
-                    <button className="px-3 py-2 border border-purple-200 rounded-full text-sm hover:bg-purple-50 transition-all duration-200 transform hover:scale-105 bg-gradient-to-r from-white to-purple-50">
+                    <button 
+                      onClick={() => handleViewCategoryDetails(category)}
+                      className="px-3 py-2 border border-purple-200 rounded-full text-sm hover:bg-purple-50 transition-all duration-200 transform hover:scale-105 bg-gradient-to-r from-white to-purple-50"
+                    >
                       Chi tiết
                     </button>
                   </div>
@@ -258,7 +287,10 @@ export default function CategorySection() {
         )}
 
         <div className="text-center mt-8">
-          <button className="bg-blue-600 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
+          <button 
+            onClick={handleViewAllCategories}
+            className="bg-blue-600 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+          >
             Xem tất cả danh mục so sánh
           </button>
         </div>
