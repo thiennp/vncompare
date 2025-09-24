@@ -13,6 +13,7 @@ export const routes: Routes = [
         { path: 'orders/:id', loadComponent: () => import('./components/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent) },
         { path: 'orders/:id/edit', loadComponent: () => import('./components/orders/order-edit/order-edit.component').then(m => m.OrderEditComponent) },
   { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
+  { path: 'users/add', loadComponent: () => import('./components/users/add-user/add-user.component').then(m => m.AddUserComponent) },
   { path: 'users/:id', loadComponent: () => import('./components/users/user-detail/user-detail.component').then(m => m.UserDetailComponent) },
   { path: 'suppliers', loadComponent: () => import('./components/suppliers/suppliers.component').then(m => m.SuppliersComponent) },
   { path: 'suppliers/add', loadComponent: () => import('./components/suppliers/add-supplier/add-supplier.component').then(m => m.AddSupplierComponent) },
