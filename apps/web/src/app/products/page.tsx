@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -35,17 +34,10 @@ export default function ProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
   const [priceSort, setPriceSort] = useState('');
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     loadProducts();
-    
-    // Set initial search term from URL
-    const search = searchParams.get('search');
-    if (search) {
-      setSearchTerm(search);
-    }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     filterProducts();
@@ -219,7 +211,7 @@ export default function ProductsPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-2">{product.name}</CardTitle>
+                      <CardTitle className="text-lg overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{product.name}</CardTitle>
                       <CardDescription className="mt-1">{product.brand}</CardDescription>
                     </div>
                     <Badge variant="secondary">{product.category}</Badge>
@@ -227,7 +219,7 @@ export default function ProductsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <p className="text-sm text-gray-600 line-clamp-3">
+                    <p className="text-sm text-gray-600 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
                       {product.description}
                     </p>
                     

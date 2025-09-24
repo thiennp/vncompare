@@ -25,19 +25,31 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // Mark that we're on the client side
+    setIsClient(true);
+    
     // Load cart from localStorage
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setItems(JSON.parse(savedCart));
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
+        try {
+          setItems(JSON.parse(savedCart));
+        } catch (error) {
+          console.error('Error parsing saved cart:', error);
+        }
+      }
     }
   }, []);
 
   useEffect(() => {
-    // Save cart to localStorage whenever it changes
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    // Save cart to localStorage whenever it changes (only on client side)
+    if (isClient && typeof window !== 'undefined') {
+      localStorage.setItem('cart', JSON.stringify(items));
+    }
+  }, [items, isClient]);
 
   const addItem = (product: any, quantity: number) => {
     setItems(prevItems => {

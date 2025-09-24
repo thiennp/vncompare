@@ -9,103 +9,91 @@ export async function GET(request: Request) {
     const brand = searchParams.get('brand')
     const search = searchParams.get('search')
 
-    // Mock products data
+    // Mock products data - updated to match frontend expectations
     const allProducts = [
       {
-        id: '1',
+        id: 1,
         name: 'Sơn Dulux Weathershield',
         description: 'Sơn ngoại thất chống thời tiết cao cấp',
         brand: 'Dulux',
-        category: {
-          id: '1',
-          name: 'Sơn ngoại thất',
-          slug: 'ngoai-that'
-        },
-        supplier: {
-          id: '1',
-          companyName: 'Công ty TNHH Dulux Việt Nam',
-          rating: 4.8
-        },
-        sku: 'DULUX-WS-001',
-        color: 'Trắng',
-        finish: 'Mờ',
-        coverage: 12,
-        volume: 18,
-        price: 450000,
-        discountPrice: 400000,
-        currentPrice: 400000,
-        discountPercentage: 11,
-        images: ['/images/dulux-weathershield.jpg'],
-        rating: 4.8,
-        totalReviews: 156,
-        isFeatured: true,
+        category: 'Sơn ngoại thất',
+        basePrice: 400000,
+        originalPrice: 450000,
+        coverageRate: 12,
+        unit: 'L',
         isActive: true,
         createdAt: '2024-01-15T00:00:00Z',
         updatedAt: '2024-01-15T00:00:00Z'
       },
       {
-        id: '2',
+        id: 2,
         name: 'Sơn Jotun Majestic',
         description: 'Sơn nội thất cao cấp với khả năng kháng khuẩn',
         brand: 'Jotun',
-        category: {
-          id: '2',
-          name: 'Sơn nội thất',
-          slug: 'noi-that'
-        },
-        supplier: {
-          id: '2',
-          companyName: 'Công ty Jotun Việt Nam',
-          rating: 4.7
-        },
-        sku: 'JOTUN-MJ-002',
-        color: 'Xanh dương',
-        finish: 'Bóng',
-        coverage: 15,
-        volume: 20,
-        price: 380000,
-        discountPrice: 350000,
-        currentPrice: 350000,
-        discountPercentage: 8,
-        images: ['/images/jotun-majestic.jpg'],
-        rating: 4.7,
-        totalReviews: 89,
-        isFeatured: true,
+        category: 'Sơn nội thất',
+        basePrice: 350000,
+        originalPrice: 380000,
+        coverageRate: 15,
+        unit: 'L',
         isActive: true,
         createdAt: '2024-01-20T00:00:00Z',
         updatedAt: '2024-01-20T00:00:00Z'
       },
       {
-        id: '3',
+        id: 3,
         name: 'Sơn Kova Anti-Bacterial',
         description: 'Sơn chuyên dụng kháng khuẩn cho bệnh viện',
         brand: 'Kova',
-        category: {
-          id: '3',
-          name: 'Sơn chuyên dụng',
-          slug: 'chuyen-dung'
-        },
-        supplier: {
-          id: '3',
-          companyName: 'Tập đoàn Kova',
-          rating: 4.6
-        },
-        sku: 'KOVA-AB-003',
-        color: 'Trắng',
-        finish: 'Mờ',
-        coverage: 10,
-        volume: 15,
-        price: 520000,
-        discountPrice: 480000,
-        currentPrice: 480000,
-        discountPercentage: 8,
-        images: ['/images/kova-antibacterial.jpg'],
-        rating: 4.6,
-        totalReviews: 45,
-        isFeatured: true,
+        category: 'Sơn chuyên dụng',
+        basePrice: 480000,
+        originalPrice: 520000,
+        coverageRate: 10,
+        unit: 'L',
         isActive: true,
         createdAt: '2024-01-25T00:00:00Z',
         updatedAt: '2024-01-25T00:00:00Z'
+      },
+      {
+        id: 4,
+        name: 'Sơn Nippon Paint',
+        description: 'Sơn nội thất chất lượng cao với độ bền lâu dài',
+        brand: 'Nippon',
+        category: 'Sơn nội thất',
+        basePrice: 320000,
+        originalPrice: 350000,
+        coverageRate: 14,
+        unit: 'L',
+        isActive: true,
+        createdAt: '2024-01-30T00:00:00Z',
+        updatedAt: '2024-01-30T00:00:00Z'
+      },
+      {
+        id: 5,
+        name: 'Sơn Maxilite Premium',
+        description: 'Sơn ngoại thất chống nắng và chống ẩm',
+        brand: 'Maxilite',
+        category: 'Sơn ngoại thất',
+        basePrice: 280000,
+        originalPrice: 320000,
+        coverageRate: 13,
+        unit: 'L',
+        isActive: true,
+        createdAt: '2024-02-01T00:00:00Z',
+        updatedAt: '2024-02-01T00:00:00Z'
+      },
+      {
+        id: 6,
+        name: 'Sơn Jotun Industrial',
+        description: 'Sơn công nghiệp chống ăn mòn và chống cháy',
+        brand: 'Jotun',
+        category: 'Sơn công nghiệp',
+        basePrice: 650000,
+        originalPrice: 720000,
+        coverageRate: 8,
+        unit: 'L',
+        isActive: true,
+        createdAt: '2024-02-05T00:00:00Z',
+        updatedAt: '2024-02-05T00:00:00Z'
       }
     ]
 
@@ -114,7 +102,7 @@ export async function GET(request: Request) {
 
     if (category) {
       filteredProducts = filteredProducts.filter(p => 
-        p.category.slug === category || p.category.name.toLowerCase().includes(category.toLowerCase())
+        p.category.toLowerCase().includes(category.toLowerCase())
       )
     }
 
@@ -140,15 +128,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       message: 'Products retrieved successfully',
-      data: {
-        products: paginatedProducts,
-        pagination: {
-          page,
-          limit,
-          total: filteredProducts.length,
-          totalPages: Math.ceil(filteredProducts.length / limit)
-        }
-      },
+      data: paginatedProducts, // Return products directly, not wrapped in an object
       meta: {
         timestamp: new Date().toISOString(),
         requestId: `req_${Date.now()}`
