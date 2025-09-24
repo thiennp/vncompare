@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 interface Address {
   id: string;
@@ -809,7 +810,7 @@ export class AddressesComponent implements OnInit {
   toggleServiceArea(address: Address): void {
     if (confirm(`Are you sure you want to ${address.isServiceArea ? 'remove from' : 'add to'} service area?`)) {
       this.apiService.updateAddress(address.id, { isServiceArea: !address.isServiceArea }).subscribe({
-        next: (updatedAddress) => {
+        next: (updatedAddress: any) => {
           // Update address in local array
           const index = this.addresses.findIndex(a => a.id === address.id);
           if (index !== -1) {
@@ -818,7 +819,7 @@ export class AddressesComponent implements OnInit {
           }
           console.log('Address service area status updated successfully');
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error updating address:', error);
           alert('Failed to update address: ' + this.apiService.handleError(error));
         }
@@ -839,7 +840,7 @@ export class AddressesComponent implements OnInit {
           this.filteredAddresses = this.filteredAddresses.filter(a => a.id !== address.id);
           console.log('Address deleted successfully');
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Error deleting address:', error);
           alert('Failed to delete address: ' + this.apiService.handleError(error));
         }

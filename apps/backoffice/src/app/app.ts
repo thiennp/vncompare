@@ -39,67 +39,67 @@ import { Subscription } from 'rxjs';
         <!-- Sidebar Navigation -->
         <nav class="sidebar" [class.collapsed]="!isSidebarOpen()">
           <ul class="nav-menu">
-            <li class="nav-item" [class.active]="currentRoute() === '/dashboard'">
+            <li class="nav-item" [class.active]="currentRoute() === '#dashboard'">
               <a routerLink="/dashboard" class="nav-link">
                 <span class="nav-icon">📊</span>
                 <span class="nav-text">Dashboard</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/products')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#products')">
               <a routerLink="/products" class="nav-link">
                 <span class="nav-icon">📦</span>
                 <span class="nav-text">Products</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/orders')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#orders')">
               <a routerLink="/orders" class="nav-link">
                 <span class="nav-icon">🛒</span>
                 <span class="nav-text">Orders</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/users')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#users')">
               <a routerLink="/users" class="nav-link">
                 <span class="nav-icon">👥</span>
                 <span class="nav-text">Users</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/suppliers')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#suppliers')">
               <a routerLink="/suppliers" class="nav-link">
                 <span class="nav-icon">🏢</span>
                 <span class="nav-text">Suppliers</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/addresses')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#addresses')">
               <a routerLink="/addresses" class="nav-link">
                 <span class="nav-icon">📍</span>
                 <span class="nav-text">Addresses</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/reviews')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#reviews')">
               <a routerLink="/reviews" class="nav-link">
                 <span class="nav-icon">⭐</span>
                 <span class="nav-text">Reviews</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/analytics')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#analytics')">
               <a routerLink="/analytics" class="nav-link">
                 <span class="nav-icon">📈</span>
                 <span class="nav-text">Analytics</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/coverage-calculator')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#coverage-calculator')">
               <a routerLink="/coverage-calculator" class="nav-link">
                 <span class="nav-icon">🎨</span>
                 <span class="nav-text">Coverage Calculator</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/shipping-calculator')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#shipping-calculator')">
               <a routerLink="/shipping-calculator" class="nav-link">
                 <span class="nav-icon">🚚</span>
                 <span class="nav-text">Shipping Calculator</span>
               </a>
             </li>
-            <li class="nav-item" [class.active]="currentRoute().startsWith('/settings')">
+            <li class="nav-item" [class.active]="currentRoute().startsWith('#settings')">
               <a routerLink="/settings" class="nav-link">
                 <span class="nav-icon">⚙️</span>
                 <span class="nav-text">Settings</span>
@@ -580,7 +580,7 @@ export class App implements OnInit, OnDestroy {
   }
 
   currentRoute(): string {
-    return window.location.pathname;
+    return window.location.hash || '#dashboard';
   }
 
   logout(): void {

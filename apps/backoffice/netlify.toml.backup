@@ -6,19 +6,6 @@
 [build.environment]
   NODE_VERSION = "20.19.0"
 
-# Force disable all plugins
-[build.processing]
-  skip_processing = true
-
-# Explicitly disable Angular detection
-[build.processing.css]
-  bundle = false
-  minify = false
-
-[build.processing.js]
-  bundle = false
-  minify = false
-
 # Angular runtime plugin disabled - not needed for static deployment
 
 # SPA redirects for Angular

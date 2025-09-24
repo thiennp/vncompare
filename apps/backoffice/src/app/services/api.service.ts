@@ -151,6 +151,7 @@ export interface Supplier {
   rating: number;
   joinedAt: string;
   lastActiveAt: string;
+  documents: any[];
 }
 
 export interface Review {
@@ -630,6 +631,32 @@ export class ApiService {
           return response.data;
         }
         throw new Error(response.message || 'Failed to update address service area');
+      })
+    );
+  }
+
+  updateAddress(id: string, addressData: Partial<Address>): Observable<Address> {
+    return this.http.patch<ApiResponse<Address>>(`${this.baseUrl}/addresses/${id}`, addressData, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update address');
+      })
+    );
+  }
+
+  deleteAddress(id: string): Observable<void> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/addresses/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return;
+        }
+        throw new Error(response.message || 'Failed to delete address');
       })
     );
   }
