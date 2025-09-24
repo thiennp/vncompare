@@ -217,27 +217,27 @@ async function seedSuppliers() {
         license: '0101234567',
         taxCode: '0101234567',
         website: 'https://kova.com.vn',
-        description: 'Nhà sản xuất sơn hàng đầu Việt Nam với hơn 30 năm kinh nghiệm'
+        description: 'Nhà sản xuất sơn hàng đầu Việt Nam với hơn 30 năm kinh nghiệm, chuyên sản xuất sơn nước, sơn dầu và các sản phẩm bảo vệ bề mặt'
       }),
       contactInfo: JSON.stringify({
         email: 'contact@kova.com.vn',
         phone: '02812345678',
-        address: '123 Đường ABC, Quận 1, TP.HCM'
+        address: '123 Đường Nguyễn Văn Cừ, Quận 1, TP.HCM'
       }),
       isVerified: true
     },
     {
-      name: 'Công ty CP Sơn Jotun Việt Nam',
+      name: 'Công ty TNHH Sơn Jotun Việt Nam',
       businessInfo: JSON.stringify({
         license: '0102345678',
         taxCode: '0102345678',
         website: 'https://jotun.com.vn',
-        description: 'Thương hiệu sơn quốc tế uy tín, chuyên sơn công nghiệp và dân dụng'
+        description: 'Thương hiệu sơn quốc tế uy tín từ Na Uy, chuyên sơn công nghiệp, sơn dân dụng và sơn bảo vệ kết cấu thép'
       }),
       contactInfo: JSON.stringify({
         email: 'info@jotun.com.vn',
         phone: '02823456789',
-        address: '456 Đường DEF, Quận 2, TP.HCM'
+        address: '456 Đường Lê Văn Việt, Quận 9, TP.HCM'
       }),
       isVerified: true
     },
@@ -247,12 +247,12 @@ async function seedSuppliers() {
         license: '0103456789',
         taxCode: '0103456789',
         website: 'https://dulux.com.vn',
-        description: 'Thương hiệu sơn toàn cầu, đa dạng sản phẩm cho mọi nhu cầu'
+        description: 'Thương hiệu sơn toàn cầu của AkzoNobel, đa dạng sản phẩm sơn nội thất, ngoại thất và sơn chuyên dụng'
       }),
       contactInfo: JSON.stringify({
         email: 'contact@dulux.com.vn',
         phone: '02834567890',
-        address: '789 Đường GHI, Quận 3, TP.HCM'
+        address: '789 Đường Võ Văn Tần, Quận 3, TP.HCM'
       }),
       isVerified: true
     },
@@ -262,12 +262,12 @@ async function seedSuppliers() {
         license: '0104567890',
         taxCode: '0104567890',
         website: 'https://nipponpaint.com.vn',
-        description: 'Sơn Nhật Bản chất lượng cao, công nghệ tiên tiến'
+        description: 'Thương hiệu sơn Nhật Bản chất lượng cao, công nghệ tiên tiến, chuyên sơn nước và sơn chống thấm'
       }),
       contactInfo: JSON.stringify({
         email: 'info@nipponpaint.com.vn',
         phone: '02845678901',
-        address: '321 Đường JKL, Quận 1, TP.HCM'
+        address: '321 Đường Nguyễn Thị Minh Khai, Quận 1, TP.HCM'
       }),
       isVerified: true
     },
@@ -277,12 +277,12 @@ async function seedSuppliers() {
         license: '0105678901',
         taxCode: '0105678901',
         website: 'https://maxilite.com.vn',
-        description: 'Sơn giá rẻ, chất lượng tốt cho thị trường đại chúng'
+        description: 'Nhà sản xuất sơn giá rẻ, chất lượng tốt cho thị trường đại chúng, chuyên sơn nước và sơn dầu'
       }),
       contactInfo: JSON.stringify({
         email: 'contact@maxilite.com.vn',
         phone: '02856789012',
-        address: '654 Đường MNO, Quận 2, TP.HCM'
+        address: '654 Đường Cộng Hòa, Quận Tân Bình, TP.HCM'
       }),
       isVerified: false
     }

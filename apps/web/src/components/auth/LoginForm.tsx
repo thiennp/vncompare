@@ -147,7 +147,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
         </div>
         
         <div className="mt-4 text-center text-xs text-gray-500">
-          Demo credentials: admin@vncompare.com / password123
+          Demo credentials: nguyenphongthien@gmail.com / Kimtuoc2
         </div>
       </CardContent>
     </Card>

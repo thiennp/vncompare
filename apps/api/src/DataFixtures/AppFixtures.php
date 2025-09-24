@@ -118,30 +118,30 @@ class AppFixtures extends Fixture
                 'companyName' => 'Công ty TNHH Sơn KOVA',
                 'businessLicense' => '0101234567',
                 'taxCode' => '0101234567',
-                'description' => 'Nhà sản xuất sơn hàng đầu Việt Nam với hơn 30 năm kinh nghiệm',
+                'description' => 'Nhà sản xuất sơn hàng đầu Việt Nam với hơn 30 năm kinh nghiệm, chuyên sản xuất sơn nước, sơn dầu và các sản phẩm bảo vệ bề mặt',
                 'website' => 'https://kova.com.vn',
                 'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ'],
+                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Hải Phòng'],
                 'user' => [
                     'email' => 'contact@kova.com.vn',
-                    'firstName' => 'KOVA',
-                    'lastName' => 'Paint',
+                    'firstName' => 'Nguyễn',
+                    'lastName' => 'Văn Kova',
                     'phone' => '02812345678',
                     'roles' => ['ROLE_SUPPLIER']
                 ]
             ],
             [
-                'companyName' => 'Công ty CP Sơn Jotun Việt Nam',
+                'companyName' => 'Công ty TNHH Sơn Jotun Việt Nam',
                 'businessLicense' => '0102345678',
                 'taxCode' => '0102345678',
-                'description' => 'Thương hiệu sơn quốc tế uy tín, chuyên sơn công nghiệp và dân dụng',
+                'description' => 'Thương hiệu sơn quốc tế uy tín từ Na Uy, chuyên sơn công nghiệp, sơn dân dụng và sơn bảo vệ kết cấu thép',
                 'website' => 'https://jotun.com.vn',
                 'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng'],
+                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng', 'Vũng Tàu'],
                 'user' => [
                     'email' => 'info@jotun.com.vn',
-                    'firstName' => 'Jotun',
-                    'lastName' => 'Vietnam',
+                    'firstName' => 'Trần',
+                    'lastName' => 'Thị Jotun',
                     'phone' => '02823456789',
                     'roles' => ['ROLE_SUPPLIER']
                 ]
@@ -150,14 +150,14 @@ class AppFixtures extends Fixture
                 'companyName' => 'Công ty TNHH Sơn Dulux Việt Nam',
                 'businessLicense' => '0103456789',
                 'taxCode' => '0103456789',
-                'description' => 'Thương hiệu sơn toàn cầu, đa dạng sản phẩm cho mọi nhu cầu',
+                'description' => 'Thương hiệu sơn toàn cầu của AkzoNobel, đa dạng sản phẩm sơn nội thất, ngoại thất và sơn chuyên dụng',
                 'website' => 'https://dulux.com.vn',
                 'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Nha Trang'],
+                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Nha Trang', 'Huế'],
                 'user' => [
                     'email' => 'contact@dulux.com.vn',
-                    'firstName' => 'Dulux',
-                    'lastName' => 'Vietnam',
+                    'firstName' => 'Lê',
+                    'lastName' => 'Văn Dulux',
                     'phone' => '02834567890',
                     'roles' => ['ROLE_SUPPLIER']
                 ]
@@ -166,14 +166,14 @@ class AppFixtures extends Fixture
                 'companyName' => 'Công ty TNHH Sơn Nippon Việt Nam',
                 'businessLicense' => '0104567890',
                 'taxCode' => '0104567890',
-                'description' => 'Sơn Nhật Bản chất lượng cao, công nghệ tiên tiến',
+                'description' => 'Thương hiệu sơn Nhật Bản chất lượng cao, công nghệ tiên tiến, chuyên sơn nước và sơn chống thấm',
                 'website' => 'https://nipponpaint.com.vn',
                 'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng', 'Vũng Tàu'],
+                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng', 'Vũng Tàu', 'Quảng Ninh'],
                 'user' => [
                     'email' => 'info@nipponpaint.com.vn',
-                    'firstName' => 'Nippon',
-                    'lastName' => 'Paint',
+                    'firstName' => 'Phạm',
+                    'lastName' => 'Thị Nippon',
                     'phone' => '02845678901',
                     'roles' => ['ROLE_SUPPLIER']
                 ]
@@ -182,14 +182,14 @@ class AppFixtures extends Fixture
                 'companyName' => 'Công ty TNHH Sơn Maxilite',
                 'businessLicense' => '0105678901',
                 'taxCode' => '0105678901',
-                'description' => 'Sơn giá rẻ, chất lượng tốt cho thị trường đại chúng',
+                'description' => 'Nhà sản xuất sơn giá rẻ, chất lượng tốt cho thị trường đại chúng, chuyên sơn nước và sơn dầu',
                 'website' => 'https://maxilite.com.vn',
                 'isVerified' => false,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội'],
+                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng'],
                 'user' => [
                     'email' => 'contact@maxilite.com.vn',
-                    'firstName' => 'Maxilite',
-                    'lastName' => 'Paint',
+                    'firstName' => 'Hoàng',
+                    'lastName' => 'Văn Maxilite',
                     'phone' => '02856789012',
                     'roles' => ['ROLE_SUPPLIER']
                 ]
@@ -526,72 +526,72 @@ class AppFixtures extends Fixture
                 'password' => 'Kimtuoc2'
             ],
             [
-                'email' => 'customer1@example.com',
+                'email' => 'nguyenvana@gmail.com',
                 'firstName' => 'Nguyễn',
-                'lastName' => 'Văn A',
+                'lastName' => 'Văn An',
                 'phone' => '0901234568',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer2@example.com',
+                'email' => 'tranthibinh@gmail.com',
                 'firstName' => 'Trần',
-                'lastName' => 'Thị B',
+                'lastName' => 'Thị Bình',
                 'phone' => '0901234569',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer3@example.com',
+                'email' => 'levancuong@gmail.com',
                 'firstName' => 'Lê',
-                'lastName' => 'Văn C',
+                'lastName' => 'Văn Cường',
                 'phone' => '0901234570',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer4@example.com',
+                'email' => 'phamthidiem@gmail.com',
                 'firstName' => 'Phạm',
-                'lastName' => 'Thị D',
+                'lastName' => 'Thị Diễm',
                 'phone' => '0901234571',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer5@example.com',
+                'email' => 'hoangvanem@gmail.com',
                 'firstName' => 'Hoàng',
-                'lastName' => 'Văn E',
+                'lastName' => 'Văn Em',
                 'phone' => '0901234572',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer6@example.com',
+                'email' => 'vuthifuong@gmail.com',
                 'firstName' => 'Vũ',
-                'lastName' => 'Thị F',
+                'lastName' => 'Thị Phương',
                 'phone' => '0901234573',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer7@example.com',
+                'email' => 'dangvangiang@gmail.com',
                 'firstName' => 'Đặng',
-                'lastName' => 'Văn G',
+                'lastName' => 'Văn Giang',
                 'phone' => '0901234574',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer8@example.com',
+                'email' => 'buithihong@gmail.com',
                 'firstName' => 'Bùi',
-                'lastName' => 'Thị H',
+                'lastName' => 'Thị Hồng',
                 'phone' => '0901234575',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer9@example.com',
+                'email' => 'phanvanien@gmail.com',
                 'firstName' => 'Phan',
-                'lastName' => 'Văn I',
+                'lastName' => 'Văn Iên',
                 'phone' => '0901234576',
                 'roles' => ['ROLE_USER']
             ],
             [
-                'email' => 'customer10@example.com',
+                'email' => 'vothijenny@gmail.com',
                 'firstName' => 'Võ',
-                'lastName' => 'Thị J',
+                'lastName' => 'Thị Jenny',
                 'phone' => '0901234577',
                 'roles' => ['ROLE_USER']
             ]
