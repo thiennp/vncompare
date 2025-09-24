@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { EnvironmentService } from './environment.service';
 
 export interface LoginRequest {
   email: string;
@@ -49,7 +50,7 @@ export interface OAuthConfig {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_BASE_URL = 'https://api.vncompare.com/api/v1';
+  private readonly API_BASE_URL: string;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   
@@ -61,7 +62,10 @@ export class AuthService {
     responseType: 'code'
   };
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private environmentService: EnvironmentService) {
+    // Get the appropriate API base URL based on environment
+    this.API_BASE_URL = this.environmentService.getApiBaseUrl();
+    
     // Check for stored token on service initialization
     this.loadStoredUser();
   }

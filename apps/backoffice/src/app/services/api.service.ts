@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { EnvironmentService } from './environment.service';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -216,12 +217,15 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl: string;
   private readonly isApiAvailable = true; // Set to true when API is deployed
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private environmentService: EnvironmentService) {
+    // Get the appropriate API base URL based on environment
+    this.baseUrl = this.environmentService.getApiBaseUrl();
+    
     // Check for existing token in localStorage
     const savedToken = localStorage.getItem('vncompare_token');
     if (savedToken) {
