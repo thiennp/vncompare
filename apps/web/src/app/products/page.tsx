@@ -84,7 +84,7 @@ export default function ProductsPage() {
       logger.error(errorMsg, error as Error);
     } finally {
       const duration = Date.now() - startTime;
-      logger.info(`Load products completed in ${duration}ms`);
+      logger.logPerformance('Load products', duration);
       setLoading(false);
     }
   };
@@ -131,7 +131,7 @@ export default function ProductsPage() {
 
   const addToCart = (product: Product) => {
     addItem(product, 1);
-    logger.info('User action: Add to cart', { productId: product.id, productName: product.name });
+    logger.logUserAction('Add to cart', undefined, { productId: product.id, productName: product.name });
   };
 
   if (loading) {

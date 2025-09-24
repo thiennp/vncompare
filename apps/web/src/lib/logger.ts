@@ -187,6 +187,8 @@ export function useLogger(componentName: string) {
     debug: (message: string, context?: any) => logger.debug(`[${componentName}] ${message}`, context),
     info: (message: string, context?: any) => logger.info(`[${componentName}] ${message}`, context),
     warn: (message: string, context?: any) => logger.warn(`[${componentName}] ${message}`, context),
-    error: (message: string, error?: Error, context?: any) => logger.error(`[${componentName}] ${message}`, error, context)
+    error: (message: string, error?: Error, context?: any) => logger.error(`[${componentName}] ${message}`, error, context),
+    logUserAction: (action: string, userId?: number, context?: any) => logger.logUserAction(action, userId, context),
+    logPerformance: (operation: string, duration: number, context?: any) => logger.logPerformance(operation, duration, context)
   };
 }
