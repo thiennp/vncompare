@@ -137,6 +137,15 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
           </Button>
         </div>
         
+        <div className="mt-2 text-center text-sm">
+          <a
+            href="/auth/forgot-password"
+            className="text-blue-600 hover:text-blue-800"
+          >
+            Forgot your password?
+          </a>
+        </div>
+        
         <div className="mt-4 text-center text-xs text-gray-500">
           Demo credentials: admin@vncompare.com / password123
         </div>
