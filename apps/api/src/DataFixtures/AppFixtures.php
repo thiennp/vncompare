@@ -28,8 +28,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // No hardcoded data - all data will be created through the API
-        // This fixture is kept for future use if needed for testing or seeding
+        // Load existing data from database - no fixtures needed
+        // All data is already available in the database
         
         $manager->flush();
     }
@@ -38,8 +38,8 @@ class AppFixtures extends Fixture
     {
         $categories = [];
         
-        // No hardcoded category data - categories will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing categories from database
+        $categories = $manager->getRepository(Category::class)->findAll();
 
         return $categories;
     }
@@ -48,8 +48,8 @@ class AppFixtures extends Fixture
     {
         $suppliers = [];
         
-        // No hardcoded supplier data - suppliers will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing suppliers from database
+        $suppliers = $manager->getRepository(Supplier::class)->findAll();
 
         return $suppliers;
     }
@@ -58,8 +58,8 @@ class AppFixtures extends Fixture
     {
         $products = [];
         
-        // No hardcoded product data - products will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing products from database
+        $products = $manager->getRepository(Product::class)->findAll();
 
         return $products;
     }
@@ -68,8 +68,8 @@ class AppFixtures extends Fixture
     {
         $users = [];
         
-        // No hardcoded user data - users will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing users from database
+        $users = $manager->getRepository(User::class)->findAll();
 
         return $users;
     }
@@ -78,27 +78,27 @@ class AppFixtures extends Fixture
     {
         $addresses = [];
         
-        // No hardcoded address data - addresses will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing addresses from database
+        $addresses = $manager->getRepository(Address::class)->findAll();
 
         return $addresses;
     }
 
     private function createOrders(ObjectManager $manager, array $users, array $products, array $suppliers, array $addresses): void
     {
-        // No hardcoded order data - orders will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing orders from database
+        $orders = $manager->getRepository(Order::class)->findAll();
     }
 
     private function createReviews(ObjectManager $manager, array $users, array $products): void
     {
-        // No hardcoded review data - reviews will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing reviews from database
+        $reviews = $manager->getRepository(Review::class)->findAll();
     }
 
     private function createPrices(ObjectManager $manager, array $products): void
     {
-        // No hardcoded price data - prices will be created through the API
-        // This method is kept for future use if needed for testing or seeding
+        // Load existing prices from database
+        $prices = $manager->getRepository(Price::class)->findAll();
     }
 }

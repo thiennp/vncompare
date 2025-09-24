@@ -56,9 +56,8 @@ fi
 print_status "Running database migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction
 
-# Load fixtures
-print_status "Loading fixtures..."
-php bin/console doctrine:fixtures:load --no-interaction
+# Skip fixtures - using real data from database
+print_status "Using real data from database - no fixtures needed"
 
 print_success "Symfony API database seeded successfully!"
 

@@ -23,9 +23,8 @@ php bin/console doctrine:database:create --if-not-exists --env=prod
 echo "🗄️ Running database migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
-# Load fixtures with comprehensive data
-echo "🌱 Loading comprehensive seed data..."
-php bin/console doctrine:fixtures:load --no-interaction --env=prod
+# Skip fixtures - using real data from database
+echo "📊 Using real data from database - no fixtures needed"
 
 # Generate JWT keys if they don't exist
 if [ ! -f "config/jwt/private.pem" ]; then
