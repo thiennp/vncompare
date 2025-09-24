@@ -75,11 +75,11 @@ export default function HowItWorks() {
         <div className="mt-20 bg-gradient-to-br from-white via-purple-50 to-blue-50 rounded-2xl p-8 shadow-xl border border-purple-200">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">Hàng trăm</div>
               <div className="text-gray-600">Sản phẩm sơn</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">50+</div>
+              <div className="text-3xl font-bold text-green-600 mb-2">Nhiều</div>
               <div className="text-gray-600">Nhà cung cấp</div>
             </div>
             <div className="text-center">

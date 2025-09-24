@@ -533,65 +533,11 @@ export class UsersComponent implements OnInit {
         console.error('Error loading users:', error);
         this.error = this.apiService.handleError(error);
         this.loading = false;
-        // Fallback to mock data
-        this.loadMockData();
+        // No fallback data - rely on API only
       }
     });
   }
 
-  loadMockData(): void {
-    this.users = [
-      {
-        id: 'USR-001',
-        firstName: 'Admin',
-        lastName: 'User',
-        email: 'admin@vncompare.com',
-        phone: '+84901234567',
-        role: 'ADMIN',
-        isActive: true,
-        emailVerified: true,
-        phoneVerified: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-15T00:00:00Z',
-        lastLoginAt: '2024-01-15T10:30:00Z',
-        ordersCount: 0,
-        totalSpent: 0
-      },
-      {
-        id: 'USR-002',
-        firstName: 'Nguyen',
-        lastName: 'Van A',
-        email: 'nguyenvana@email.com',
-        phone: '+84901234568',
-        role: 'USER',
-        isActive: true,
-        emailVerified: true,
-        phoneVerified: false,
-        createdAt: '2024-01-05T00:00:00Z',
-        updatedAt: '2024-01-15T00:00:00Z',
-        lastLoginAt: '2024-01-14T15:20:00Z',
-        ordersCount: 3,
-        totalSpent: 2500000
-      },
-      {
-        id: 'USR-003',
-        firstName: 'Tran',
-        lastName: 'Thi B',
-        email: 'tranthib@email.com',
-        phone: '+84901234569',
-        role: 'SUPPLIER',
-        isActive: true,
-        emailVerified: true,
-        phoneVerified: true,
-        createdAt: '2024-01-10T00:00:00Z',
-        updatedAt: '2024-01-15T00:00:00Z',
-        lastLoginAt: '2024-01-15T09:15:00Z',
-        ordersCount: 0,
-        totalSpent: 0
-      }
-    ];
-    this.filteredUsers = [...this.users];
-  }
 
   filterUsers(): void {
     this.filteredUsers = this.users.filter(user => {

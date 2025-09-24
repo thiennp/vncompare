@@ -13,8 +13,8 @@ class Price
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'prices')]
     #[ORM\JoinColumn(nullable: false)]
@@ -48,6 +48,7 @@ class Price
     {
         return $this->id;
     }
+
 
     public function getProduct(): ?Product
     {

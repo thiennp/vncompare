@@ -577,28 +577,11 @@ export class UserDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading user orders:', error);
-        // Load mock data as fallback
-        this.loadMockOrders();
+        // No fallback data - rely on API only
       }
     });
   }
 
-  loadMockOrders(): void {
-    this.userOrders = [
-      {
-        id: 'ORD-001',
-        createdAt: '2024-01-15T10:30:00Z',
-        status: 'delivered',
-        totalAmount: 3350000
-      },
-      {
-        id: 'ORD-002',
-        createdAt: '2024-01-10T14:20:00Z',
-        status: 'shipped',
-        totalAmount: 2100000
-      }
-    ];
-  }
 
   editUser(): void {
     if (this.user) {

@@ -13,8 +13,8 @@ class OrderTracking
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'tracking')]
     #[ORM\JoinColumn(nullable: false)]
@@ -49,6 +49,7 @@ class OrderTracking
     {
         return $this->id;
     }
+
 
     public function getOrder(): ?Order
     {

@@ -26,6 +26,7 @@ class AppFixtures extends Fixture
         $this->passwordHasher = $passwordHasher;
     }
 
+
     public function load(ObjectManager $manager): void
     {
         // Create categories
@@ -41,10 +42,10 @@ class AppFixtures extends Fixture
         $users = $this->createSampleUsers($manager);
         
         // Create addresses for users
-        $this->createAddresses($manager, $users);
+        $addresses = $this->createAddresses($manager, $users);
         
         // Create orders
-        $this->createOrders($manager, $users, $products);
+        $this->createOrders($manager, $users, $products, $suppliers, $addresses);
         
         // Create reviews
         $this->createReviews($manager, $users, $products);
@@ -204,7 +205,7 @@ class AppFixtures extends Fixture
                  ->setPhone($data['user']['phone'])
                  ->setRoles($data['user']['roles'])
                  ->setPassword($this->passwordHasher->hashPassword($user, 'password123'))
-                 ->setIsActive(true)
+                 ->setActive(true)
                  ->setEmailVerified(true);
             
             $manager->persist($user);
@@ -217,7 +218,7 @@ class AppFixtures extends Fixture
                     ->setTaxCode($data['taxCode'])
                     ->setDescription($data['description'])
                     ->setWebsite($data['website'])
-                    ->setIsVerified($data['isVerified'])
+                    ->setVerified($data['isVerified'])
                     ->setServiceAreas($data['serviceAreas'])
                     ->setRating('4.5');
             
@@ -494,7 +495,7 @@ class AppFixtures extends Fixture
                    ->setWeight($productData['weight'])
                    ->setPrice($productData['price'])
                    ->setDiscountPrice($productData['discountPrice'])
-                   ->setIsFeatured($productData['isFeatured'])
+                   ->setFeatured($productData['isFeatured'])
                    ->setImages($productData['images'])
                    ->setSpecifications($productData['specifications'])
                    ->setTags($productData['tags']);
@@ -607,7 +608,7 @@ class AppFixtures extends Fixture
                  ->setPhone($userData['phone'])
                  ->setRoles($userData['roles'])
                  ->setPassword($this->passwordHasher->hashPassword($user, $password))
-                 ->setIsActive(true)
+                 ->setActive(true)
                  ->setEmailVerified(true);
             
             $manager->persist($user);
@@ -617,81 +618,105 @@ class AppFixtures extends Fixture
         return $users;
     }
 
-    private function createAddresses(ObjectManager $manager, array $users): void
+    private function createAddresses(ObjectManager $manager, array $users): array
     {
         $addresses = [
             [
                 'user' => 0, // admin@vncompare.com
                 'type' => 'HOME',
+                'recipientName' => 'Admin User',
+                'phone' => '0901234567',
                 'street' => '123 Nguyễn Huệ',
+                'houseNumber' => '123',
                 'ward' => 'Bến Nghé',
                 'district' => 'Quận 1',
-                'city' => 'Hồ Chí Minh',
+                'province' => 'Hồ Chí Minh',
                 'postalCode' => '700000',
                 'isDefault' => true
             ],
             [
                 'user' => 1, // nguyenphongthien@gmail.com
                 'type' => 'HOME',
+                'recipientName' => 'Nguyễn Phong Thiên',
+                'phone' => '0901234568',
                 'street' => '456 Lê Lợi',
+                'houseNumber' => '456',
                 'ward' => 'Phường 1',
                 'district' => 'Quận 3',
-                'city' => 'Hồ Chí Minh',
+                'province' => 'Hồ Chí Minh',
                 'postalCode' => '700000',
                 'isDefault' => true
             ],
             [
                 'user' => 2, // customer1@example.com
                 'type' => 'HOME',
+                'recipientName' => 'Customer One',
+                'phone' => '0901234569',
                 'street' => '789 Trần Hưng Đạo',
+                'houseNumber' => '789',
                 'ward' => 'Phường 2',
                 'district' => 'Quận 5',
-                'city' => 'Hồ Chí Minh',
+                'province' => 'Hồ Chí Minh',
                 'postalCode' => '700000',
                 'isDefault' => true
             ],
             [
                 'user' => 3, // customer2@example.com
                 'type' => 'HOME',
+                'recipientName' => 'Customer Two',
+                'phone' => '0901234570',
                 'street' => '321 Lý Tự Trọng',
+                'houseNumber' => '321',
                 'ward' => 'Phường 3',
                 'district' => 'Quận 1',
-                'city' => 'Hồ Chí Minh',
+                'province' => 'Hồ Chí Minh',
                 'postalCode' => '700000',
                 'isDefault' => true
             ],
             [
                 'user' => 4, // customer3@example.com
                 'type' => 'HOME',
+                'recipientName' => 'Customer Three',
+                'phone' => '0901234571',
                 'street' => '654 Điện Biên Phủ',
+                'houseNumber' => '654',
                 'ward' => 'Phường 4',
                 'district' => 'Quận Bình Thạnh',
-                'city' => 'Hồ Chí Minh',
+                'province' => 'Hồ Chí Minh',
                 'postalCode' => '700000',
                 'isDefault' => true
             ]
         ];
 
+        $addressEntities = [];
         foreach ($addresses as $addressData) {
             $address = new Address();
             $address->setUser($users[$addressData['user']])
                    ->setType($addressData['type'])
+                   ->setRecipientName($addressData['recipientName'])
+                   ->setPhone($addressData['phone'])
                    ->setStreet($addressData['street'])
+                   ->setHouseNumber($addressData['houseNumber'])
                    ->setWard($addressData['ward'])
                    ->setDistrict($addressData['district'])
-                   ->setCity($addressData['city'])
+                   ->setProvince($addressData['province'])
                    ->setPostalCode($addressData['postalCode'])
-                   ->setIsDefault($addressData['isDefault']);
+                   ->setDefault($addressData['isDefault']);
             
             $manager->persist($address);
+            $addressEntities[] = $address;
         }
+        
+        return $addressEntities;
     }
 
-    private function createOrders(ObjectManager $manager, array $users, array $products): void
+    private function createOrders(ObjectManager $manager, array $users, array $products, array $suppliers, array $addresses): void
     {
         $orders = [
             [
                 'user' => 2, // customer1@example.com
+                'supplier' => 0, // KOVA
+                'shippingAddress' => 0, // First address
                 'status' => 'COMPLETED',
                 'totalAmount' => 1500000.00,
                 'items' => [
@@ -700,6 +725,8 @@ class AppFixtures extends Fixture
             ],
             [
                 'user' => 3, // customer2@example.com
+                'supplier' => 0, // KOVA
+                'shippingAddress' => 1, // Second address
                 'status' => 'PENDING',
                 'totalAmount' => 2200000.00,
                 'items' => [
@@ -709,6 +736,8 @@ class AppFixtures extends Fixture
             ],
             [
                 'user' => 4, // customer3@example.com
+                'supplier' => 1, // Jotun
+                'shippingAddress' => 2, // Third address
                 'status' => 'SHIPPED',
                 'totalAmount' => 1800000.00,
                 'items' => [
@@ -718,6 +747,8 @@ class AppFixtures extends Fixture
             ],
             [
                 'user' => 5, // customer4@example.com
+                'supplier' => 2, // Dulux
+                'shippingAddress' => 3, // Fourth address
                 'status' => 'COMPLETED',
                 'totalAmount' => 800000.00,
                 'items' => [
@@ -726,6 +757,8 @@ class AppFixtures extends Fixture
             ],
             [
                 'user' => 6, // customer5@example.com
+                'supplier' => 3, // Nippon
+                'shippingAddress' => 4, // Fifth address
                 'status' => 'CANCELLED',
                 'totalAmount' => 1000000.00,
                 'items' => [
@@ -737,8 +770,14 @@ class AppFixtures extends Fixture
         foreach ($orders as $orderData) {
             $order = new Order();
             $order->setUser($users[$orderData['user']])
+                  ->setSupplier($suppliers[$orderData['supplier']])
+                  ->setShippingAddress($addresses[$orderData['shippingAddress']])
                   ->setStatus($orderData['status'])
-                  ->setTotalAmount($orderData['totalAmount'])
+                  ->setSubtotal($orderData['totalAmount'] * 0.9) // 90% of total
+                  ->setShippingCost($orderData['totalAmount'] * 0.05) // 5% of total
+                  ->setTax($orderData['totalAmount'] * 0.05) // 5% of total
+                  ->setTotal($orderData['totalAmount'])
+                  ->setPaymentMethod('VNPAY')
                   ->setCreatedAt(new \DateTime())
                   ->setUpdatedAt(new \DateTime());
             
@@ -750,7 +789,8 @@ class AppFixtures extends Fixture
                 $orderItem->setOrder($order)
                          ->setProduct($products[$itemData['product']])
                          ->setQuantity($itemData['quantity'])
-                         ->setPrice($itemData['price']);
+                         ->setUnitPrice($itemData['price'])
+                   ->setTotalPrice($itemData['price'] * $itemData['quantity']);
                 
                 $manager->persist($orderItem);
             }
@@ -759,8 +799,8 @@ class AppFixtures extends Fixture
             $tracking = new OrderTracking();
             $tracking->setOrder($order)
                     ->setStatus($orderData['status'])
-                    ->setMessage('Order ' . strtolower($orderData['status']))
-                    ->setCreatedAt(new \DateTime());
+                    ->setDescription('Order ' . strtolower($orderData['status']))
+                    ->setTimestamp(new \DateTime());
             
             $manager->persist($tracking);
         }
@@ -822,7 +862,7 @@ class AppFixtures extends Fixture
                   ->setProduct($products[$reviewData['product']])
                   ->setRating($reviewData['rating'])
                   ->setTitle($reviewData['title'])
-                  ->setContent($reviewData['content'])
+                   ->setComment($reviewData['content'])
                   ->setHelpful($reviewData['helpful'])
                   ->setVerified($reviewData['verified'])
                   ->setCreatedAt(new \DateTime())
@@ -838,10 +878,7 @@ class AppFixtures extends Fixture
             // Create base price
             $basePrice = new Price();
             $basePrice->setProduct($product)
-                     ->setType('BASE')
-                     ->setAmount($product->getPrice())
-                     ->setCurrency('VND')
-                     ->setIsActive(true)
+                     ->setPrice($product->getPrice())
                      ->setCreatedAt(new \DateTime());
             
             $manager->persist($basePrice);
@@ -850,10 +887,7 @@ class AppFixtures extends Fixture
             if ($product->getDiscountPrice()) {
                 $discountPrice = new Price();
                 $discountPrice->setProduct($product)
-                             ->setType('DISCOUNT')
-                             ->setAmount($product->getDiscountPrice())
-                             ->setCurrency('VND')
-                             ->setIsActive(true)
+                             ->setPrice($product->getDiscountPrice())
                              ->setCreatedAt(new \DateTime());
                 
                 $manager->persist($discountPrice);

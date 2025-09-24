@@ -14,8 +14,8 @@ class Review
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
@@ -66,6 +66,7 @@ class Review
     {
         return $this->id;
     }
+
 
     public function getUser(): ?User
     {

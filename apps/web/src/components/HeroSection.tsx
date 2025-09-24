@@ -142,7 +142,7 @@ export default function HeroSection() {
               />
               <button
                 type="submit"
-                className="absolute right-2 top-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                className="absolute right-[11px] top-[11px] bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-600 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
               >
                 So sánh ngay
               </button>
@@ -309,7 +309,7 @@ export default function HeroSection() {
             <div className="mt-6 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div className="text-sm text-gray-600">
-                  Hiển thị 3 trong số 200+ sản phẩm
+                  Hiển thị {comparisonData.length} sản phẩm
                 </div>
                 <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
                   Xem tất cả kết quả →
@@ -322,11 +322,15 @@ export default function HeroSection() {
         {/* Stats - Check24 Style */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-            <div className="text-3xl font-bold text-blue-600 mb-2">500+</div>
+            <div className="text-3xl font-bold text-blue-600 mb-2">
+              {categoriesLoading ? '...' : (categories && Array.isArray(categories) ? categories.reduce((total, cat) => total + (cat.productCount || 0), 0) : 0)}+
+            </div>
             <div className="text-gray-600 font-medium">Sản phẩm sơn</div>
           </div>
           <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-            <div className="text-3xl font-bold text-blue-600 mb-2">50+</div>
+            <div className="text-3xl font-bold text-blue-600 mb-2">
+              {categoriesLoading ? '...' : (categories && Array.isArray(categories) && categories.length > 0 ? categories[0].topBrands?.length || 0 : 0)}+
+            </div>
             <div className="text-gray-600 font-medium">Nhà cung cấp</div>
           </div>
           <div className="text-center bg-white rounded-lg p-6 shadow-sm border border-gray-200">

@@ -653,8 +653,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading dashboard data:', error);
-        // Show mock data when API is not available
-        this.loadMockData();
+        // No fallback data - rely on API only
         this.loading = false;
         this.isLoading = false;
         this.isDataLoaded = true;
@@ -668,7 +667,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading top products:', error);
-        this.loadMockTopProducts();
+        // No fallback data - rely on API only
       }
     });
 
@@ -686,7 +685,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading recent orders:', error);
-        this.loadMockRecentOrders();
+        // No fallback data - rely on API only
       }
     });
 
@@ -705,7 +704,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading low stock products:', error);
-        this.loadMockLowStockProducts();
+        // No fallback data - rely on API only
       }
     });
   }
@@ -753,184 +752,8 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  loadMockData(): void {
-    // Mock dashboard metrics
-    const mockData: DashboardMetrics = {
-      totalRevenue: 125000000,
-      totalOrders: 1247,
-      activeProducts: 89,
-      serviceAreas: 12,
-      newCustomers: 156,
-      productsSold: 2341,
-      revenueChange: 12.5,
-      ordersChange: 8.3,
-      productsChange: 5.2,
-      areasChange: 0,
-      customersChange: 15.7
-    };
-    
-    this.dashboardData = mockData;
-    this.updateMetrics(mockData);
-    
-    // Mock revenue bars
-    this.revenueBars = [
-      { height: 65 },
-      { height: 80 },
-      { height: 45 },
-      { height: 90 },
-      { height: 75 },
-      { height: 85 },
-      { height: 70 }
-    ];
-  }
 
-  loadMockTopProducts(): void {
-    this.topProducts = [
-      {
-        id: '1',
-        name: 'Premium Paint White',
-        description: 'High-quality interior paint',
-        brand: 'Dulux',
-        category: { id: '1', name: 'Interior Paint', slug: 'interior-paint' },
-        supplier: { id: '1', companyName: 'Dulux Vietnam', rating: 4.5 },
-        sku: 'DLX-001',
-        color: 'White',
-        finish: 'Matte',
-        coverage: 12,
-        volume: 1,
-        price: 250000,
-        images: ['paint1.jpg'],
-        rating: 4.8,
-        totalReviews: 124,
-        isFeatured: true,
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z'
-      },
-      {
-        id: '2',
-        name: 'Interior Wall Paint',
-        description: 'Durable wall coating',
-        brand: 'Jotun',
-        category: { id: '1', name: 'Interior Paint', slug: 'interior-paint' },
-        supplier: { id: '2', companyName: 'Jotun Vietnam', rating: 4.3 },
-        sku: 'JTN-002',
-        color: 'Beige',
-        finish: 'Satin',
-        coverage: 10,
-        volume: 1,
-        price: 180000,
-        images: ['paint2.jpg'],
-        rating: 4.6,
-        totalReviews: 89,
-        isFeatured: false,
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z'
-      },
-      {
-        id: '3',
-        name: 'Exterior Coating',
-        description: 'Weather-resistant exterior paint',
-        brand: 'Kova',
-        category: { id: '2', name: 'Exterior Paint', slug: 'exterior-paint' },
-        supplier: { id: '3', companyName: 'Kova Vietnam', rating: 4.7 },
-        sku: 'KVA-003',
-        color: 'Blue',
-        finish: 'Gloss',
-        coverage: 8,
-        volume: 1,
-        price: 320000,
-        images: ['paint3.jpg'],
-        rating: 4.7,
-        totalReviews: 156,
-        isFeatured: true,
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z'
-      },
-      {
-        id: '4',
-        name: 'Primer Base Coat',
-        description: 'Base primer for all surfaces',
-        brand: 'Nippon',
-        category: { id: '3', name: 'Primer', slug: 'primer' },
-        supplier: { id: '4', companyName: 'Nippon Vietnam', rating: 4.2 },
-        sku: 'NPN-004',
-        color: 'White',
-        finish: 'Matte',
-        coverage: 15,
-        volume: 1,
-        price: 120000,
-        images: ['paint4.jpg'],
-        rating: 4.5,
-        totalReviews: 67,
-        isFeatured: false,
-        isActive: true,
-        createdAt: '2024-01-01T00:00:00Z',
-        updatedAt: '2024-01-01T00:00:00Z'
-      }
-    ];
-  }
 
-  loadMockRecentOrders(): void {
-    this.recentOrders = [
-      {
-        id: 'ORD-001',
-        customer: 'Nguyen Van A',
-        product: 'Premium Paint White',
-        amount: 2500000,
-        status: 'processing',
-        date: '2024-09-17'
-      },
-      {
-        id: 'ORD-002',
-        customer: 'Tran Thi B',
-        product: 'Interior Wall Paint',
-        amount: 1800000,
-        status: 'shipped',
-        date: '2024-09-16'
-      },
-      {
-        id: 'ORD-003',
-        customer: 'Le Van C',
-        product: 'Exterior Coating',
-        amount: 3200000,
-        status: 'delivered',
-        date: '2024-09-15'
-      },
-      {
-        id: 'ORD-004',
-        customer: 'Pham Thi D',
-        product: 'Primer Base Coat',
-        amount: 1200000,
-        status: 'pending',
-        date: '2024-09-14'
-      }
-    ];
-  }
 
-  loadMockLowStockProducts(): void {
-    this.lowStockProducts = [
-      {
-        name: 'Specialty Paint Red',
-        brand: 'Dulux',
-        stock: 5,
-        stockLevel: 'low'
-      },
-      {
-        name: 'High Gloss Finish',
-        brand: 'Jotun',
-        stock: 12,
-        stockLevel: 'medium'
-      },
-      {
-        name: 'Matte Finish Blue',
-        brand: 'Kova',
-        stock: 8,
-        stockLevel: 'low'
-      }
-    ];
-  }
 
 }

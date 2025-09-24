@@ -13,8 +13,8 @@ class SupplierDocument
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Supplier::class, inversedBy: 'documents')]
     #[ORM\JoinColumn(nullable: false)]
@@ -65,6 +65,7 @@ class SupplierDocument
     {
         return $this->id;
     }
+
 
     public function getSupplier(): ?Supplier
     {

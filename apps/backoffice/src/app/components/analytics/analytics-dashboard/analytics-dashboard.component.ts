@@ -650,53 +650,19 @@ export class AnalyticsDashboardComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Note: This would need to be implemented in the API service
-    // For now, we'll load mock data
-    this.loadMockAnalytics();
+    this.apiService.getAnalytics().subscribe({
+      next: (response: any) => {
+        this.analyticsData = response;
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading analytics:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
+      }
+    });
   }
 
-  loadMockAnalytics(): void {
-    this.analyticsData = {
-      totalRevenue: 125000000,
-      totalOrders: 1250,
-      totalProducts: 150,
-      totalUsers: 850,
-      revenueGrowth: 15.5,
-      ordersGrowth: 8.2,
-      productsGrowth: 12.3,
-      usersGrowth: 6.7,
-      topProducts: [
-        { id: 'PROD-001', name: 'Dulux Weathershield Exterior Paint', sales: 125, revenue: 15000000 },
-        { id: 'PROD-002', name: 'Jotun Lady Interior Paint', sales: 98, revenue: 12000000 },
-        { id: 'PROD-003', name: 'Kova Premium Primer', sales: 87, revenue: 10000000 },
-        { id: 'PROD-004', name: 'Nippon Paint Exterior', sales: 76, revenue: 9500000 },
-        { id: 'PROD-005', name: 'Sika Paint Interior', sales: 65, revenue: 8000000 }
-      ],
-      topSuppliers: [
-        { id: 'SUP-001', name: 'Dulux Vietnam', orders: 450, revenue: 50000000 },
-        { id: 'SUP-002', name: 'Jotun Vietnam', orders: 320, revenue: 35000000 },
-        { id: 'SUP-003', name: 'Kova Paint', orders: 280, revenue: 30000000 },
-        { id: 'SUP-004', name: 'Nippon Paint', orders: 200, revenue: 25000000 }
-      ],
-      recentOrders: [
-        { id: 'ORD-001', customerName: 'Nguyen Van A', totalAmount: 3350000, status: 'delivered', createdAt: '2024-01-15T10:30:00Z' },
-        { id: 'ORD-002', customerName: 'Tran Thi B', totalAmount: 2100000, status: 'shipped', createdAt: '2024-01-15T09:15:00Z' },
-        { id: 'ORD-003', customerName: 'Le Van C', totalAmount: 1800000, status: 'confirmed', createdAt: '2024-01-15T08:45:00Z' },
-        { id: 'ORD-004', customerName: 'Pham Thi D', totalAmount: 4200000, status: 'pending', createdAt: '2024-01-15T07:20:00Z' },
-        { id: 'ORD-005', customerName: 'Hoang Van E', totalAmount: 1500000, status: 'delivered', createdAt: '2024-01-14T16:30:00Z' }
-      ],
-      monthlyRevenue: [
-        { month: 'Jan', revenue: 10000000, orders: 100 },
-        { month: 'Feb', revenue: 12000000, orders: 120 },
-        { month: 'Mar', revenue: 15000000, orders: 150 },
-        { month: 'Apr', revenue: 18000000, orders: 180 },
-        { month: 'May', revenue: 20000000, orders: 200 },
-        { month: 'Jun', revenue: 22000000, orders: 220 }
-      ]
-    };
-
-    this.loading = false;
-  }
 
   onPeriodChange(): void {
     this.loadAnalytics();

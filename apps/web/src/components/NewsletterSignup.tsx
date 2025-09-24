@@ -7,12 +7,30 @@ export default function NewsletterSignup() {
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement newsletter subscription
-    console.log('Subscribing email:', email)
-    setIsSubscribed(true)
-    setEmail('')
+    
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (response.ok) {
+        setIsSubscribed(true)
+        setEmail('')
+      } else {
+        const error = await response.json()
+        console.error('Subscription failed:', error.message)
+        alert('Đăng ký thất bại. Vui lòng thử lại.')
+      }
+    } catch (error) {
+      console.error('Subscription error:', error)
+      alert('Có lỗi xảy ra. Vui lòng thử lại.')
+    }
   }
 
   return (

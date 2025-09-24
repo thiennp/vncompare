@@ -16,8 +16,8 @@ class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -122,6 +122,7 @@ class Product
     {
         return $this->id;
     }
+
 
     public function getName(): ?string
     {

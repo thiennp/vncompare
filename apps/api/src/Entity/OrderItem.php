@@ -13,8 +13,8 @@ class OrderItem
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
     #[ORM\JoinColumn(nullable: false)]
@@ -46,6 +46,7 @@ class OrderItem
     {
         return $this->id;
     }
+
 
     public function getOrder(): ?Order
     {

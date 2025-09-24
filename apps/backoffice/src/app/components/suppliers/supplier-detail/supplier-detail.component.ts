@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService, Supplier as ApiSupplier } from '../../../services/api.service';
+import { ApiService, Supplier } from '../../../services/api.service';
 
 @Component({
   selector: 'app-supplier-detail',
@@ -27,27 +27,27 @@ import { ApiService, Supplier as ApiSupplier } from '../../../services/api.servi
             <div class="info-grid">
               <div class="info-item">
                 <label>Company Name:</label>
-                <span>{{ supplier.name }}</span>
+                <span>{{ supplier.companyName }}</span>
               </div>
               <div class="info-item">
                 <label>Email:</label>
-                <span>{{ supplier.email }}</span>
+                <span>{{ supplier.website || 'N/A' }}</span>
               </div>
               <div class="info-item">
                 <label>Phone:</label>
-                <span>{{ supplier.phone }}</span>
+                <span>{{ supplier.serviceAreas.join(', ') || 'N/A' }}</span>
               </div>
               <div class="info-item">
                 <label>Address:</label>
-                <span>{{ supplier.address }}</span>
+                <span>{{ supplier.description || 'N/A' }}</span>
               </div>
               <div class="info-item">
                 <label>City:</label>
-                <span>{{ supplier.city }}</span>
+                <span>{{ supplier.createdAt | date:'short' }}</span>
               </div>
               <div class="info-item">
                 <label>Province:</label>
-                <span>{{ supplier.province }}</span>
+                <span>{{ supplier.rating || 'N/A' }}</span>
               </div>
             </div>
           </div>
@@ -57,8 +57,8 @@ import { ApiService, Supplier as ApiSupplier } from '../../../services/api.servi
             <div class="status-grid">
               <div class="status-item">
                 <label>Status:</label>
-                <span class="status-badge" [class]="supplier.status">
-                  {{ supplier.status }}
+                <span class="status-badge" [class]="supplier.isVerified ? 'verified' : 'pending'">
+                  {{ supplier.isVerified ? 'Verified' : 'Pending' }}
                 </span>
               </div>
               <div class="status-item">
@@ -67,19 +67,19 @@ import { ApiService, Supplier as ApiSupplier } from '../../../services/api.servi
               </div>
               <div class="status-item">
                 <label>Products Count:</label>
-                <span>{{ supplier.productsCount }}</span>
+                <span>{{ supplier.totalProducts }}</span>
               </div>
               <div class="status-item">
                 <label>Total Revenue:</label>
-                <span>₫{{ supplier.totalRevenue | number }}</span>
+                <span>{{ supplier.totalReviews }} reviews</span>
               </div>
               <div class="status-item">
                 <label>Joined:</label>
-                <span>{{ formatDate(supplier.joinedAt) }}</span>
+                <span>{{ formatDate(supplier.createdAt) }}</span>
               </div>
               <div class="status-item">
                 <label>Last Active:</label>
-                <span>{{ formatDate(supplier.lastActiveAt) }}</span>
+                <span>{{ formatDate(supplier.createdAt) }}</span>
               </div>
             </div>
           </div>
@@ -133,19 +133,19 @@ import { ApiService, Supplier as ApiSupplier } from '../../../services/api.servi
             <button 
               class="btn btn-success" 
               (click)="verifySupplier()"
-              *ngIf="supplier.status === 'pending'">
+              *ngIf="!supplier.isVerified">
               Verify Supplier
             </button>
             <button 
               class="btn btn-warning" 
               (click)="suspendSupplier()"
-              *ngIf="supplier.status === 'verified'">
+              *ngIf="supplier.isVerified">
               Suspend Supplier
             </button>
             <button 
               class="btn btn-success" 
               (click)="activateSupplier()"
-              *ngIf="supplier.status === 'suspended'">
+              *ngIf="!supplier.isVerified">
               Activate Supplier
             </button>
             <button class="btn btn-info" (click)="viewProducts()">
@@ -575,7 +575,7 @@ import { ApiService, Supplier as ApiSupplier } from '../../../services/api.servi
   `]
 })
 export class SupplierDetailComponent implements OnInit {
-  supplier: ApiSupplier | null = null;
+  supplier: Supplier | null = null;
   supplierDocuments: any[] = [];
   supplierProducts: any[] = [];
   loading = false;
@@ -624,8 +624,7 @@ export class SupplierDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading supplier documents:', error);
-        // Load mock data as fallback
-        this.loadMockDocuments();
+        // No fallback data - rely on API only
       }
     });
   }
@@ -641,51 +640,11 @@ export class SupplierDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading supplier products:', error);
-        // Load mock data as fallback
-        this.loadMockProducts();
+        // No fallback data - rely on API only
       }
     });
   }
 
-  loadMockDocuments(): void {
-    this.supplierDocuments = [
-      {
-        id: 'DOC-001',
-        type: 'business_license',
-        fileName: 'business_license.pdf',
-        fileUrl: 'https://example.com/business_license.pdf',
-        uploadedAt: '2024-01-01T00:00:00Z',
-        status: 'approved'
-      },
-      {
-        id: 'DOC-002',
-        type: 'tax_certificate',
-        fileName: 'tax_certificate.pdf',
-        fileUrl: 'https://example.com/tax_certificate.pdf',
-        uploadedAt: '2024-01-02T00:00:00Z',
-        status: 'pending'
-      }
-    ];
-  }
-
-  loadMockProducts(): void {
-    this.supplierProducts = [
-      {
-        id: 'PROD-001',
-        name: 'Dulux Weathershield Exterior Paint',
-        brand: 'Dulux',
-        price: 1250000,
-        isActive: true
-      },
-      {
-        id: 'PROD-002',
-        name: 'Dulux Interior Paint',
-        brand: 'Dulux',
-        price: 950000,
-        isActive: true
-      }
-    ];
-  }
 
   getDocumentTypeLabel(type: string): string {
     const labels: { [key: string]: string } = {

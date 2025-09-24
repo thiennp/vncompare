@@ -542,31 +542,20 @@ export class ReviewDetailComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Note: This would need to be implemented in the API service
-    // For now, we'll load mock data
-    this.loadMockReview(reviewId);
+    this.apiService.getReview(reviewId).subscribe({
+      next: (response: any) => {
+        this.review = response;
+        this.loadReviewHistory(reviewId);
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading review:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
+      }
+    });
   }
 
-  loadMockReview(reviewId: string): void {
-    this.review = {
-      id: reviewId,
-      productId: 'PROD-001',
-      productName: 'Dulux Weathershield Exterior Paint',
-      customerName: 'Nguyen Van A',
-      customerEmail: 'nguyenvana@email.com',
-      rating: 5,
-      title: 'Excellent quality paint',
-      comment: 'This paint is amazing! It covers well and looks great. Highly recommended.',
-      status: 'approved',
-      createdAt: '2024-01-10T00:00:00Z',
-      updatedAt: '2024-01-10T00:00:00Z',
-      helpful: 12,
-      verified: true
-    };
-
-    this.loadReviewHistory(reviewId);
-    this.loading = false;
-  }
 
   loadReviewHistory(reviewId: string): void {
     // Load review history

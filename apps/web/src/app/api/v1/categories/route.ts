@@ -1,106 +1,42 @@
 import { NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export async function GET() {
   try {
-    // Mock categories data for now
-    const categories = [
-      {
-        id: '1',
-        name: 'Sơn nội thất',
-        slug: 'noi-that',
-        description: 'Sơn chất lượng cao cho nội thất nhà ở',
-        productCount: 150,
-        avgPrice: 450000,
-        minPrice: 200000,
-        maxPrice: 800000,
-        avgSavings: 15,
-        comparisonCount: 1250,
-        topBrands: ['Dulux', 'Jotun', 'Kova', 'Nippon'],
-        icon: 'home',
+    // Get categories from database
+    const categories = await prisma.product.findMany({
+      select: {
+        category: true
+      },
+      distinct: ['category']
+    })
+
+    // Transform to the expected format
+    const categoryData = categories
+      .filter(cat => cat.category)
+      .map((cat, index) => ({
+        id: (index + 1).toString(),
+        name: cat.category!,
+        slug: cat.category!.toLowerCase().replace(/\s+/g, '-'),
+        description: `Sản phẩm ${cat.category}`,
+        productCount: 0, // Will be calculated separately if needed
+        avgPrice: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        avgSavings: 0,
+        comparisonCount: 0,
+        topBrands: [],
+        icon: 'paint',
         color: 'blue'
-      },
-      {
-        id: '2',
-        name: 'Sơn ngoại thất',
-        slug: 'ngoai-that',
-        description: 'Sơn chống thời tiết cho ngoại thất',
-        productCount: 120,
-        avgPrice: 380000,
-        minPrice: 180000,
-        maxPrice: 650000,
-        avgSavings: 12,
-        comparisonCount: 980,
-        topBrands: ['Dulux', 'Jotun', 'Kova', 'Maxilite'],
-        icon: 'building',
-        color: 'green'
-      },
-      {
-        id: '3',
-        name: 'Sơn chuyên dụng',
-        slug: 'chuyen-dung',
-        description: 'Sơn cho các mục đích đặc biệt',
-        productCount: 80,
-        avgPrice: 520000,
-        minPrice: 250000,
-        maxPrice: 1200000,
-        avgSavings: 18,
-        comparisonCount: 450,
-        topBrands: ['Jotun', 'Kova', 'Nippon', 'Maxilite'],
-        icon: 'shield',
-        color: 'purple'
-      },
-      {
-        id: '4',
-        name: 'Sơn công nghiệp',
-        slug: 'cong-nghiep',
-        description: 'Sơn cho các công trình công nghiệp',
-        productCount: 90,
-        avgPrice: 680000,
-        minPrice: 300000,
-        maxPrice: 1500000,
-        avgSavings: 20,
-        comparisonCount: 320,
-        topBrands: ['Jotun', 'Kova', 'Dulux', 'Nippon'],
-        icon: 'building',
-        color: 'orange'
-      },
-      {
-        id: '5',
-        name: 'Sơn trang trí',
-        slug: 'trang-tri',
-        description: 'Sơn trang trí và nghệ thuật',
-        productCount: 60,
-        avgPrice: 350000,
-        minPrice: 150000,
-        maxPrice: 600000,
-        avgSavings: 10,
-        comparisonCount: 280,
-        topBrands: ['Dulux', 'Kova', 'Nippon', 'Maxilite'],
-        icon: 'palette',
-        color: 'pink'
-      },
-      {
-        id: '6',
-        name: 'Sơn thiên nhiên',
-        slug: 'thien-nhien',
-        description: 'Sơn thân thiện với môi trường',
-        productCount: 40,
-        avgPrice: 420000,
-        minPrice: 200000,
-        maxPrice: 750000,
-        avgSavings: 8,
-        comparisonCount: 180,
-        topBrands: ['Kova', 'Nippon', 'Dulux', 'Jotun'],
-        icon: 'leaf',
-        color: 'emerald'
-      }
-    ]
+      }))
 
     return NextResponse.json({
       success: true,
       message: 'Categories retrieved successfully',
       data: {
-        categories
+        categories: categoryData
       },
       meta: {
         timestamp: new Date().toISOString(),

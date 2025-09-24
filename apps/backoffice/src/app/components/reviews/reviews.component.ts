@@ -561,62 +561,11 @@ export class ReviewsComponent implements OnInit {
         console.error('Error loading reviews:', error);
         this.error = this.apiService.handleError(error);
         this.loading = false;
-        // Load mock data as fallback
-        this.loadMockData();
+        // No fallback data - rely on API only
       }
     });
   }
 
-  loadMockData(): void {
-    this.reviews = [
-      {
-        id: 'REV-001',
-        productId: 'PROD-001',
-        productName: 'Dulux Weathershield Exterior Paint',
-        customerName: 'Nguyen Van A',
-        customerEmail: 'nguyenvana@email.com',
-        rating: 5,
-        title: 'Excellent quality paint',
-        comment: 'This paint is amazing! It covers well and looks great. Highly recommended.',
-        status: 'approved',
-        createdAt: '2024-01-10T00:00:00Z',
-        updatedAt: '2024-01-10T00:00:00Z',
-        helpful: 12,
-        verified: true
-      },
-      {
-        id: 'REV-002',
-        productId: 'PROD-002',
-        productName: 'Jotun Lady Interior Paint',
-        customerName: 'Tran Thi B',
-        customerEmail: 'tranthib@email.com',
-        rating: 4,
-        title: 'Good paint, easy to apply',
-        comment: 'The paint goes on smoothly and dries quickly. Color is exactly as expected.',
-        status: 'pending',
-        createdAt: '2024-01-12T00:00:00Z',
-        updatedAt: '2024-01-12T00:00:00Z',
-        helpful: 8,
-        verified: true
-      },
-      {
-        id: 'REV-003',
-        productId: 'PROD-003',
-        productName: 'Kova Premium Primer',
-        customerName: 'Le Van C',
-        customerEmail: 'levanc@email.com',
-        rating: 3,
-        title: 'Average primer',
-        comment: 'It works okay but could be better. Takes longer to dry than expected.',
-        status: 'rejected',
-        createdAt: '2024-01-14T00:00:00Z',
-        updatedAt: '2024-01-14T00:00:00Z',
-        helpful: 2,
-        verified: false
-      }
-    ];
-    this.filteredReviews = [...this.reviews];
-  }
 
   filterReviews(): void {
     this.filteredReviews = this.reviews.filter(review => {

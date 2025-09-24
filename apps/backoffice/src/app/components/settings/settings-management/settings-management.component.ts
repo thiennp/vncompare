@@ -769,59 +769,19 @@ export class SettingsManagementComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Note: This would need to be implemented in the API service
-    // For now, we'll load mock data
-    this.loadMockSettings();
-  }
-
-  loadMockSettings(): void {
-    this.settings = {
-      general: {
-        siteName: 'VNCompare',
-        siteDescription: 'Vietnam\'s leading paint comparison platform',
-        siteUrl: 'https://vncompare.com',
-        adminEmail: 'admin@vncompare.com',
-        timezone: 'Asia/Ho_Chi_Minh',
-        currency: 'VND',
-        language: 'vi'
+    this.apiService.getSettings().subscribe({
+      next: (response: any) => {
+        this.settings = response;
+        this.loading = false;
       },
-      business: {
-        companyName: 'VNCompare Vietnam',
-        companyAddress: '123 Le Loi Street, District 1, Ho Chi Minh City',
-        companyPhone: '+84901234567',
-        companyEmail: 'contact@vncompare.com',
-        taxNumber: '0123456789',
-        businessLicense: 'BL-2024-001'
-      },
-      shipping: {
-        defaultDeliveryFee: 50000,
-        freeShippingThreshold: 1000000,
-        maxDeliveryDays: 7,
-        shippingZones: [
-          { name: 'Zone 1 (HCMC)', fee: 50000, days: 1 },
-          { name: 'Zone 2 (Major cities)', fee: 80000, days: 2 },
-          { name: 'Zone 3 (Other provinces)', fee: 120000, days: 3 }
-        ]
-      },
-      notifications: {
-        emailNotifications: true,
-        smsNotifications: false,
-        orderNotifications: true,
-        productNotifications: true,
-        userNotifications: true
-      },
-      security: {
-        passwordMinLength: 8,
-        requireStrongPassword: true,
-        sessionTimeout: 30,
-        twoFactorAuth: false,
-        ipWhitelist: ['192.168.1.1', '10.0.0.1']
+      error: (error: any) => {
+        console.error('Error loading settings:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
       }
-    };
-
-    this.ipWhitelistText = this.settings.security.ipWhitelist.join('\n');
-    this.loading = false;
+    });
   }
+
 
   setActiveTab(tabId: string): void {
     this.activeTab = tabId;
@@ -866,8 +826,17 @@ export class SettingsManagementComponent implements OnInit {
 
   resetSettings(): void {
     if (confirm('Are you sure you want to reset all settings to their default values? This action cannot be undone.')) {
-      this.loadMockSettings();
-      alert('Settings reset to defaults!');
+      this.apiService.resetSettings().subscribe({
+        next: (response: any) => {
+          this.settings = response;
+          alert('Settings reset to defaults!');
+        },
+        error: (error: any) => {
+          console.error('Error resetting settings:', error);
+          this.error = this.apiService.handleError(error);
+          alert('Failed to reset settings. Please try again.');
+        }
+      });
     }
   }
 }

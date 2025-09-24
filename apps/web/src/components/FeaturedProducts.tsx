@@ -334,7 +334,7 @@ export default function FeaturedProducts() {
           <div className="bg-gray-50 px-4 py-3 border-t border-gray-100">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-500">
-                Hiển thị {sortedProducts.length} trong số 500+ sản phẩm
+                Hiển thị {sortedProducts.length} sản phẩm
               </div>
               <button 
                 onClick={handleViewAllProducts}

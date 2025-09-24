@@ -650,36 +650,11 @@ export class ProductDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading product reviews:', error);
-        // Load mock data as fallback
-        this.loadMockReviews();
+        // No fallback data - rely on API only
       }
     });
   }
 
-  loadMockReviews(): void {
-    this.productReviews = [
-      {
-        id: 'REV-001',
-        productId: this.product?.id,
-        customerName: 'Nguyen Van A',
-        rating: 5,
-        title: 'Excellent quality paint',
-        comment: 'This paint is amazing! It covers well and looks great. Highly recommended.',
-        status: 'approved',
-        createdAt: '2024-01-10T00:00:00Z'
-      },
-      {
-        id: 'REV-002',
-        productId: this.product?.id,
-        customerName: 'Tran Thi B',
-        rating: 4,
-        title: 'Good paint, easy to apply',
-        comment: 'The paint goes on smoothly and dries quickly. Color is exactly as expected.',
-        status: 'pending',
-        createdAt: '2024-01-12T00:00:00Z'
-      }
-    ];
-  }
 
   editProduct(): void {
     if (this.product) {

@@ -140,19 +140,17 @@ export interface Address {
 
 export interface Supplier {
   id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  province: string;
-  status: 'pending' | 'verified' | 'suspended' | 'rejected';
-  productsCount: number;
-  totalRevenue: number;
-  rating: number;
-  joinedAt: string;
-  lastActiveAt: string;
-  documents: any[];
+  companyName: string;
+  description: string;
+  logo: string | null;
+  website: string | null;
+  isVerified: boolean;
+  rating: string | null;
+  totalReviews: number;
+  serviceAreas: string[];
+  totalProducts: number;
+  activeProducts: number;
+  createdAt: string;
 }
 
 export interface Review {
@@ -539,13 +537,16 @@ export class ApiService {
     }
 
     // Temporarily use test endpoint until database is fully set up
-    return this.http.get<ApiResponse<PaginatedResponse<Supplier>>>(`${this.baseUrl}/test/suppliers`, {
+    return this.http.get<ApiResponse<{suppliers: Supplier[], pagination: any}>>(`${this.baseUrl}/test/suppliers`, {
       headers: this.getHeaders(),
       params: httpParams
     }).pipe(
       map(response => {
         if (response.success) {
-          return response.data;
+          return {
+            data: response.data.suppliers,
+            pagination: response.data.pagination
+          };
         }
         throw new Error(response.message || 'Failed to fetch suppliers');
       })
@@ -1018,6 +1019,75 @@ export class ApiService {
   }
 
   // Additional missing methods
+  
+  // Address methods - single address
+  getAddress(id: string): Observable<Address> {
+    return this.http.get<ApiResponse<Address>>(`${this.baseUrl}/addresses/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch address');
+      })
+    );
+  }
+
+  // Analytics methods - simplified
+  getAnalytics(): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/analytics`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch analytics');
+      })
+    );
+  }
+
+  // Review methods - single review
+  getReview(id: string): Observable<Review> {
+    return this.http.get<ApiResponse<Review>>(`${this.baseUrl}/reviews/${id}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch review');
+      })
+    );
+  }
+
+  // Settings methods - simplified
+  getSettings(): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/settings`, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to fetch settings');
+      })
+    );
+  }
+
+  resetSettings(): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/settings/reset`, {}, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to reset settings');
+      })
+    );
+  }
   
   // Product methods
   toggleProductStatus(id: string): Observable<Product> {

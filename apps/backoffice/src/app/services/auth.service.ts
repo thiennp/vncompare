@@ -71,37 +71,6 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    // Temporary mock authentication for development
-    if (credentials.email === 'nguyenphongthien@gmail.com' && credentials.password === 'Kimtuoc2') {
-      const mockResponse: LoginResponse = {
-        user: {
-          id: 1,
-          email: 'nguyenphongthien@gmail.com',
-          firstName: 'Phong',
-          lastName: 'Thien',
-          phone: '0901234566',
-          roles: ['ROLE_ADMIN'],
-          isActive: true,
-          emailVerified: true,
-          createdAt: new Date().toISOString(),
-          lastLoginAt: new Date().toISOString()
-        },
-        token: 'mock-jwt-token-' + Date.now(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-      };
-
-      // Store mock data
-      localStorage.setItem('auth_token', mockResponse.token);
-      localStorage.setItem('user_data', JSON.stringify(mockResponse.user));
-      this.currentUserSubject.next(mockResponse.user);
-
-      return new Observable(observer => {
-        observer.next(mockResponse);
-        observer.complete();
-      });
-    }
-
-    // Try real API call as fallback
     return this.http.post<LoginResponse>(`${this.API_BASE_URL}/auth/login`, credentials)
       .pipe(
         tap(response => {

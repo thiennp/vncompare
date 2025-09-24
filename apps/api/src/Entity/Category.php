@@ -16,8 +16,8 @@ class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
@@ -70,7 +70,7 @@ class Category
         $this->updatedAt = new \DateTime();
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

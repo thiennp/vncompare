@@ -3,66 +3,52 @@
 namespace App\Controller\Api;
 
 use App\Controller\BaseApiController;
+use App\Repository\SupplierRepository;
+use App\Repository\UserRepository;
+use App\Repository\AddressRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/v1/test')]
 class TestController extends BaseApiController
 {
+    public function __construct(
+        private SupplierRepository $supplierRepository,
+        private UserRepository $userRepository,
+        private AddressRepository $addressRepository
+    ) {
+    }
     #[Route('/suppliers', name: 'api_test_suppliers', methods: ['GET'])]
     public function getSuppliers(): JsonResponse
     {
-        $suppliers = [
-            [
-                'id' => 'sup-1',
-                'companyName' => 'Dulux Vietnam',
-                'description' => 'Premium paint supplier',
-                'logo' => null,
-                'website' => 'https://dulux.vn',
-                'isVerified' => true,
-                'rating' => 4.8,
-                'totalReviews' => 25,
-                'serviceAreas' => ['Ho Chi Minh', 'Hanoi'],
-                'totalProducts' => 25,
-                'activeProducts' => 25,
-                'createdAt' => '2024-01-01T00:00:00Z',
-            ],
-            [
-                'id' => 'sup-2',
-                'companyName' => 'Jotun Vietnam',
-                'description' => 'Quality paint solutions',
-                'logo' => null,
-                'website' => 'https://jotun.vn',
-                'isVerified' => false,
-                'rating' => 4.5,
-                'totalReviews' => 18,
-                'serviceAreas' => ['Ho Chi Minh', 'Da Nang'],
-                'totalProducts' => 18,
-                'activeProducts' => 18,
-                'createdAt' => '2024-01-05T00:00:00Z',
-            ],
-            [
-                'id' => 'sup-3',
-                'companyName' => 'Kova Paint',
-                'description' => 'Local paint manufacturer',
-                'logo' => null,
-                'website' => 'https://kova.vn',
-                'isVerified' => true,
-                'rating' => 4.9,
-                'totalReviews' => 32,
-                'serviceAreas' => ['Hanoi', 'Hai Phong'],
-                'totalProducts' => 32,
-                'activeProducts' => 32,
-                'createdAt' => '2024-01-10T00:00:00Z',
-            ]
-        ];
+        // Debug: Log that we're using database
+        error_log('TestController: Using database for suppliers');
+        $suppliers = $this->supplierRepository->findAll();
+        error_log('TestController: Found ' . count($suppliers) . ' suppliers in database');
+        
+        $suppliersData = array_map(function ($supplier) {
+            return [
+                'id' => $supplier->getId(),
+                'companyName' => $supplier->getCompanyName(),
+                'description' => $supplier->getDescription(),
+                'logo' => $supplier->getLogo(),
+                'website' => $supplier->getWebsite(),
+                'isVerified' => $supplier->isVerified(),
+                'rating' => $supplier->getRating(),
+                'totalReviews' => $supplier->getTotalReviews(),
+                'serviceAreas' => $supplier->getServiceAreas(),
+                'totalProducts' => $supplier->getTotalProducts(),
+                'activeProducts' => $supplier->getActiveProducts(),
+                'createdAt' => $supplier->getCreatedAt()?->format('c'),
+            ];
+        }, $suppliers);
 
         return $this->successResponse([
-            'suppliers' => $suppliers,
+            'suppliers' => $suppliersData,
             'pagination' => [
                 'page' => 1,
                 'limit' => 50,
-                'total' => 3,
+                'total' => count($suppliersData),
                 'totalPages' => 1,
             ]
         ]);
@@ -114,57 +100,33 @@ class TestController extends BaseApiController
         ], 'Supplier verification updated successfully');
     }
 
-    #[Route('/users', name: 'api_test_users', methods: ['GET'])]
+    #[Route('/users', name: 'api_test_users', methods: ['GET'], options: ['trailing_slash_on_root' => false])]
     public function getUsers(): JsonResponse
     {
-        $users = [
-            [
-                'id' => 'user-1',
-                'email' => 'admin@vncompare.com',
-                'firstName' => 'Admin',
-                'lastName' => 'User',
-                'phone' => '+84901234567',
-                'role' => 'ADMIN',
-                'isActive' => true,
-                'emailVerified' => true,
-                'phoneVerified' => true,
-                'createdAt' => '2024-01-01T00:00:00Z',
-                'lastLoginAt' => '2024-01-15T10:30:00Z',
-            ],
-            [
-                'id' => 'user-2',
-                'email' => 'john.doe@example.com',
-                'firstName' => 'John',
-                'lastName' => 'Doe',
-                'phone' => '+84901234568',
-                'role' => 'USER',
-                'isActive' => true,
-                'emailVerified' => true,
-                'phoneVerified' => false,
-                'createdAt' => '2024-01-02T00:00:00Z',
-                'lastLoginAt' => '2024-01-14T15:20:00Z',
-            ],
-            [
-                'id' => 'user-3',
-                'email' => 'supplier@example.com',
-                'firstName' => 'Jane',
-                'lastName' => 'Smith',
-                'phone' => '+84901234569',
-                'role' => 'SUPPLIER',
-                'isActive' => true,
-                'emailVerified' => true,
-                'phoneVerified' => true,
-                'createdAt' => '2024-01-03T00:00:00Z',
-                'lastLoginAt' => '2024-01-13T09:15:00Z',
-            ]
-        ];
+        $users = $this->userRepository->findAll();
+        
+        $usersData = array_map(function ($user) {
+            return [
+                'id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'phone' => $user->getPhone(),
+                'role' => $user->getRoles()[0] ?? 'USER',
+                'isActive' => $user->isActive(),
+                'emailVerified' => $user->isEmailVerified(),
+                'phoneVerified' => $user->isPhoneVerified(),
+                'createdAt' => $user->getCreatedAt()?->format('c'),
+                'lastLoginAt' => $user->getLastLoginAt()?->format('c'),
+            ];
+        }, $users);
 
         return $this->successResponse([
-            'users' => $users,
+            'users' => $usersData,
             'pagination' => [
                 'page' => 1,
                 'limit' => 50,
-                'total' => 3,
+                'total' => count($usersData),
                 'totalPages' => 1,
             ]
         ]);
@@ -195,41 +157,30 @@ class TestController extends BaseApiController
     #[Route('/addresses', name: 'api_test_addresses', methods: ['GET'])]
     public function getAddresses(): JsonResponse
     {
-        $addresses = [
-            [
-                'id' => 'addr-1',
-                'street' => '123 Nguyen Hue Boulevard',
-                'ward' => 'Ward 1',
-                'district' => 'District 1',
-                'province' => 'Ho Chi Minh City',
-                'postalCode' => '700000',
-                'isServiceArea' => true,
-                'deliveryFee' => 50000,
-                'estimatedDays' => 1,
-                'createdAt' => '2024-01-01T00:00:00Z',
-                'updatedAt' => '2024-01-15T10:30:00Z',
-            ],
-            [
-                'id' => 'addr-2',
-                'street' => '456 Le Loi Street',
-                'ward' => 'Ward 2',
-                'district' => 'District 1',
-                'province' => 'Ho Chi Minh City',
-                'postalCode' => '700000',
-                'isServiceArea' => true,
-                'deliveryFee' => 50000,
-                'estimatedDays' => 1,
-                'createdAt' => '2024-01-02T00:00:00Z',
-                'updatedAt' => '2024-01-15T14:20:00Z',
-            ]
-        ];
+        $addresses = $this->addressRepository->findAll();
+        
+        $addressesData = array_map(function ($address) {
+            return [
+                'id' => $address->getId(),
+                'street' => $address->getStreet(),
+                'ward' => $address->getWard(),
+                'district' => $address->getDistrict(),
+                'province' => $address->getProvince(),
+                'postalCode' => $address->getPostalCode(),
+                'isServiceArea' => $address->isServiceArea(),
+                'deliveryFee' => $address->getDeliveryFee(),
+                'estimatedDays' => $address->getEstimatedDays(),
+                'createdAt' => $address->getCreatedAt()?->format('c'),
+                'updatedAt' => $address->getUpdatedAt()?->format('c'),
+            ];
+        }, $addresses);
 
         return $this->successResponse([
-            'addresses' => $addresses,
+            'addresses' => $addressesData,
             'pagination' => [
                 'page' => 1,
                 'limit' => 50,
-                'total' => 2,
+                'total' => count($addressesData),
                 'totalPages' => 1,
             ]
         ]);

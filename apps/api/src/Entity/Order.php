@@ -16,8 +16,8 @@ class Order
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
@@ -97,6 +97,7 @@ class Order
     {
         return $this->id;
     }
+
 
     public function getUser(): ?User
     {

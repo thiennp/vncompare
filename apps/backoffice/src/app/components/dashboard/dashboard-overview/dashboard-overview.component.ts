@@ -14,14 +14,14 @@ interface DashboardMetrics {
   ordersGrowth: number;
   productsGrowth: number;
   usersGrowth: number;
-  recentOrders: Array<{
+  recentOrders?: Array<{
     id: string;
     customerName: string;
     totalAmount: number;
     status: string;
     createdAt: string;
   }>;
-  topProducts: Array<{
+  topProducts?: Array<{
     id: string;
     name: string;
     sales: number;
@@ -739,44 +739,19 @@ export class DashboardOverviewComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Note: This would need to be implemented in the API service
-    // For now, we'll load mock data
-    this.loadMockMetrics();
+    this.apiService.getDashboardMetrics().subscribe({
+      next: (response) => {
+        this.metrics = response;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading dashboard metrics:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
+      }
+    });
   }
 
-  loadMockMetrics(): void {
-    this.metrics = {
-      totalRevenue: 125000000,
-      totalOrders: 1250,
-      totalProducts: 150,
-      totalUsers: 850,
-      totalSuppliers: 25,
-      totalReviews: 320,
-      revenueGrowth: 15.5,
-      ordersGrowth: 8.2,
-      productsGrowth: 12.3,
-      usersGrowth: 6.7,
-      recentOrders: [
-        { id: 'ORD-001', customerName: 'Nguyen Van A', totalAmount: 3350000, status: 'delivered', createdAt: '2024-01-15T10:30:00Z' },
-        { id: 'ORD-002', customerName: 'Tran Thi B', totalAmount: 2100000, status: 'shipped', createdAt: '2024-01-15T09:15:00Z' },
-        { id: 'ORD-003', customerName: 'Le Van C', totalAmount: 1800000, status: 'confirmed', createdAt: '2024-01-15T08:45:00Z' },
-        { id: 'ORD-004', customerName: 'Pham Thi D', totalAmount: 4200000, status: 'pending', createdAt: '2024-01-15T07:20:00Z' },
-        { id: 'ORD-005', customerName: 'Hoang Van E', totalAmount: 1500000, status: 'delivered', createdAt: '2024-01-14T16:30:00Z' }
-      ],
-      topProducts: [
-        { id: 'PROD-001', name: 'Dulux Weathershield Exterior Paint', sales: 125, revenue: 15000000 },
-        { id: 'PROD-002', name: 'Jotun Lady Interior Paint', sales: 98, revenue: 12000000 },
-        { id: 'PROD-003', name: 'Kova Premium Primer', sales: 87, revenue: 10000000 },
-        { id: 'PROD-004', name: 'Nippon Paint Exterior', sales: 76, revenue: 9500000 },
-        { id: 'PROD-005', name: 'Sika Paint Interior', sales: 65, revenue: 8000000 }
-      ],
-      pendingReviews: 12,
-      lowStockProducts: 8,
-      pendingSuppliers: 3
-    };
-
-    this.loading = false;
-  }
 
   refreshData(): void {
     this.loadDashboard();

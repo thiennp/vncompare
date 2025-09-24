@@ -1,24 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../../services/api.service';
-
-interface Supplier {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  province: string;
-  status: string;
-  productsCount: number;
-  totalRevenue: number;
-  rating: number;
-  joinedAt: string;
-  lastActiveAt: string;
-  documents: any[];
-}
+import { ApiService, Supplier } from '../../services/api.service';
 
 @Component({
   selector: 'app-suppliers',
@@ -37,7 +20,7 @@ interface Supplier {
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-label">Total Suppliers</div>
-          <div class="stat-value">{{ suppliers.length }}</div>
+          <div class="stat-value">{{ suppliers?.length || 0 }}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Verified</div>
@@ -62,29 +45,29 @@ interface Supplier {
           <table class="data-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
+                <th>Company Name</th>
+                <th>Website</th>
+                <th>Service Areas</th>
                 <th>Status</th>
                 <th>Products</th>
-                <th>Revenue</th>
                 <th>Rating</th>
+                <th>Reviews</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let supplier of suppliers">
-                <td>{{ supplier.name }}</td>
-                <td>{{ supplier.email }}</td>
-                <td>{{ supplier.phone }}</td>
+              <tr *ngFor="let supplier of filteredSuppliers">
+                <td>{{ supplier.companyName }}</td>
+                <td>{{ supplier.website || 'N/A' }}</td>
+                <td>{{ supplier.serviceAreas.join(', ') }}</td>
                 <td>
-                  <span class="status-badge" [class]="'status-' + supplier.status">
-                    {{ supplier.status }}
+                  <span class="status-badge" [class]="'status-' + (supplier.isVerified ? 'verified' : 'pending')">
+                    {{ supplier.isVerified ? 'Verified' : 'Pending' }}
                   </span>
                 </td>
-                <td>{{ supplier.productsCount }}</td>
-                <td>₫{{ supplier.totalRevenue | number }}</td>
-                <td>{{ supplier.rating }}</td>
+                <td>{{ supplier.totalProducts }}</td>
+                <td>{{ supplier.rating || 'N/A' }}</td>
+                <td>{{ supplier.totalReviews }}</td>
                 <td>
                   <div class="action-buttons">
                     <button class="btn-icon" (click)="viewSupplier(supplier)" title="View">
@@ -249,56 +232,10 @@ interface Supplier {
   `]
 })
 export class SuppliersComponent implements OnInit {
-  suppliers: Supplier[] = [
-    {
-      id: 'SUP-001',
-      name: 'Dulux Vietnam',
-      email: 'contact@dulux.vn',
-      phone: '+84901234567',
-      address: '123 Nguyen Hue Street',
-      city: 'Ho Chi Minh City',
-      province: 'Ho Chi Minh',
-      status: 'verified',
-      productsCount: 25,
-      totalRevenue: 50000000,
-      rating: 4.8,
-      joinedAt: '2024-01-01T00:00:00Z',
-      lastActiveAt: '2024-01-15T10:30:00Z',
-      documents: []
-    },
-    {
-      id: 'SUP-002',
-      name: 'Jotun Vietnam',
-      email: 'info@jotun.vn',
-      phone: '+84901234568',
-      address: '456 Le Loi Street',
-      city: 'Ho Chi Minh City',
-      province: 'Ho Chi Minh',
-      status: 'pending',
-      productsCount: 18,
-      totalRevenue: 25000000,
-      rating: 4.5,
-      joinedAt: '2024-01-05T00:00:00Z',
-      lastActiveAt: '2024-01-14T14:20:00Z',
-      documents: []
-    },
-    {
-      id: 'SUP-003',
-      name: 'Kova Paint',
-      email: 'sales@kova.vn',
-      phone: '+84901234569',
-      address: '789 Tran Hung Dao',
-      city: 'Hanoi',
-      province: 'Hanoi',
-      status: 'verified',
-      productsCount: 32,
-      totalRevenue: 75000000,
-      rating: 4.9,
-      joinedAt: '2024-01-10T00:00:00Z',
-      lastActiveAt: '2024-01-15T09:15:00Z',
-      documents: []
-    }
-  ];
+  suppliers: Supplier[] = [];
+  filteredSuppliers: Supplier[] = [];
+  loading: boolean = false;
+  error: string | null = null;
 
   constructor(
     private apiService: ApiService,
@@ -313,11 +250,24 @@ export class SuppliersComponent implements OnInit {
   }
 
   /**
-   * Loads suppliers data from the API or mock data
+   * Loads suppliers data from the API
    */
   loadSuppliers(): void {
-    // Mock data loaded in constructor
-    console.log('Suppliers loaded:', this.suppliers.length);
+    this.loading = true;
+    this.error = null;
+
+    this.apiService.getSuppliers().subscribe({
+      next: (response) => {
+        this.suppliers = Array.isArray(response.data) ? response.data : [];
+        this.filteredSuppliers = [...this.suppliers];
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading suppliers:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
+      }
+    });
   }
 
   /**
@@ -348,12 +298,12 @@ export class SuppliersComponent implements OnInit {
    * @param supplier - The supplier to verify
    */
   verifySupplier(supplier: Supplier): void {
-    if (confirm(`Are you sure you want to verify "${supplier.name}"?`)) {
+    if (confirm(`Are you sure you want to verify "${supplier.companyName}"?`)) {
       this.apiService.verifySupplier(supplier.id, true).subscribe({
         next: (updatedSupplier) => {
           // Update supplier in local array
-          const index = this.suppliers.findIndex(s => s.id === supplier.id);
-          if (index !== -1) {
+          const index = this.suppliers?.findIndex(s => s.id === supplier.id);
+          if (index !== -1 && this.suppliers) {
             this.suppliers[index] = updatedSupplier;
           }
           console.log('Supplier verified successfully');
@@ -371,11 +321,11 @@ export class SuppliersComponent implements OnInit {
    * @param supplier - The supplier to delete
    */
   deleteSupplier(supplier: Supplier): void {
-    if (confirm(`Are you sure you want to delete "${supplier.name}"? This action cannot be undone.`)) {
+    if (confirm(`Are you sure you want to delete "${supplier.companyName}"? This action cannot be undone.`)) {
       this.apiService.deleteSupplier(supplier.id).subscribe({
         next: () => {
           // Remove supplier from local array
-          this.suppliers = this.suppliers.filter(s => s.id !== supplier.id);
+          this.suppliers = this.suppliers?.filter(s => s.id !== supplier.id) || [];
           console.log('Supplier deleted successfully');
         },
         error: (error) => {
@@ -391,13 +341,13 @@ export class SuppliersComponent implements OnInit {
    * @param supplier - The supplier to toggle
    */
   toggleSupplierStatus(supplier: Supplier): void {
-    const action = supplier.status === 'verified' ? 'deactivate' : 'activate';
+    const action = supplier.isVerified ? 'deactivate' : 'activate';
     if (confirm(`Are you sure you want to ${action} this supplier?`)) {
-      this.apiService.updateSupplierStatus(supplier.id, supplier.status === 'verified' ? 'inactive' : 'verified').subscribe({
+      this.apiService.updateSupplierStatus(supplier.id, supplier.isVerified ? 'inactive' : 'verified').subscribe({
         next: (updatedSupplier) => {
           // Update supplier in local array
-          const index = this.suppliers.findIndex(s => s.id === supplier.id);
-          if (index !== -1) {
+          const index = this.suppliers?.findIndex(s => s.id === supplier.id);
+          if (index !== -1 && this.suppliers) {
             this.suppliers[index] = updatedSupplier;
           }
           console.log('Supplier status updated successfully');
@@ -415,7 +365,7 @@ export class SuppliersComponent implements OnInit {
    * @returns The number of verified suppliers
    */
   get verifiedSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'verified').length;
+    return this.suppliers?.filter(supplier => supplier.isVerified).length || 0;
   }
 
   /**
@@ -423,7 +373,7 @@ export class SuppliersComponent implements OnInit {
    * @returns The number of pending suppliers
    */
   get pendingSuppliers(): number {
-    return this.suppliers.filter(supplier => supplier.status === 'pending').length;
+    return this.suppliers?.filter(supplier => !supplier.isVerified).length || 0;
   }
 
   /**
@@ -431,6 +381,7 @@ export class SuppliersComponent implements OnInit {
    * @returns The total revenue amount
    */
   get totalRevenue(): number {
-    return this.suppliers.reduce((sum, supplier) => sum + supplier.totalRevenue, 0);
+    // Since the API doesn't provide revenue data, return 0 or calculate from other metrics
+    return 0;
   }
 }

@@ -432,73 +432,11 @@ export class OrdersComponent implements OnInit {
         console.error('Error loading orders:', error);
         this.error = this.apiService.handleError(error);
         this.loading = false;
-        // Fallback to mock data
-        this.loadMockData();
+        // No fallback data - rely on API only
       }
     });
   }
 
-  loadMockData(): void {
-    this.orders = [
-      {
-        id: 'ORD-001',
-        customerName: 'Nguyen Van A',
-        customerEmail: 'nguyenvana@email.com',
-        customerPhone: '+84901234567',
-        products: [
-          { productId: '1', productName: 'Dulux Weathershield', quantity: 2, unitPrice: 1250000, totalPrice: 2500000 },
-          { productId: '2', productName: 'Jotun Lady', quantity: 1, unitPrice: 850000, totalPrice: 850000 }
-        ],
-        totalAmount: 3350000,
-        status: 'delivered',
-        paymentStatus: 'paid',
-        shippingAddress: {
-          id: '1',
-          street: '123 Le Loi Street',
-          ward: 'Ward 1',
-          district: 'District 1',
-          province: 'Ho Chi Minh City',
-          postalCode: '700000',
-          isServiceArea: true,
-          deliveryFee: 50000,
-          estimatedDays: 3,
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z'
-        },
-        createdAt: '2024-01-15T10:30:00Z',
-        updatedAt: '2024-01-16T14:20:00Z',
-        estimatedDelivery: '2024-01-18T00:00:00Z'
-      },
-      {
-        id: 'ORD-002',
-        customerName: 'Tran Thi B',
-        customerEmail: 'tranthib@email.com',
-        customerPhone: '+84901234568',
-        products: [
-          { productId: '3', productName: 'Kova Premium', quantity: 1, unitPrice: 2100000, totalPrice: 2100000 }
-        ],
-        totalAmount: 2100000,
-        status: 'shipped',
-        paymentStatus: 'paid',
-        shippingAddress: {
-          id: '2',
-          street: '456 Nguyen Hue Boulevard',
-          ward: 'Ward 2',
-          district: 'District 1',
-          province: 'Ho Chi Minh City',
-          postalCode: '700000',
-          isServiceArea: true,
-          deliveryFee: 50000,
-          estimatedDays: 2,
-          createdAt: '2024-01-01T00:00:00Z',
-          updatedAt: '2024-01-01T00:00:00Z'
-        },
-        createdAt: '2024-01-15T14:15:00Z',
-        updatedAt: '2024-01-16T09:30:00Z',
-        estimatedDelivery: '2024-01-18T00:00:00Z'
-      }
-    ];
-  }
 
   createOrder(): void {
     // Navigate to create order page

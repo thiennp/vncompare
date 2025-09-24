@@ -13,8 +13,8 @@ class Notification
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'uuid')]
-    private ?string $id = null;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false)]
@@ -54,6 +54,7 @@ class Notification
     {
         return $this->id;
     }
+
 
     public function getUser(): ?User
     {

@@ -537,30 +537,21 @@ export class AddressDetailComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Note: This would need to be implemented in the API service
-    // For now, we'll load mock data
-    this.loadMockAddress(addressId);
+    this.apiService.getAddress(addressId).subscribe({
+      next: (response: any) => {
+        this.address = response;
+        this.loadAddressStats(addressId);
+        this.loadAddressOrders(addressId);
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading address:', error);
+        this.error = this.apiService.handleError(error);
+        this.loading = false;
+      }
+    });
   }
 
-  loadMockAddress(addressId: string): void {
-    this.address = {
-      id: addressId,
-      street: '123 Le Loi Street',
-      ward: 'Ward 1',
-      district: 'District 1',
-      province: 'Ho Chi Minh City',
-      postalCode: '700000',
-      isServiceArea: true,
-      deliveryFee: 50000,
-      estimatedDays: 3,
-      createdAt: '2024-01-01T00:00:00Z',
-      updatedAt: '2024-01-15T10:30:00Z'
-    };
-
-    this.loadAddressStats(addressId);
-    this.loadAddressOrders(addressId);
-    this.loading = false;
-  }
 
   loadAddressStats(addressId: string): void {
     // Load address statistics

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class EnvironmentService {
   private readonly API_BASE_URLS = {
-    localhost: 'http://localhost:8000/api/v1',
+    localhost: 'http://localhost:8001/api/v1',
     production: 'https://api.vncompare.com/api/v1'
   };
 

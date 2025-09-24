@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiService, Product as ApiProduct } from '../../../services/api.service';
+import { ApiService, Product as ApiProduct, Supplier } from '../../../services/api.service';
 
 interface Category {
   id: string;
@@ -10,21 +10,6 @@ interface Category {
   slug: string;
 }
 
-interface Supplier {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  province: string;
-  status: 'pending' | 'verified' | 'suspended' | 'rejected';
-  productsCount: number;
-  totalRevenue: number;
-  rating: number;
-  joinedAt: string;
-  lastActiveAt: string;
-}
 
 @Component({
   selector: 'app-add-product',
@@ -151,7 +136,7 @@ interface Supplier {
                 class="form-select">
                 <option value="">Select a supplier</option>
                 <option *ngFor="let supplier of suppliers" [value]="supplier.id">
-                  {{ supplier.name }} (Rating: {{ supplier.rating }})
+                  {{ supplier.companyName }} (Rating: {{ supplier.rating }})
                 </option>
               </select>
             </div>
@@ -661,8 +646,8 @@ export class AddProductComponent implements OnInit {
       },
       supplier: {
         id: this.selectedSupplierId,
-        companyName: this.suppliers.find(s => s.id === this.selectedSupplierId)?.name || '',
-        rating: this.suppliers.find(s => s.id === this.selectedSupplierId)?.rating || 0
+        companyName: this.suppliers.find(s => s.id === this.selectedSupplierId)?.companyName || '',
+        rating: parseFloat(this.suppliers.find(s => s.id === this.selectedSupplierId)?.rating || '0')
       }
     };
 

@@ -4,6 +4,34 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
+// Email sending function (placeholder - implement with your preferred email service)
+async function sendPasswordResetEmail(email: string, resetUrl: string) {
+  // In a real application, you would use a service like:
+  // - SendGrid
+  // - AWS SES
+  // - Nodemailer with SMTP
+  // - Resend
+  // - Mailgun
+  
+  console.log(`Sending password reset email to ${email}`);
+  console.log(`Reset URL: ${resetUrl}`);
+  
+  // For now, just log the email content
+  const emailContent = `
+    <h2>Password Reset Request</h2>
+    <p>You requested a password reset for your account.</p>
+    <p>Click the link below to reset your password:</p>
+    <a href="${resetUrl}">Reset Password</a>
+    <p>This link will expire in 1 hour.</p>
+    <p>If you didn't request this, please ignore this email.</p>
+  `;
+  
+  console.log('Email content:', emailContent);
+  
+  // In production, replace this with actual email sending
+  return Promise.resolve();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
@@ -45,8 +73,14 @@ export async function POST(request: NextRequest) {
     // For demo purposes, we'll just return the token
     const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/reset-password?token=${resetToken}`;
 
-    // TODO: Send email with resetUrl
-    console.log('Password reset URL:', resetUrl);
+    // Send email with resetUrl
+    try {
+      await sendPasswordResetEmail(email, resetUrl);
+      console.log('Password reset email sent to:', email);
+    } catch (emailError) {
+      console.error('Failed to send email:', emailError);
+      // Continue anyway - don't fail the request if email fails
+    }
 
     return NextResponse.json({
       success: true,

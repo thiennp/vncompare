@@ -70,4 +70,25 @@ class HealthController extends BaseApiController
             'cache' => 'operational'
         ]);
     }
+
+    #[Route('/dashboard/metrics', name: 'api_dashboard_metrics', methods: ['GET'])]
+    public function dashboardMetrics(): JsonResponse
+    {
+        // Mock data for now - in a real application, this would query the database
+        return $this->successResponse([
+            'totalRevenue' => 1250000,
+            'totalOrders' => 1250,
+            'totalProducts' => 450,
+            'totalUsers' => 3200,
+            'totalSuppliers' => 85,
+            'totalReviews' => 890,
+            'revenueGrowth' => 12.5,
+            'ordersGrowth' => 8.3,
+            'productsGrowth' => 15.2,
+            'usersGrowth' => 22.1,
+            'pendingReviews' => 23,
+            'lowStockProducts' => 12,
+            'pendingSuppliers' => 5
+        ]);
+    }
 }
