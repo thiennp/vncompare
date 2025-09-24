@@ -6,6 +6,7 @@ use App\Controller\BaseApiController;
 use App\Repository\SupplierRepository;
 use App\Repository\UserRepository;
 use App\Repository\AddressRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,7 +16,8 @@ class TestController extends BaseApiController
     public function __construct(
         private SupplierRepository $supplierRepository,
         private UserRepository $userRepository,
-        private AddressRepository $addressRepository
+        private AddressRepository $addressRepository,
+        private EntityManagerInterface $entityManager
     ) {
     }
     #[Route('/suppliers', name: 'api_test_suppliers', methods: ['GET'])]
@@ -57,46 +59,92 @@ class TestController extends BaseApiController
     #[Route('/suppliers', name: 'api_test_create_supplier', methods: ['POST'])]
     public function createSupplier(): JsonResponse
     {
-        $newSupplier = [
-            'id' => 'sup-' . uniqid(),
-            'companyName' => 'New Supplier',
-            'description' => 'Newly created supplier',
-            'logo' => null,
-            'website' => null,
-            'isVerified' => false,
-            'rating' => null,
-            'totalReviews' => 0,
-            'serviceAreas' => [],
-            'totalProducts' => 0,
-            'activeProducts' => 0,
-            'createdAt' => date('c'),
+        // Create a new User entity for the supplier
+        $user = new \App\Entity\User();
+        $user->setEmail('supplier' . uniqid() . '@example.com');
+        $user->setFirstName('Supplier');
+        $user->setLastName('User');
+        $user->setPassword('password123');
+        $user->setRoles(['ROLE_SUPPLIER']);
+        $user->setActive(true);
+        $user->setCreatedAt(new \DateTime());
+
+        // Create a new Supplier entity
+        $supplier = new \App\Entity\Supplier();
+        $supplier->setUser($user);
+        $supplier->setCompanyName('New Supplier');
+        $supplier->setBusinessLicense('BL' . uniqid());
+        $supplier->setTaxCode('TC' . uniqid());
+        $supplier->setDescription('Newly created supplier');
+        $supplier->setLogo(null);
+        $supplier->setWebsite(null);
+        $supplier->setVerified(false);
+        $supplier->setRating(null);
+        $supplier->setTotalReviews(0);
+        $supplier->setServiceAreas([]);
+        $supplier->setCreatedAt(new \DateTime());
+
+        // Save to database
+        $this->entityManager->persist($user);
+        $this->entityManager->persist($supplier);
+        $this->entityManager->flush();
+
+        // Return the created supplier data
+        $supplierData = [
+            'id' => (string) $supplier->getId(),
+            'companyName' => $supplier->getCompanyName(),
+            'description' => $supplier->getDescription(),
+            'logo' => $supplier->getLogo(),
+            'website' => $supplier->getWebsite(),
+            'isVerified' => $supplier->isVerified(),
+            'rating' => $supplier->getRating(),
+            'totalReviews' => $supplier->getTotalReviews(),
+            'serviceAreas' => $supplier->getServiceAreas(),
+            'totalProducts' => $supplier->getTotalProducts(),
+            'activeProducts' => $supplier->getActiveProducts(),
+            'createdAt' => $supplier->getCreatedAt()?->format('c'),
         ];
 
         return $this->successResponse([
-            'supplier' => $newSupplier
+            'supplier' => $supplierData
         ], 'Supplier created successfully', 201);
     }
 
     #[Route('/suppliers/{id}/verify', name: 'api_test_verify_supplier', methods: ['POST'])]
     public function verifySupplier(string $id): JsonResponse
     {
-        $supplier = [
-            'id' => $id,
-            'companyName' => 'Updated Supplier',
-            'description' => 'Verified supplier',
-            'logo' => null,
-            'website' => null,
-            'isVerified' => true,
-            'rating' => 4.0,
-            'totalReviews' => 0,
-            'serviceAreas' => [],
-            'totalProducts' => 0,
-            'activeProducts' => 0,
-            'createdAt' => date('c'),
+        // Find the supplier in the database
+        $supplier = $this->supplierRepository->find($id);
+        
+        if (!$supplier) {
+            return $this->errorResponse('Supplier not found', 404);
+        }
+
+        // Update supplier verification status
+        $supplier->setVerified(true);
+        $supplier->setRating('4.0');
+        
+        // Save changes to database
+        $this->entityManager->flush();
+
+        // Return the updated supplier data
+        $supplierData = [
+            'id' => (string) $supplier->getId(),
+            'companyName' => $supplier->getCompanyName(),
+            'description' => $supplier->getDescription(),
+            'logo' => $supplier->getLogo(),
+            'website' => $supplier->getWebsite(),
+            'isVerified' => $supplier->isVerified(),
+            'rating' => $supplier->getRating(),
+            'totalReviews' => $supplier->getTotalReviews(),
+            'serviceAreas' => $supplier->getServiceAreas(),
+            'totalProducts' => $supplier->getTotalProducts(),
+            'activeProducts' => $supplier->getActiveProducts(),
+            'createdAt' => $supplier->getCreatedAt()?->format('c'),
         ];
 
         return $this->successResponse([
-            'supplier' => $supplier
+            'supplier' => $supplierData
         ], 'Supplier verification updated successfully');
     }
 
