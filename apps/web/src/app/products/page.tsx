@@ -131,7 +131,7 @@ export default function ProductsPage() {
 
   const addToCart = (product: Product) => {
     addItem(product, 1);
-    logger.logUserAction('Add to cart', undefined, { productId: product.id, productName: product.name });
+    logger.info('User action: Add to cart', { productId: product.id, productName: product.name });
   };
 
   if (loading) {
