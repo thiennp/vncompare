@@ -113,152 +113,23 @@ class AppFixtures extends Fixture
     {
         $suppliers = [];
         
-        $supplierData = [
-            [
-                'companyName' => 'Công ty TNHH Sơn KOVA',
-                'businessLicense' => '0101234567',
-                'taxCode' => '0101234567',
-                'description' => 'Nhà sản xuất sơn hàng đầu Việt Nam với hơn 30 năm kinh nghiệm, chuyên sản xuất sơn nước, sơn dầu và các sản phẩm bảo vệ bề mặt',
-                'website' => 'https://kova.com.vn',
-                'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Hải Phòng'],
-                'user' => [
-                    'email' => 'contact@kova.com.vn',
-                    'firstName' => 'Nguyễn',
-                    'lastName' => 'Văn Kova',
-                    'phone' => '02812345678',
-                    'roles' => ['ROLE_SUPPLIER']
-                ]
-            ],
-            [
-                'companyName' => 'Công ty TNHH Sơn Jotun Việt Nam',
-                'businessLicense' => '0102345678',
-                'taxCode' => '0102345678',
-                'description' => 'Thương hiệu sơn quốc tế uy tín từ Na Uy, chuyên sơn công nghiệp, sơn dân dụng và sơn bảo vệ kết cấu thép',
-                'website' => 'https://jotun.com.vn',
-                'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng', 'Vũng Tàu'],
-                'user' => [
-                    'email' => 'info@jotun.com.vn',
-                    'firstName' => 'Trần',
-                    'lastName' => 'Thị Jotun',
-                    'phone' => '02823456789',
-                    'roles' => ['ROLE_SUPPLIER']
-                ]
-            ],
-            [
-                'companyName' => 'Công ty TNHH Sơn Dulux Việt Nam',
-                'businessLicense' => '0103456789',
-                'taxCode' => '0103456789',
-                'description' => 'Thương hiệu sơn toàn cầu của AkzoNobel, đa dạng sản phẩm sơn nội thất, ngoại thất và sơn chuyên dụng',
-                'website' => 'https://dulux.com.vn',
-                'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Cần Thơ', 'Nha Trang', 'Huế'],
-                'user' => [
-                    'email' => 'contact@dulux.com.vn',
-                    'firstName' => 'Lê',
-                    'lastName' => 'Văn Dulux',
-                    'phone' => '02834567890',
-                    'roles' => ['ROLE_SUPPLIER']
-                ]
-            ],
-            [
-                'companyName' => 'Công ty TNHH Sơn Nippon Việt Nam',
-                'businessLicense' => '0104567890',
-                'taxCode' => '0104567890',
-                'description' => 'Thương hiệu sơn Nhật Bản chất lượng cao, công nghệ tiên tiến, chuyên sơn nước và sơn chống thấm',
-                'website' => 'https://nipponpaint.com.vn',
-                'isVerified' => true,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng', 'Hải Phòng', 'Vũng Tàu', 'Quảng Ninh'],
-                'user' => [
-                    'email' => 'info@nipponpaint.com.vn',
-                    'firstName' => 'Phạm',
-                    'lastName' => 'Thị Nippon',
-                    'phone' => '02845678901',
-                    'roles' => ['ROLE_SUPPLIER']
-                ]
-            ],
-            [
-                'companyName' => 'Công ty TNHH Sơn Maxilite',
-                'businessLicense' => '0105678901',
-                'taxCode' => '0105678901',
-                'description' => 'Nhà sản xuất sơn giá rẻ, chất lượng tốt cho thị trường đại chúng, chuyên sơn nước và sơn dầu',
-                'website' => 'https://maxilite.com.vn',
-                'isVerified' => false,
-                'serviceAreas' => ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng'],
-                'user' => [
-                    'email' => 'contact@maxilite.com.vn',
-                    'firstName' => 'Hoàng',
-                    'lastName' => 'Văn Maxilite',
-                    'phone' => '02856789012',
-                    'roles' => ['ROLE_SUPPLIER']
-                ]
-            ]
-        ];
-
-        foreach ($supplierData as $data) {
-            // Create user
-            $user = new User();
-            $user->setEmail($data['user']['email'])
-                 ->setFirstName($data['user']['firstName'])
-                 ->setLastName($data['user']['lastName'])
-                 ->setPhone($data['user']['phone'])
-                 ->setRoles($data['user']['roles'])
-                 ->setPassword($this->passwordHasher->hashPassword($user, 'password123'))
-                 ->setActive(true)
-                 ->setEmailVerified(true);
-            
-            $manager->persist($user);
-
-            // Create supplier
-            $supplier = new Supplier();
-            $supplier->setUser($user)
-                    ->setCompanyName($data['companyName'])
-                    ->setBusinessLicense($data['businessLicense'])
-                    ->setTaxCode($data['taxCode'])
-                    ->setDescription($data['description'])
-                    ->setWebsite($data['website'])
-                    ->setVerified($data['isVerified'])
-                    ->setServiceAreas($data['serviceAreas'])
-                    ->setRating('4.5');
-            
-            $manager->persist($supplier);
-            $suppliers[] = $supplier;
-        }
+        // No hardcoded supplier data - suppliers will be created through the API
+        // This method is kept for future use if needed for testing or seeding
 
         return $suppliers;
     }
 
     private function createProducts(ObjectManager $manager, array $categories, array $suppliers): array
     {
-        $products = [
-            // KOVA Products
-            [
-                'name' => 'KOVA Premium Interior',
-                'description' => 'Sơn nội thất cao cấp, chống ẩm mốc, dễ lau chùi',
-                'brand' => 'KOVA',
-                'category' => 0, // Sơn Nội Thất
-                'supplier' => 0, // KOVA
-                'sku' => 'KOVA-PREMIUM-INT-001',
-                'color' => '#FFFFFF',
-                'finish' => 'MATTE',
-                'coverage' => '12.00',
-                'volume' => '18.00',
-                'weight' => '20.00',
-                'price' => '850000.00',
-                'discountPrice' => '750000.00',
-                'isFeatured' => true,
-                'images' => ['https://example.com/kova-premium-1.jpg', 'https://example.com/kova-premium-2.jpg'],
-                'specifications' => [
-                    'Thời gian khô' => '2-4 giờ',
-                    'Độ bền' => '5-7 năm',
-                    'Chống ẩm mốc' => 'Có',
-                    'Dễ lau chùi' => 'Có'
-                ],
-                'tags' => ['cao-cấp', 'chống-ẩm', 'dễ-lau-chùi', 'nội-thất']
-            ],
-            [
-                'name' => 'KOVA Weathershield',
+        $products = [];
+        
+        // No hardcoded product data - products will be created through the API
+        // This method is kept for future use if needed for testing or seeding
+
+        return $products;
+    }
+
+    private function createSampleUsers(ObjectManager $manager): array
                 'description' => 'Sơn ngoại thất chống thấm, chống nắng, bền màu',
                 'brand' => 'KOVA',
                 'category' => 1, // Sơn Ngoại Thất
