@@ -15,4 +15,22 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+
+    public function findTopProducts(int $limit = 3): array
+    {
+        // For now, return products ordered by creation date
+        // In a full implementation, this would be ordered by sales/revenue
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countLowStockProducts(): int
+    {
+        // For now, return 0 as we don't have stock tracking
+        // In a full implementation, this would count products with low stock
+        return 0;
+    }
 }

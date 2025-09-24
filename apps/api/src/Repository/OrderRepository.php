@@ -15,4 +15,23 @@ class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Order::class);
     }
+
+    public function getTotalRevenue(): float
+    {
+        $result = $this->createQueryBuilder('o')
+            ->select('SUM(o.total) as total')
+            ->getQuery()
+            ->getSingleScalarResult();
+        
+        return (float) ($result ?? 0);
+    }
+
+    public function findRecentOrders(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('o')
+            ->orderBy('o.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

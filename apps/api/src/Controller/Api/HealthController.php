@@ -5,6 +5,9 @@ namespace App\Controller\Api;
 use App\Controller\BaseApiController;
 use App\Repository\SupplierRepository;
 use App\Repository\UserRepository;
+use App\Repository\OrderRepository;
+use App\Repository\ProductRepository;
+use App\Repository\ReviewRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Attributes as OA;
@@ -15,7 +18,10 @@ class HealthController extends BaseApiController
 {
     public function __construct(
         private SupplierRepository $supplierRepository,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private OrderRepository $orderRepository,
+        private ProductRepository $productRepository,
+        private ReviewRepository $reviewRepository
     ) {
     }
     #[Route('/health', name: 'api_health', methods: ['GET'])]
@@ -84,66 +90,61 @@ class HealthController extends BaseApiController
         // Calculate real metrics from database
         $supplierCount = $this->supplierRepository->count([]);
         $userCount = $this->userRepository->count([]);
+        $productCount = $this->productRepository->count([]);
+        $reviewCount = $this->reviewRepository->count([]);
+        $orderCount = $this->orderRepository->count([]);
         
-        // For now, return calculated counts with realistic growth percentages
-        // In a full implementation, these would be calculated from actual order/revenue data
+        // Calculate total revenue from orders
+        $totalRevenue = $this->orderRepository->getTotalRevenue();
+        
+        // Get recent orders (last 3)
+        $recentOrders = $this->orderRepository->findRecentOrders(3);
+        $recentOrdersData = array_map(function ($order) {
+            return [
+                'id' => (string) $order->getId(),
+                'customerName' => $order->getUser() ? $order->getUser()->getFirstName() . ' ' . $order->getUser()->getLastName() : 'Unknown',
+                'totalAmount' => (float) $order->getTotal(),
+                'status' => $order->getStatus(),
+                'createdAt' => $order->getCreatedAt()?->format('c')
+            ];
+        }, $recentOrders);
+        
+        // Get top products (by order count or revenue)
+        $topProducts = $this->productRepository->findTopProducts(3);
+        $topProductsData = array_map(function ($product) {
+            return [
+                'id' => (string) $product->getId(),
+                'name' => $product->getName(),
+                'sales' => 0, // Would be calculated from order items in a full implementation
+                'revenue' => 0 // Would be calculated from order items in a full implementation
+            ];
+        }, $topProducts);
+        
+        // Calculate pending suppliers (unverified)
+        $pendingSuppliers = $this->supplierRepository->count(['isVerified' => false]);
+        
+        // Calculate pending reviews (for now, return 0 as we don't have status tracking)
+        $pendingReviews = 0;
+        
+        // Calculate low stock products (if we have a stock field)
+        $lowStockProducts = $this->productRepository->countLowStockProducts();
+        
         return $this->successResponse([
-            'totalRevenue' => 1250000, // Would be calculated from orders
-            'totalOrders' => 1250, // Would be calculated from orders table
-            'totalProducts' => 450, // Would be calculated from products table
+            'totalRevenue' => $totalRevenue,
+            'totalOrders' => $orderCount,
+            'totalProducts' => $productCount,
             'totalUsers' => $userCount,
             'totalSuppliers' => $supplierCount,
-            'totalReviews' => 890, // Would be calculated from reviews table
-            'revenueGrowth' => 12.5, // Would be calculated from historical data
-            'ordersGrowth' => 8.3, // Would be calculated from historical data
-            'productsGrowth' => 15.2, // Would be calculated from historical data
-            'usersGrowth' => 22.1, // Would be calculated from historical data
-            'pendingReviews' => 23, // Would be calculated from reviews with pending status
-            'lowStockProducts' => 12, // Would be calculated from products with low stock
-            'pendingSuppliers' => max(0, $supplierCount - 4), // Calculate unverified suppliers
-            'recentOrders' => [
-                [
-                    'id' => '1',
-                    'customerName' => 'Nguyễn Văn An',
-                    'totalAmount' => 2500000,
-                    'status' => 'completed',
-                    'createdAt' => '2025-09-24T10:30:00Z'
-                ],
-                [
-                    'id' => '2',
-                    'customerName' => 'Trần Thị Bình',
-                    'totalAmount' => 1800000,
-                    'status' => 'processing',
-                    'createdAt' => '2025-09-24T09:15:00Z'
-                ],
-                [
-                    'id' => '3',
-                    'customerName' => 'Lê Văn Cường',
-                    'totalAmount' => 3200000,
-                    'status' => 'shipped',
-                    'createdAt' => '2025-09-23T16:45:00Z'
-                ]
-            ],
-            'topProducts' => [
-                [
-                    'id' => '1',
-                    'name' => 'Sơn KOVA Premium',
-                    'sales' => 150,
-                    'revenue' => 4500000
-                ],
-                [
-                    'id' => '2',
-                    'name' => 'Sơn Jotun Professional',
-                    'sales' => 120,
-                    'revenue' => 3600000
-                ],
-                [
-                    'id' => '3',
-                    'name' => 'Sơn Dulux Weathershield',
-                    'sales' => 95,
-                    'revenue' => 2850000
-                ]
-            ]
+            'totalReviews' => $reviewCount,
+            'revenueGrowth' => 0, // Would need historical data to calculate
+            'ordersGrowth' => 0, // Would need historical data to calculate
+            'productsGrowth' => 0, // Would need historical data to calculate
+            'usersGrowth' => 0, // Would need historical data to calculate
+            'pendingReviews' => $pendingReviews,
+            'lowStockProducts' => $lowStockProducts,
+            'pendingSuppliers' => $pendingSuppliers,
+            'recentOrders' => $recentOrdersData,
+            'topProducts' => $topProductsData
         ]);
     }
 }
