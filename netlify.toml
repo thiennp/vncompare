@@ -5,7 +5,7 @@
   # Set the base directory to the backoffice app
   base = "apps/backoffice"
   # Set the publish directory to the Angular build output
-  publish = "dist/backoffice/browser"
+  publish = "apps/backoffice/dist/backoffice/browser"
   # Build command for Angular
   command = "npm run build"
 
