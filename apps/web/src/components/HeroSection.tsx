@@ -45,12 +45,54 @@ export default function HeroSection() {
     }
   }
 
-  const categories = [
-    { id: 'interior', name: 'Sơn nội thất', count: '200+' },
-    { id: 'exterior', name: 'Sơn ngoại thất', count: '150+' },
-    { id: 'specialty', name: 'Sơn chuyên dụng', count: '80+' },
-    { id: 'industrial', name: 'Sơn công nghiệp', count: '120+' }
-  ]
+  const [categories, setCategories] = useState<Array<{
+    id: string
+    name: string
+    productCount: number
+    avgPrice: number
+    avgSavings: number
+    comparisonCount: number
+    topBrands: string[]
+    icon: string
+    color: string
+  }>>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setCategoriesLoading(true)
+        const response = await fetch('/api/v1/categories')
+        const data = await response.json()
+        
+        if (data.success && data.data) {
+          setCategories(data.data)
+        } else {
+          console.error('Failed to fetch categories:', data.error)
+          // Fallback to hardcoded categories
+          setCategories([
+            { id: 'interior', name: 'Sơn nội thất', productCount: 200, avgPrice: 450000, avgSavings: 15, comparisonCount: 1250, topBrands: ['Dulux', 'Jotun', 'Kova', 'Nippon'], icon: 'home', color: 'blue' },
+            { id: 'exterior', name: 'Sơn ngoại thất', productCount: 150, avgPrice: 380000, avgSavings: 12, comparisonCount: 980, topBrands: ['Dulux', 'Jotun', 'Kova', 'Maxilite'], icon: 'building', color: 'green' },
+            { id: 'specialty', name: 'Sơn chuyên dụng', productCount: 80, avgPrice: 520000, avgSavings: 18, comparisonCount: 450, topBrands: ['Jotun', 'Kova', 'Nippon', 'Maxilite'], icon: 'shield', color: 'purple' },
+            { id: 'industrial', name: 'Sơn công nghiệp', productCount: 90, avgPrice: 680000, avgSavings: 20, comparisonCount: 320, topBrands: ['Jotun', 'Kova', 'Dulux', 'Nippon'], icon: 'building', color: 'orange' }
+          ])
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+        // Fallback to hardcoded categories
+        setCategories([
+          { id: 'interior', name: 'Sơn nội thất', productCount: 200, avgPrice: 450000, avgSavings: 15, comparisonCount: 1250, topBrands: ['Dulux', 'Jotun', 'Kova', 'Nippon'], icon: 'home', color: 'blue' },
+          { id: 'exterior', name: 'Sơn ngoại thất', productCount: 150, avgPrice: 380000, avgSavings: 12, comparisonCount: 980, topBrands: ['Dulux', 'Jotun', 'Kova', 'Maxilite'], icon: 'building', color: 'green' },
+          { id: 'specialty', name: 'Sơn chuyên dụng', productCount: 80, avgPrice: 520000, avgSavings: 18, comparisonCount: 450, topBrands: ['Jotun', 'Kova', 'Nippon', 'Maxilite'], icon: 'shield', color: 'purple' },
+          { id: 'industrial', name: 'Sơn công nghiệp', productCount: 90, avgPrice: 680000, avgSavings: 20, comparisonCount: 320, topBrands: ['Jotun', 'Kova', 'Dulux', 'Nippon'], icon: 'building', color: 'orange' }
+        ])
+      } finally {
+        setCategoriesLoading(false)
+      }
+    }
+
+    fetchCategories()
+  }, [])
 
 
   return (
@@ -109,35 +151,42 @@ export default function HeroSection() {
 
           {/* Category Pills */}
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {categories.map((category, index) => {
-              const colors = [
-                'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-300 hover:from-blue-200 hover:to-blue-300',
-                'bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-300 hover:from-green-200 hover:to-green-300',
-                'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border-purple-300 hover:from-purple-200 hover:to-purple-300',
-                'bg-gradient-to-r from-pink-100 to-pink-200 text-pink-700 border-pink-300 hover:from-pink-200 hover:to-pink-300',
-                'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 border-orange-300 hover:from-orange-200 hover:to-orange-300',
-                'bg-gradient-to-r from-teal-100 to-teal-200 text-teal-700 border-teal-300 hover:from-teal-200 hover:to-teal-300'
-              ];
-              const selectedColors = [
-                'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg',
-                'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg',
-                'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg',
-                'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-lg',
-                'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg',
-                'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg'
-              ];
-              const colorClass = selectedCategory === category.id ? selectedColors[index % selectedColors.length] : colors[index % colors.length];
-              
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 ${colorClass} rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg`}
-                >
-                  {category.name} ({category.count})
-                </button>
-              );
-            })}
+            {categoriesLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                <span className="ml-2 text-gray-600">Đang tải danh mục...</span>
+              </div>
+            ) : (
+              categories.map((category, index) => {
+                const colors = [
+                  'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-300 hover:from-blue-200 hover:to-blue-300',
+                  'bg-gradient-to-r from-green-100 to-green-200 text-green-700 border-green-300 hover:from-green-200 hover:to-green-300',
+                  'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border-purple-300 hover:from-purple-200 hover:to-purple-300',
+                  'bg-gradient-to-r from-pink-100 to-pink-200 text-pink-700 border-pink-300 hover:from-pink-200 hover:to-pink-300',
+                  'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 border-orange-300 hover:from-orange-200 hover:to-orange-300',
+                  'bg-gradient-to-r from-teal-100 to-teal-200 text-teal-700 border-teal-300 hover:from-teal-200 hover:to-teal-300'
+                ];
+                const selectedColors = [
+                  'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg',
+                  'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg',
+                  'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg',
+                  'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-lg',
+                  'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg',
+                  'bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg'
+                ];
+                const colorClass = selectedCategory === category.id ? selectedColors[index % selectedColors.length] : colors[index % colors.length];
+                
+                return (
+                  <button
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className={`px-4 py-2 ${colorClass} rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg`}
+                  >
+                    {category.name} ({category.productCount}+)
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
 
