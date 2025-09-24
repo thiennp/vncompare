@@ -41,7 +41,17 @@ import { ApiService } from '../../../services/api.service';
         </div>
 
         <div class="form-card">
-          <h2>Contact</h2>
+          <h2>Contact Person</h2>
+          <div class="grid-2">
+            <div class="field">
+              <label>First Name</label>
+              <input type="text" [(ngModel)]="formData.firstName" name="firstName" required />
+            </div>
+            <div class="field">
+              <label>Last Name</label>
+              <input type="text" [(ngModel)]="formData.lastName" name="lastName" required />
+            </div>
+          </div>
           <div class="grid-2">
             <div class="field">
               <label>Email</label>
@@ -53,18 +63,48 @@ import { ApiService } from '../../../services/api.service';
             </div>
           </div>
           <div class="field">
-            <label>Address</label>
+            <label>Password</label>
+            <input type="password" [(ngModel)]="formData.password" name="password" required />
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h2>Address</h2>
+          <div class="field">
+            <label>Street Address</label>
             <input type="text" [(ngModel)]="formData.address" name="address" required />
+          </div>
+          <div class="field">
+            <label>House Number</label>
+            <input type="text" [(ngModel)]="formData.houseNumber" name="houseNumber" required />
           </div>
           <div class="grid-2">
             <div class="field">
-              <label>City</label>
-              <input type="text" [(ngModel)]="formData.city" name="city" required />
+              <label>Ward</label>
+              <input type="text" [(ngModel)]="formData.ward" name="ward" required />
             </div>
+            <div class="field">
+              <label>District</label>
+              <input type="text" [(ngModel)]="formData.district" name="district" required />
+            </div>
+          </div>
+          <div class="grid-2">
             <div class="field">
               <label>Province</label>
               <input type="text" [(ngModel)]="formData.province" name="province" required />
             </div>
+            <div class="field">
+              <label>Postal Code</label>
+              <input type="text" [(ngModel)]="formData.postalCode" name="postalCode" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Address Type</label>
+            <select [(ngModel)]="formData.addressType" name="addressType" required>
+              <option value="WORK">Work</option>
+              <option value="HOME">Home</option>
+              <option value="OTHER">Other</option>
+            </select>
           </div>
         </div>
 
@@ -95,7 +135,7 @@ import { ApiService } from '../../../services/api.service';
     .form-card { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-    .field input, .field textarea { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; }
+    .field input, .field textarea, .field select { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; }
     .btn { padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; font-weight: 500; }
     .btn-outline { background: transparent; border-color: #d1d5db; }
     .btn-primary { background: #3730a3; color: #fff; }
@@ -113,11 +153,18 @@ export class AddSupplierComponent {
     companyName: '',
     description: '',
     website: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
+    password: '',
     address: '',
-    city: '',
+    houseNumber: '',
+    ward: '',
+    district: '',
     province: '',
+    postalCode: '',
+    addressType: 'WORK',
     businessLicense: '',
     taxCode: ''
   };
@@ -137,7 +184,7 @@ export class AddSupplierComponent {
     // The backend expects supplier registration payload fields like companyName, contact, etc.
     const payload = { ...this.formData };
     // We'll call a new API method implemented below.
-    (this.api as any).createSupplier(payload).subscribe({
+    this.api.createSupplier(payload).subscribe({
       next: () => {
         this.success = 'Supplier created successfully';
         this.submitting = false;

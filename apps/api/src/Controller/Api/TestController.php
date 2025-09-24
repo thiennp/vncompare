@@ -8,7 +8,9 @@ use App\Repository\UserRepository;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/api/v1/test')]
 class TestController extends BaseApiController
@@ -17,7 +19,8 @@ class TestController extends BaseApiController
         private SupplierRepository $supplierRepository,
         private UserRepository $userRepository,
         private AddressRepository $addressRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private UserPasswordHasherInterface $passwordHasher
     ) {
     }
     #[Route('/suppliers', name: 'api_test_suppliers', methods: ['GET'])]
@@ -57,57 +60,109 @@ class TestController extends BaseApiController
     }
 
     #[Route('/suppliers', name: 'api_test_create_supplier', methods: ['POST'])]
-    public function createSupplier(): JsonResponse
+    public function createSupplier(Request $request): JsonResponse
     {
-        // Create a new User entity for the supplier
-        $user = new \App\Entity\User();
-        $user->setEmail('supplier' . uniqid() . '@example.com');
-        $user->setFirstName('Supplier');
-        $user->setLastName('User');
-        $user->setPassword('password123');
-        $user->setRoles(['ROLE_SUPPLIER']);
-        $user->setActive(true);
-        $user->setCreatedAt(new \DateTime());
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!$data) {
+                return $this->errorResponse('Invalid JSON data', 400);
+            }
 
-        // Create a new Supplier entity
-        $supplier = new \App\Entity\Supplier();
-        $supplier->setUser($user);
-        $supplier->setCompanyName('New Supplier');
-        $supplier->setBusinessLicense('BL' . uniqid());
-        $supplier->setTaxCode('TC' . uniqid());
-        $supplier->setDescription('Newly created supplier');
-        $supplier->setLogo(null);
-        $supplier->setWebsite(null);
-        $supplier->setVerified(false);
-        $supplier->setRating(null);
-        $supplier->setTotalReviews(0);
-        $supplier->setServiceAreas([]);
-        $supplier->setCreatedAt(new \DateTime());
+            // Validate required fields
+            $requiredFields = ['email', 'firstName', 'lastName', 'password', 'companyName', 'businessLicense', 'taxCode'];
+            foreach ($requiredFields as $field) {
+                if (!isset($data[$field]) || empty($data[$field])) {
+                    return $this->errorResponse("Missing required field: {$field}", 400);
+                }
+            }
 
-        // Save to database
-        $this->entityManager->persist($user);
-        $this->entityManager->persist($supplier);
-        $this->entityManager->flush();
+            // Check if email already exists
+            $existingUser = $this->userRepository->findOneBy(['email' => $data['email']]);
+            if ($existingUser) {
+                return $this->errorResponse('Email already exists', 409);
+            }
 
-        // Return the created supplier data
-        $supplierData = [
-            'id' => (string) $supplier->getId(),
-            'companyName' => $supplier->getCompanyName(),
-            'description' => $supplier->getDescription(),
-            'logo' => $supplier->getLogo(),
-            'website' => $supplier->getWebsite(),
-            'isVerified' => $supplier->isVerified(),
-            'rating' => $supplier->getRating(),
-            'totalReviews' => $supplier->getTotalReviews(),
-            'serviceAreas' => $supplier->getServiceAreas(),
-            'totalProducts' => $supplier->getTotalProducts(),
-            'activeProducts' => $supplier->getActiveProducts(),
-            'createdAt' => $supplier->getCreatedAt()?->format('c'),
-        ];
+            // Create a new User entity for the supplier
+            $user = new \App\Entity\User();
+            $user->setEmail($data['email']);
+            $user->setFirstName($data['firstName']);
+            $user->setLastName($data['lastName']);
+            $user->setPhone($data['phone'] ?? null);
+            $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
+            $user->setRoles(['ROLE_SUPPLIER']);
+            $user->setActive($data['isActive'] ?? true);
+            $user->setEmailVerified($data['emailVerified'] ?? false);
+            $user->setPhoneVerified($data['phoneVerified'] ?? false);
+            $user->setCreatedAt(new \DateTime());
 
-        return $this->successResponse([
-            'supplier' => $supplierData
-        ], 'Supplier created successfully', 201);
+            // Create a new Supplier entity
+            $supplier = new \App\Entity\Supplier();
+            $supplier->setUser($user);
+            $supplier->setCompanyName($data['companyName']);
+            $supplier->setBusinessLicense($data['businessLicense']);
+            $supplier->setTaxCode($data['taxCode']);
+            $supplier->setDescription($data['description'] ?? '');
+            $supplier->setLogo($data['logo'] ?? null);
+            $supplier->setWebsite($data['website'] ?? null);
+            $supplier->setVerified($data['isVerified'] ?? false);
+            $supplier->setRating($data['rating'] ?? null);
+            $supplier->setTotalReviews($data['totalReviews'] ?? 0);
+            $supplier->setServiceAreas($data['serviceAreas'] ?? []);
+            $supplier->setCreatedAt(new \DateTime());
+
+            // Create address if address data is provided
+            $address = null;
+            if (isset($data['address']) && !empty($data['address'])) {
+                $address = new \App\Entity\Address();
+                $address->setUser($user);
+                $address->setType($data['addressType'] ?? 'WORK');
+                $address->setRecipientName($data['firstName'] . ' ' . $data['lastName']);
+                $address->setPhone($data['phone'] ?? '');
+                $address->setStreet($data['address']);
+                $address->setHouseNumber($data['houseNumber'] ?? '1');
+                $address->setWard($data['ward'] ?? '');
+                $address->setDistrict($data['district'] ?? '');
+                $address->setProvince($data['province'] ?? '');
+                $address->setPostalCode($data['postalCode'] ?? null);
+                $address->setDefault($data['isDefault'] ?? true);
+                $address->setCoordinates($data['coordinates'] ?? null);
+                $address->setCreatedAt(new \DateTime());
+                $address->setUpdatedAt(new \DateTime());
+            }
+
+            // Save to database
+            $this->entityManager->persist($user);
+            $this->entityManager->persist($supplier);
+            if ($address) {
+                $this->entityManager->persist($address);
+            }
+            $this->entityManager->flush();
+
+            // Return the created supplier data
+            $supplierData = [
+                'id' => (string) $supplier->getId(),
+                'companyName' => $supplier->getCompanyName(),
+                'description' => $supplier->getDescription(),
+                'logo' => $supplier->getLogo(),
+                'website' => $supplier->getWebsite(),
+                'isVerified' => $supplier->isVerified(),
+                'rating' => $supplier->getRating(),
+                'totalReviews' => $supplier->getTotalReviews(),
+                'serviceAreas' => $supplier->getServiceAreas(),
+                'totalProducts' => $supplier->getTotalProducts(),
+                'activeProducts' => $supplier->getActiveProducts(),
+                'createdAt' => $supplier->getCreatedAt()?->format('c'),
+            ];
+
+            return $this->successResponse([
+                'supplier' => $supplierData
+            ], 'Supplier created successfully', 201);
+
+        } catch (\Exception $e) {
+            error_log('Error creating supplier: ' . $e->getMessage());
+            return $this->errorResponse('Failed to create supplier: ' . $e->getMessage(), 500);
+        }
     }
 
     #[Route('/suppliers/{id}/verify', name: 'api_test_verify_supplier', methods: ['POST'])]
@@ -181,25 +236,69 @@ class TestController extends BaseApiController
     }
 
     #[Route('/users', name: 'api_test_create_user', methods: ['POST'])]
-    public function createUser(): JsonResponse
+    public function createUser(Request $request): JsonResponse
     {
-        $newUser = [
-            'id' => 'user-' . uniqid(),
-            'email' => 'newuser@example.com',
-            'firstName' => 'New',
-            'lastName' => 'User',
-            'phone' => '+84901234570',
-            'role' => 'USER',
-            'isActive' => true,
-            'emailVerified' => false,
-            'phoneVerified' => false,
-            'createdAt' => date('c'),
-            'lastLoginAt' => null,
-        ];
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!$data) {
+                return $this->errorResponse('Invalid JSON data', 400);
+            }
 
-        return $this->successResponse([
-            'user' => $newUser
-        ], 'User created successfully', 201);
+            // Validate required fields
+            $requiredFields = ['email', 'firstName', 'lastName', 'password'];
+            foreach ($requiredFields as $field) {
+                if (!isset($data[$field]) || empty($data[$field])) {
+                    return $this->errorResponse("Missing required field: {$field}", 400);
+                }
+            }
+
+            // Check if email already exists
+            $existingUser = $this->userRepository->findOneBy(['email' => $data['email']]);
+            if ($existingUser) {
+                return $this->errorResponse('Email already exists', 409);
+            }
+
+            // Create a new User entity
+            $user = new \App\Entity\User();
+            $user->setEmail($data['email']);
+            $user->setFirstName($data['firstName']);
+            $user->setLastName($data['lastName']);
+            $user->setPhone($data['phone'] ?? null);
+            $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
+            $user->setRoles([$data['role'] ?? 'ROLE_USER']);
+            $user->setActive($data['isActive'] ?? true);
+            $user->setEmailVerified($data['emailVerified'] ?? false);
+            $user->setPhoneVerified($data['phoneVerified'] ?? false);
+            $user->setCreatedAt(new \DateTime());
+
+            // Save to database
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            // Return the created user data
+            $userData = [
+                'id' => (string) $user->getId(),
+                'email' => $user->getEmail(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'phone' => $user->getPhone(),
+                'role' => $user->getRoles()[0] ?? 'USER',
+                'isActive' => $user->isActive(),
+                'emailVerified' => $user->isEmailVerified(),
+                'phoneVerified' => $user->isPhoneVerified(),
+                'createdAt' => $user->getCreatedAt()?->format('c'),
+                'lastLoginAt' => $user->getLastLoginAt()?->format('c'),
+            ];
+
+            return $this->successResponse([
+                'user' => $userData
+            ], 'User created successfully', 201);
+
+        } catch (\Exception $e) {
+            error_log('Error creating user: ' . $e->getMessage());
+            return $this->errorResponse('Failed to create user: ' . $e->getMessage(), 500);
+        }
     }
 
     #[Route('/addresses', name: 'api_test_addresses', methods: ['GET'])]
@@ -235,24 +334,62 @@ class TestController extends BaseApiController
     }
 
     #[Route('/addresses', name: 'api_test_create_address', methods: ['POST'])]
-    public function createAddress(): JsonResponse
+    public function createAddress(Request $request): JsonResponse
     {
-        $newAddress = [
-            'id' => 'addr-' . uniqid(),
-            'street' => 'New Street Address',
-            'ward' => 'New Ward',
-            'district' => 'New District',
-            'province' => 'New Province',
-            'postalCode' => '000000',
-            'isServiceArea' => true,
-            'deliveryFee' => 30000,
-            'estimatedDays' => 2,
-            'createdAt' => date('c'),
-            'updatedAt' => date('c'),
-        ];
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!$data) {
+                return $this->errorResponse('Invalid JSON data', 400);
+            }
 
-        return $this->successResponse([
-            'address' => $newAddress
-        ], 'Address created successfully', 201);
+            // Validate required fields
+            $requiredFields = ['street', 'ward', 'district', 'province'];
+            foreach ($requiredFields as $field) {
+                if (!isset($data[$field]) || empty($data[$field])) {
+                    return $this->errorResponse("Missing required field: {$field}", 400);
+                }
+            }
+
+            // Create a new Address entity
+            $address = new \App\Entity\Address();
+            $address->setStreet($data['street']);
+            $address->setWard($data['ward']);
+            $address->setDistrict($data['district']);
+            $address->setProvince($data['province']);
+            $address->setPostalCode($data['postalCode'] ?? null);
+            $address->setIsServiceArea($data['isServiceArea'] ?? false);
+            $address->setDeliveryFee($data['deliveryFee'] ?? 0);
+            $address->setEstimatedDays($data['estimatedDays'] ?? 1);
+            $address->setCreatedAt(new \DateTime());
+            $address->setUpdatedAt(new \DateTime());
+
+            // Save to database
+            $this->entityManager->persist($address);
+            $this->entityManager->flush();
+
+            // Return the created address data
+            $addressData = [
+                'id' => (string) $address->getId(),
+                'street' => $address->getStreet(),
+                'ward' => $address->getWard(),
+                'district' => $address->getDistrict(),
+                'province' => $address->getProvince(),
+                'postalCode' => $address->getPostalCode(),
+                'isServiceArea' => $address->isServiceArea(),
+                'deliveryFee' => $address->getDeliveryFee(),
+                'estimatedDays' => $address->getEstimatedDays(),
+                'createdAt' => $address->getCreatedAt()?->format('c'),
+                'updatedAt' => $address->getUpdatedAt()?->format('c'),
+            ];
+
+            return $this->successResponse([
+                'address' => $addressData
+            ], 'Address created successfully', 201);
+
+        } catch (\Exception $e) {
+            error_log('Error creating address: ' . $e->getMessage());
+            return $this->errorResponse('Failed to create address: ' . $e->getMessage(), 500);
+        }
     }
 }
