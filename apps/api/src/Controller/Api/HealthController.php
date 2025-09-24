@@ -101,6 +101,49 @@ class HealthController extends BaseApiController
             'pendingReviews' => 23, // Would be calculated from reviews with pending status
             'lowStockProducts' => 12, // Would be calculated from products with low stock
             'pendingSuppliers' => max(0, $supplierCount - 4), // Calculate unverified suppliers
+            'recentOrders' => [
+                [
+                    'id' => '1',
+                    'customerName' => 'Nguyễn Văn An',
+                    'totalAmount' => 2500000,
+                    'status' => 'completed',
+                    'createdAt' => '2025-09-24T10:30:00Z'
+                ],
+                [
+                    'id' => '2',
+                    'customerName' => 'Trần Thị Bình',
+                    'totalAmount' => 1800000,
+                    'status' => 'processing',
+                    'createdAt' => '2025-09-24T09:15:00Z'
+                ],
+                [
+                    'id' => '3',
+                    'customerName' => 'Lê Văn Cường',
+                    'totalAmount' => 3200000,
+                    'status' => 'shipped',
+                    'createdAt' => '2025-09-23T16:45:00Z'
+                ]
+            ],
+            'topProducts' => [
+                [
+                    'id' => '1',
+                    'name' => 'Sơn KOVA Premium',
+                    'sales' => 150,
+                    'revenue' => 4500000
+                ],
+                [
+                    'id' => '2',
+                    'name' => 'Sơn Jotun Professional',
+                    'sales' => 120,
+                    'revenue' => 3600000
+                ],
+                [
+                    'id' => '3',
+                    'name' => 'Sơn Dulux Weathershield',
+                    'sales' => 95,
+                    'revenue' => 2850000
+                ]
+            ]
         ]);
     }
 }
