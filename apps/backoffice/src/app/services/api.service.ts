@@ -215,7 +215,7 @@ export interface PaginatedResponse<T> {
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = 'https://api.vncompare.com/api/v1';
+  private readonly baseUrl = 'http://localhost:8000/api/v1';
   private readonly isApiAvailable = true; // Set to true when API is deployed
   private tokenSubject = new BehaviorSubject<string | null>(null);
   public token$ = this.tokenSubject.asObservable();
@@ -475,7 +475,7 @@ export class ApiService {
       });
     }
 
-    return this.http.get<ApiResponse<PaginatedResponse<User>>>(`${this.baseUrl}/users`, {
+    return this.http.get<ApiResponse<PaginatedResponse<User>>>(`${this.baseUrl}/test/users`, {
       headers: this.getHeaders(),
       params: httpParams
     }).pipe(
@@ -608,7 +608,7 @@ export class ApiService {
       });
     }
 
-    return this.http.get<ApiResponse<PaginatedResponse<Address>>>(`${this.baseUrl}/addresses`, {
+    return this.http.get<ApiResponse<PaginatedResponse<Address>>>(`${this.baseUrl}/test/addresses`, {
       headers: this.getHeaders(),
       params: httpParams
     }).pipe(
@@ -630,6 +630,32 @@ export class ApiService {
           return response.data;
         }
         throw new Error(response.message || 'Failed to update address service area');
+      })
+    );
+  }
+
+  createAddress(addressData: Partial<Address>): Observable<Address> {
+    return this.http.post<ApiResponse<Address>>(`${this.baseUrl}/test/addresses`, addressData, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to create address');
+      })
+    );
+  }
+
+  createUser(userData: Partial<User>): Observable<User> {
+    return this.http.post<ApiResponse<User>>(`${this.baseUrl}/test/users`, userData, {
+      headers: this.getHeaders()
+    }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to create user');
       })
     );
   }

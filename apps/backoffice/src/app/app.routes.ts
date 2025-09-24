@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: 'products/add', loadComponent: () => import('./components/products/add-product/add-product.component').then(m => m.AddProductComponent) },
   { path: 'products/:id', loadComponent: () => import('./components/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent) },
         { path: 'orders', loadComponent: () => import('./components/orders/orders.component').then(m => m.OrdersComponent) },
+        { path: 'orders/create', loadComponent: () => import('./components/orders/create-order/create-order.component').then(m => m.CreateOrderComponent) },
         { path: 'orders/:id', loadComponent: () => import('./components/orders/order-detail/order-detail.component').then(m => m.OrderDetailComponent) },
         { path: 'orders/:id/edit', loadComponent: () => import('./components/orders/order-edit/order-edit.component').then(m => m.OrderEditComponent) },
   { path: 'users', loadComponent: () => import('./components/users/users.component').then(m => m.UsersComponent) },
