@@ -740,7 +740,7 @@ export class DashboardOverviewComponent implements OnInit {
     this.error = null;
 
     this.apiService.getDashboardMetrics().subscribe({
-      next: (response) => {
+      next: (response: any) => {
         this.metrics = response;
         this.loading = false;
       },
