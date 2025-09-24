@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { CartProvider } from '@/components/CartProvider'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -106,11 +107,13 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <CartProvider>
-          <div id="root">
-            {children}
-          </div>
-        </CartProvider>
+        <ErrorBoundary>
+          <CartProvider>
+            <div id="root">
+              {children}
+            </div>
+          </CartProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )
