@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Packages.composer"]
+
+[phases.install]
+cmds = ["cd apps/api && composer install --no-dev --optimize-autoloader"]
+
+[phases.build]
+cmds = [
+    "cd apps/api && php bin/console cache:clear --env=prod",
+    "cd apps/api && php bin/console doctrine:database:create --if-not-exists --env=prod",
+    "cd apps/api && php bin/console doctrine:migrations:migrate --no-interaction --env=prod"
+]
+
+[start]
+cmd = "cd apps/api && php -S 0.0.0.0:$PORT -t public"
