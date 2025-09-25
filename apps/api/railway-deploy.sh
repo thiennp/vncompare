@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# VNCompare API Deployment Script for Render
-echo "🚀 Starting VNCompare API deployment to Render..."
+# Railway Deployment Script for VNCompare API
+echo "🚀 Starting Railway deployment..."
 
 # Set production environment
 export APP_ENV=prod
@@ -23,9 +23,6 @@ php bin/console doctrine:database:create --if-not-exists --env=prod
 echo "🗄️ Running database migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
-# Skip fixtures - using real data from database
-echo "📊 Using real data from database - no fixtures needed"
-
 # Generate JWT keys if they don't exist
 if [ ! -f "config/jwt/private.pem" ]; then
     echo "🔑 Generating JWT keys..."
@@ -40,12 +37,5 @@ fi
 echo "🔥 Warming up cache..."
 php bin/console cache:warmup --env=prod
 
-echo "✅ Deployment completed successfully!"
-echo "🌐 Your API is ready with comprehensive seed data!"
-echo "📊 Seeded data includes:"
-echo "   - 12 users (2 admins, 10 customers)"
-echo "   - 5 addresses"
-echo "   - 5 orders with various statuses"
-echo "   - 5 product reviews"
-echo "   - Price records for all products"
-echo "   - Order tracking records"
+echo "✅ Railway deployment completed successfully!"
+echo "🌐 Your API is ready!"
