@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -302,7 +303,15 @@ async function seedSuppliers() {
 async function seedUsers() {
   console.log('👥 Seeding users...')
 
+  const adminPasswordHash = await bcrypt.hash('Kimtuoc2', 12)
+
   const users = [
+    {
+      email: 'nguyenphongthien@gmail.com',
+      name: 'Nguyen Phong Thien',
+      role: 'admin',
+      password: adminPasswordHash
+    },
     {
       email: 'admin@vncompare.com',
       name: 'Admin VNCompare',

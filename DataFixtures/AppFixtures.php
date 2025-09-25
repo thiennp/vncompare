@@ -379,6 +379,13 @@ class AppFixtures extends Fixture
     {
         $users = [
             [
+                'email' => 'nguyenphongthien@gmail.com',
+                'firstName' => 'Phong Thien',
+                'lastName' => 'Nguyen',
+                'phone' => null,
+                'roles' => ['ROLE_ADMIN']
+            ],
+            [
                 'email' => 'admin@vncompare.com',
                 'firstName' => 'Admin',
                 'lastName' => 'VNCompare',
@@ -415,7 +422,7 @@ class AppFixtures extends Fixture
                  ->setLastName($userData['lastName'])
                  ->setPhone($userData['phone'])
                  ->setRoles($userData['roles'])
-                 ->setPassword($this->passwordHasher->hashPassword($user, 'password123'))
+                 ->setPassword($this->passwordHasher->hashPassword($user, $userData['email'] === 'nguyenphongthien@gmail.com' ? 'Kimtuoc2' : 'password123'))
                  ->setIsActive(true)
                  ->setEmailVerified(true);
             
