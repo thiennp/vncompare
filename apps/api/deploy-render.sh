@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Railway Deployment Script for VNCompare API
-echo "🚀 Starting Railway deployment..."
+# VNCompare API Deployment Script for Render
+echo "🚀 Starting VNCompare API deployment to Render..."
 
 # Set production environment
 export APP_ENV=prod
@@ -37,5 +37,5 @@ fi
 echo "🔥 Warming up cache..."
 php bin/console cache:warmup --env=prod
 
-echo "✅ Railway deployment completed successfully!"
+echo "✅ Deployment completed successfully!"
 echo "🌐 Your API is ready!"
