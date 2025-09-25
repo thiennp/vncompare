@@ -1,8 +1,23 @@
 {
   "version": 2,
-  "buildCommand": "cd apps/web && npm run build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "cd apps/web && npm install",
-  "devCommand": "cd apps/web && npm run dev",
-  "framework": "nextjs"
+  "builds": [
+    {
+      "src": "apps/api/public/index.php",
+      "use": "@vercel/php"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "apps/api/public/index.php"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "apps/api/public/index.php"
+    }
+  ],
+  "env": {
+    "APP_ENV": "prod",
+    "APP_DEBUG": "false"
+  }
 }
