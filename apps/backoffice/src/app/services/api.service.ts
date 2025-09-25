@@ -855,7 +855,7 @@ export class ApiService {
       pendingReviews: number;
       lowStockProducts: number;
       pendingSuppliers: number;
-    }>>(`${this.baseUrl}/dashboard/metrics`, {
+    }>>(`${this.baseUrl}/api/v1/analytics/dashboard`, {
       headers: this.getHeaders()
     }).pipe(
       map(response => {
