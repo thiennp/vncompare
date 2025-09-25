@@ -147,4 +147,31 @@ class HealthController extends BaseApiController
             'topProducts' => $topProductsData
         ]);
     }
+
+    #[Route('/test/suppliers', name: 'api_test_suppliers', methods: ['GET'])]
+    public function testSuppliers(): JsonResponse
+    {
+        try {
+            $suppliers = $this->supplierRepository->findAll();
+            
+            $suppliersData = array_map(function ($supplier) {
+                return [
+                    'id' => (string) $supplier->getId(),
+                    'name' => $supplier->getName(),
+                    'email' => $supplier->getEmail(),
+                    'phone' => $supplier->getPhone(),
+                    'address' => $supplier->getAddress(),
+                    'isVerified' => $supplier->getIsVerified(),
+                    'createdAt' => $supplier->getCreatedAt()?->format('c')
+                ];
+            }, $suppliers);
+            
+            return $this->successResponse([
+                'suppliers' => $suppliersData,
+                'total' => count($suppliersData)
+            ]);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Failed to fetch suppliers: ' . $e->getMessage(), 500);
+        }
+    }
 }
