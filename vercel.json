@@ -16,13 +16,15 @@
       "dest": "apps/api/public/index.php"
     }
   ],
-  "functions": {
-    "apps/api/public/index.php": {
-      "runtime": "@vercel/php@2.0.0"
-    }
-  },
   "env": {
     "APP_ENV": "prod",
     "APP_DEBUG": "false"
-  }
+  },
+  "functions": {
+    "apps/api/public/index.php": {
+      "runtime": "vercel-php@0.6.0"
+    }
+  },
+  "buildCommand": "cd apps/api && composer install --no-dev --optimize-autoloader",
+  "outputDirectory": "apps/api/public"
 }

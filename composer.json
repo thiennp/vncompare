@@ -10,5 +10,10 @@
         "psr-4": {
             "App\\": "apps/api/src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "cd apps/api && composer install --no-dev --optimize-autoloader"
+        ]
     }
 }
