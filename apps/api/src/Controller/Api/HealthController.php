@@ -87,65 +87,86 @@ class HealthController extends BaseApiController
     #[Route('/dashboard/metrics', name: 'api_dashboard_metrics', methods: ['GET'])]
     public function dashboardMetrics(): JsonResponse
     {
-        // Calculate real metrics from database
-        $supplierCount = $this->supplierRepository->count([]);
-        $userCount = $this->userRepository->count([]);
-        $productCount = $this->productRepository->count([]);
-        $reviewCount = $this->reviewRepository->count([]);
-        $orderCount = $this->orderRepository->count([]);
-        
-        // Calculate total revenue from orders
-        $totalRevenue = $this->orderRepository->getTotalRevenue();
-        
-        // Get recent orders (last 3)
-        $recentOrders = $this->orderRepository->findRecentOrders(3);
-        $recentOrdersData = array_map(function ($order) {
-            return [
-                'id' => (string) $order->getId(),
-                'customerName' => $order->getUser() ? $order->getUser()->getFirstName() . ' ' . $order->getUser()->getLastName() : 'Unknown',
-                'totalAmount' => (float) $order->getTotal(),
-                'status' => $order->getStatus(),
-                'createdAt' => $order->getCreatedAt()?->format('c')
-            ];
-        }, $recentOrders);
-        
-        // Get top products (by order count or revenue)
-        $topProducts = $this->productRepository->findTopProducts(3);
-        $topProductsData = array_map(function ($product) {
-            return [
-                'id' => (string) $product->getId(),
-                'name' => $product->getName(),
-                'sales' => 0, // Would be calculated from order items in a full implementation
-                'revenue' => 0 // Would be calculated from order items in a full implementation
-            ];
-        }, $topProducts);
-        
-        // Calculate pending suppliers (unverified)
-        $pendingSuppliers = $this->supplierRepository->count(['isVerified' => false]);
-        
-        // Calculate pending reviews (for now, return 0 as we don't have status tracking)
-        $pendingReviews = 0;
-        
-        // Calculate low stock products (if we have a stock field)
-        $lowStockProducts = $this->productRepository->countLowStockProducts();
-        
-        return $this->successResponse([
-            'totalRevenue' => $totalRevenue,
-            'totalOrders' => $orderCount,
-            'totalProducts' => $productCount,
-            'totalUsers' => $userCount,
-            'totalSuppliers' => $supplierCount,
-            'totalReviews' => $reviewCount,
-            'revenueGrowth' => 0, // Would need historical data to calculate
-            'ordersGrowth' => 0, // Would need historical data to calculate
-            'productsGrowth' => 0, // Would need historical data to calculate
-            'usersGrowth' => 0, // Would need historical data to calculate
-            'pendingReviews' => $pendingReviews,
-            'lowStockProducts' => $lowStockProducts,
-            'pendingSuppliers' => $pendingSuppliers,
-            'recentOrders' => $recentOrdersData,
-            'topProducts' => $topProductsData
-        ]);
+        try {
+            // Calculate real metrics from database
+            $supplierCount = $this->supplierRepository->count([]);
+            $userCount = $this->userRepository->count([]);
+            $productCount = $this->productRepository->count([]);
+            $reviewCount = $this->reviewRepository->count([]);
+            $orderCount = $this->orderRepository->count([]);
+            
+            // Calculate total revenue from orders
+            $totalRevenue = $this->orderRepository->getTotalRevenue();
+            
+            // Get recent orders (last 3)
+            $recentOrders = $this->orderRepository->findRecentOrders(3);
+            $recentOrdersData = array_map(function ($order) {
+                return [
+                    'id' => (string) $order->getId(),
+                    'customerName' => $order->getUser() ? $order->getUser()->getFirstName() . ' ' . $order->getUser()->getLastName() : 'Unknown',
+                    'totalAmount' => (float) $order->getTotal(),
+                    'status' => $order->getStatus(),
+                    'createdAt' => $order->getCreatedAt()?->format('c')
+                ];
+            }, $recentOrders);
+            
+            // Get top products (by order count or revenue)
+            $topProducts = $this->productRepository->findTopProducts(3);
+            $topProductsData = array_map(function ($product) {
+                return [
+                    'id' => (string) $product->getId(),
+                    'name' => $product->getName(),
+                    'sales' => 0, // Would be calculated from order items in a full implementation
+                    'revenue' => 0 // Would be calculated from order items in a full implementation
+                ];
+            }, $topProducts);
+            
+            // Calculate pending suppliers (unverified)
+            $pendingSuppliers = $this->supplierRepository->count(['isVerified' => false]);
+            
+            // Calculate pending reviews (for now, return 0 as we don't have status tracking)
+            $pendingReviews = 0;
+            
+            // Calculate low stock products (if we have a stock field)
+            $lowStockProducts = $this->productRepository->countLowStockProducts();
+            
+            return $this->successResponse([
+                'totalRevenue' => $totalRevenue,
+                'totalOrders' => $orderCount,
+                'totalProducts' => $productCount,
+                'totalUsers' => $userCount,
+                'totalSuppliers' => $supplierCount,
+                'totalReviews' => $reviewCount,
+                'revenueGrowth' => 0, // Would need historical data to calculate
+                'ordersGrowth' => 0, // Would need historical data to calculate
+                'productsGrowth' => 0, // Would need historical data to calculate
+                'usersGrowth' => 0, // Would need historical data to calculate
+                'pendingReviews' => $pendingReviews,
+                'lowStockProducts' => $lowStockProducts,
+                'pendingSuppliers' => $pendingSuppliers,
+                'recentOrders' => $recentOrdersData,
+                'topProducts' => $topProductsData
+            ]);
+        } catch (\Exception $e) {
+            // Fallback response if database is not available
+            return $this->successResponse([
+                'totalRevenue' => 0,
+                'totalOrders' => 0,
+                'totalProducts' => 0,
+                'totalUsers' => 0,
+                'totalSuppliers' => 0,
+                'totalReviews' => 0,
+                'revenueGrowth' => 0,
+                'ordersGrowth' => 0,
+                'productsGrowth' => 0,
+                'usersGrowth' => 0,
+                'pendingReviews' => 0,
+                'lowStockProducts' => 0,
+                'pendingSuppliers' => 0,
+                'recentOrders' => [],
+                'topProducts' => []
+            ], 'Dashboard metrics (fallback data)');
+        }
     }
 
     #[Route('/test/suppliers', name: 'api_test_suppliers', methods: ['GET'])]
