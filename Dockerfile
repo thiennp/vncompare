@@ -18,6 +18,13 @@ WORKDIR /app
 # Copy only the API directory (exclude Node.js files)
 COPY apps/api/ /app/
 
+# Copy .env file if it exists, otherwise create a basic one
+RUN if [ ! -f .env ]; then \
+    echo "APP_ENV=prod" > .env && \
+    echo "APP_DEBUG=false" >> .env && \
+    echo "DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db" >> .env; \
+fi
+
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
