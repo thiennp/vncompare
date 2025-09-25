@@ -1,11 +1,8 @@
 [build]
-builder = "nixpacks"
+builder = "dockerfile"
 
 [deploy]
-startCommand = "cd apps/api && php -S 0.0.0.0:$PORT -t public"
+startCommand = "php -S 0.0.0.0:$PORT -t public"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 300
-
-[env]
-APP_ENV = "prod"
-APP_DEBUG = "false"
+restartPolicyType = "on_failure"
