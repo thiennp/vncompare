@@ -1,4 +1,11 @@
 import { PrismaClient } from '@prisma/client'
+import {
+  getProvinces,
+  getDistricts,
+  getWards,
+  getDistrictsByProvinceCode,
+  getWardsByDistrictCode
+} from 'sub-vn'
 
 const prisma = new PrismaClient()
 
@@ -9,138 +16,89 @@ async function main() {
   await seedVietnamAddresses()
   
   // Seed products
-  await seedProducts()
+  try {
+    await seedProducts()
+  } catch (e: any) {
+    console.warn('⚠️ Skipping products seeding:', e?.message ?? e)
+  }
   
   // Seed suppliers
-  await seedSuppliers()
+  try {
+    await seedSuppliers()
+  } catch (e: any) {
+    console.warn('⚠️ Skipping suppliers seeding:', e?.message ?? e)
+  }
   
   // Seed users
-  await seedUsers()
+  try {
+    await seedUsers()
+  } catch (e: any) {
+    console.warn('⚠️ Skipping users seeding:', e?.message ?? e)
+  }
   
   // Seed orders
-  await seedOrders()
+  try {
+    await seedOrders()
+  } catch (e: any) {
+    console.warn('⚠️ Skipping orders seeding:', e?.message ?? e)
+  }
 
   console.log('✅ Database seeding completed!')
 }
 
 async function seedVietnamAddresses() {
-  console.log('📍 Seeding Vietnam addresses...')
+  console.log('📍 Seeding Vietnam addresses from sub-vn dataset...')
 
-  // Full list of 63 Vietnamese provinces/cities with official 2-digit codes
-  const provinces = [
-    { code: '01', name: 'Thành phố Hà Nội', type: 'Thành phố Trung ương' },
-    { code: '02', name: 'Tỉnh Hà Giang', type: 'Tỉnh' },
-    { code: '04', name: 'Tỉnh Cao Bằng', type: 'Tỉnh' },
-    { code: '06', name: 'Tỉnh Bắc Kạn', type: 'Tỉnh' },
-    { code: '08', name: 'Tỉnh Tuyên Quang', type: 'Tỉnh' },
-    { code: '10', name: 'Tỉnh Lào Cai', type: 'Tỉnh' },
-    { code: '11', name: 'Tỉnh Điện Biên', type: 'Tỉnh' },
-    { code: '12', name: 'Tỉnh Lai Châu', type: 'Tỉnh' },
-    { code: '14', name: 'Tỉnh Sơn La', type: 'Tỉnh' },
-    { code: '15', name: 'Tỉnh Yên Bái', type: 'Tỉnh' },
-    { code: '17', name: 'Tỉnh Hòa Bình', type: 'Tỉnh' },
-    { code: '19', name: 'Tỉnh Thái Nguyên', type: 'Tỉnh' },
-    { code: '20', name: 'Tỉnh Lạng Sơn', type: 'Tỉnh' },
-    { code: '22', name: 'Tỉnh Quảng Ninh', type: 'Tỉnh' },
-    { code: '24', name: 'Tỉnh Bắc Giang', type: 'Tỉnh' },
-    { code: '25', name: 'Tỉnh Phú Thọ', type: 'Tỉnh' },
-    { code: '26', name: 'Tỉnh Vĩnh Phúc', type: 'Tỉnh' },
-    { code: '27', name: 'Tỉnh Bắc Ninh', type: 'Tỉnh' },
-    { code: '30', name: 'Tỉnh Hải Dương', type: 'Tỉnh' },
-    { code: '31', name: 'Thành phố Hải Phòng', type: 'Thành phố Trung ương' },
-    { code: '33', name: 'Tỉnh Hưng Yên', type: 'Tỉnh' },
-    { code: '34', name: 'Tỉnh Thái Bình', type: 'Tỉnh' },
-    { code: '35', name: 'Tỉnh Hà Nam', type: 'Tỉnh' },
-    { code: '36', name: 'Tỉnh Nam Định', type: 'Tỉnh' },
-    { code: '37', name: 'Tỉnh Ninh Bình', type: 'Tỉnh' },
-    { code: '38', name: 'Tỉnh Thanh Hóa', type: 'Tỉnh' },
-    { code: '40', name: 'Tỉnh Nghệ An', type: 'Tỉnh' },
-    { code: '42', name: 'Tỉnh Hà Tĩnh', type: 'Tỉnh' },
-    { code: '44', name: 'Tỉnh Quảng Bình', type: 'Tỉnh' },
-    { code: '45', name: 'Tỉnh Quảng Trị', type: 'Tỉnh' },
-    { code: '46', name: 'Tỉnh Thừa Thiên Huế', type: 'Tỉnh' },
-    { code: '48', name: 'Thành phố Đà Nẵng', type: 'Thành phố Trung ương' },
-    { code: '49', name: 'Tỉnh Quảng Nam', type: 'Tỉnh' },
-    { code: '51', name: 'Tỉnh Quảng Ngãi', type: 'Tỉnh' },
-    { code: '52', name: 'Tỉnh Bình Định', type: 'Tỉnh' },
-    { code: '54', name: 'Tỉnh Phú Yên', type: 'Tỉnh' },
-    { code: '56', name: 'Tỉnh Khánh Hòa', type: 'Tỉnh' },
-    { code: '58', name: 'Tỉnh Ninh Thuận', type: 'Tỉnh' },
-    { code: '60', name: 'Tỉnh Bình Thuận', type: 'Tỉnh' },
-    { code: '62', name: 'Tỉnh Kon Tum', type: 'Tỉnh' },
-    { code: '64', name: 'Tỉnh Gia Lai', type: 'Tỉnh' },
-    { code: '66', name: 'Tỉnh Đắk Lắk', type: 'Tỉnh' },
-    { code: '67', name: 'Tỉnh Đắk Nông', type: 'Tỉnh' },
-    { code: '68', name: 'Tỉnh Lâm Đồng', type: 'Tỉnh' },
-    { code: '70', name: 'Tỉnh Bình Phước', type: 'Tỉnh' },
-    { code: '72', name: 'Tỉnh Tây Ninh', type: 'Tỉnh' },
-    { code: '74', name: 'Tỉnh Bình Dương', type: 'Tỉnh' },
-    { code: '75', name: 'Tỉnh Đồng Nai', type: 'Tỉnh' },
-    { code: '77', name: 'Tỉnh Bà Rịa - Vũng Tàu', type: 'Tỉnh' },
-    { code: '79', name: 'Thành phố Hồ Chí Minh', type: 'Thành phố Trung ương' },
-    { code: '80', name: 'Tỉnh Long An', type: 'Tỉnh' },
-    { code: '82', name: 'Tỉnh Tiền Giang', type: 'Tỉnh' },
-    { code: '83', name: 'Tỉnh Bến Tre', type: 'Tỉnh' },
-    { code: '84', name: 'Tỉnh Trà Vinh', type: 'Tỉnh' },
-    { code: '86', name: 'Tỉnh Vĩnh Long', type: 'Tỉnh' },
-    { code: '87', name: 'Tỉnh Đồng Tháp', type: 'Tỉnh' },
-    { code: '89', name: 'Tỉnh An Giang', type: 'Tỉnh' },
-    { code: '91', name: 'Tỉnh Kiên Giang', type: 'Tỉnh' },
-    { code: '92', name: 'Thành phố Cần Thơ', type: 'Thành phố Trung ương' },
-    { code: '93', name: 'Tỉnh Hậu Giang', type: 'Tỉnh' },
-    { code: '94', name: 'Tỉnh Sóc Trăng', type: 'Tỉnh' },
-    { code: '95', name: 'Tỉnh Bạc Liêu', type: 'Tỉnh' },
-    { code: '96', name: 'Tỉnh Cà Mau', type: 'Tỉnh' }
-  ]
+  const provinceCodeToId = new Map<string, number>()
 
-  for (const provinceData of provinces) {
-    const province = await prisma.province.upsert({
-      where: { code: provinceData.code },
-      update: {},
-      create: provinceData
+  const provinces = getProvinces()
+  for (const p of provinces) {
+    const code = String(p.code)
+    const type = p.type === 'thanh-pho' ? 'Thành phố Trung ương' : 'Tỉnh'
+    const created = await prisma.province.upsert({
+      where: { code },
+      update: { name: p.name, type },
+      create: { code, name: p.name, type }
     })
+    provinceCodeToId.set(code, created.id)
+  }
 
-    // Create some districts for each province
-    const districts = [
-      { code: `${provinceData.code}01`, name: `Quận 1`, type: 'Quận' },
-      { code: `${provinceData.code}02`, name: `Quận 2`, type: 'Quận' },
-      { code: `${provinceData.code}03`, name: `Quận 3`, type: 'Quận' },
-      { code: `${provinceData.code}04`, name: `Huyện 1`, type: 'Huyện' },
-      { code: `${provinceData.code}05`, name: `Huyện 2`, type: 'Huyện' }
-    ]
-
-    for (const districtData of districts) {
-      const district = await prisma.district.upsert({
-        where: { code: districtData.code },
-        update: {},
-        create: {
-          ...districtData,
-          provinceId: province.id
-        }
+  const districtCodeToId = new Map<string, number>()
+  for (const p of provinces) {
+    const provinceId = provinceCodeToId.get(String(p.code))
+    if (!provinceId) continue
+    const districts = getDistrictsByProvinceCode(p.code)
+    for (const d of districts) {
+      const code = String(d.code)
+      const type = d.type === 'quan' ? 'Quận' : d.type === 'thi-xa' ? 'Thị xã' : d.type === 'thanh-pho' ? 'Thành phố' : 'Huyện'
+      const created = await prisma.district.upsert({
+        where: { code },
+        update: { name: d.name, type, provinceId },
+        create: { code, name: d.name, type, provinceId }
       })
-
-      // Create some wards for each district
-      const wards = [
-        { code: `${districtData.code}01`, name: `Phường 1`, type: 'Phường' },
-        { code: `${districtData.code}02`, name: `Phường 2`, type: 'Phường' },
-        { code: `${districtData.code}03`, name: `Xã 1`, type: 'Xã' },
-        { code: `${districtData.code}04`, name: `Xã 2`, type: 'Xã' }
-      ]
-
-      for (const wardData of wards) {
-        await prisma.ward.upsert({
-          where: { code: wardData.code },
-          update: {},
-          create: {
-            ...wardData,
-            districtId: district.id
-          }
-        })
-      }
+      districtCodeToId.set(code, created.id)
     }
   }
 
-  console.log('✅ Vietnam addresses seeded')
+  for (const [districtCode, districtId] of districtCodeToId.entries()) {
+    const wards = getWardsByDistrictCode(districtCode)
+    for (const w of wards) {
+      const code = String(w.code)
+      const type = w.type === 'phuong' ? 'Phường' : w.type === 'thi-tran' ? 'Thị trấn' : 'Xã'
+      await prisma.ward.upsert({
+        where: { code },
+        update: { name: w.name, type, districtId },
+        create: { code, name: w.name, type, districtId }
+      })
+    }
+  }
+
+  const [pCount, dCount, wCount] = await Promise.all([
+    prisma.province.count(),
+    prisma.district.count(),
+    prisma.ward.count()
+  ])
+  console.log(`✅ Vietnam addresses seeded. Provinces: ${pCount}, Districts: ${dCount}, Wards: ${wCount}`)
 }
 
 async function seedProducts() {
