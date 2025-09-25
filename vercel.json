@@ -4,11 +4,5 @@
   "outputDirectory": "apps/web/.next",
   "installCommand": "cd apps/web && npm install",
   "devCommand": "cd apps/web && npm run dev",
-  "framework": "nextjs",
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.js"
-    }
-  ]
+  "framework": "nextjs"
 }
