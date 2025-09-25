@@ -126,7 +126,7 @@ export default function ShippingCalculator() {
     setError('');
 
     try {
-      const response = await fetch('/api/shipping/calculate', {
+      const response = await fetch('/api/v1/shipping/calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

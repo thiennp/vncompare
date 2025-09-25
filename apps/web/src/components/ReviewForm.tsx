@@ -49,7 +49,7 @@ export default function ReviewForm({ productId, onReviewSubmitted }: ReviewFormP
         return;
       }
 
-      const response = await fetch(`/api/products/${productId}/reviews`, {
+      const response = await fetch(`/api/v1/products/${productId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ export default function NewsletterSignup() {
     e.preventDefault()
     
     try {
-      const response = await fetch('/api/newsletter/subscribe', {
+      const response = await fetch('/api/v1/newsletter/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

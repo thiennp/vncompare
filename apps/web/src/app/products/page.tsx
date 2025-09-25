@@ -67,7 +67,7 @@ export default function ProductsPage() {
     
     try {
       logger.info('Loading products');
-      const response = await fetch('/api/products');
+      const response = await fetch('/api/v1/products');
       const data = await response.json();
       
       if (data.success) {

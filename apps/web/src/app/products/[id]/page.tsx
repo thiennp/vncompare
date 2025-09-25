@@ -61,7 +61,7 @@ export default function ProductDetailPage() {
 
   const loadProduct = async () => {
     try {
-      const response = await fetch(`/api/products/${productId}`);
+      const response = await fetch(`/api/v1/products/${productId}`);
       const data = await response.json();
       
       if (data.success) {
@@ -78,7 +78,7 @@ export default function ProductDetailPage() {
 
   const loadReviews = async () => {
     try {
-      const response = await fetch(`/api/products/${productId}/reviews`);
+      const response = await fetch(`/api/v1/products/${productId}/reviews`);
       const data = await response.json();
       
       if (data.success) {

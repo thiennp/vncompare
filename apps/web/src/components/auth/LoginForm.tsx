@@ -28,7 +28,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
     setError('');
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

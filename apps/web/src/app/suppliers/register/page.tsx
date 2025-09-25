@@ -38,7 +38,7 @@ export default function SupplierRegisterPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/suppliers', {
+      const response = await fetch('/api/v1/suppliers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

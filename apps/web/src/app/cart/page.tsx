@@ -44,7 +44,7 @@ export default function CartPage() {
       }
 
       // Create order
-      const response = await fetch('/api/orders', {
+      const response = await fetch('/api/v1/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

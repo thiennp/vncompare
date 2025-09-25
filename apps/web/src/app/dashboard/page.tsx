@@ -84,7 +84,7 @@ export default function DashboardPage() {
     setLoading(true);
     try {
       // Load orders
-      const ordersResponse = await fetch('/api/users/orders', {
+      const ordersResponse = await fetch('/api/v1/orders', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -98,7 +98,7 @@ export default function DashboardPage() {
       }
 
       // Load addresses
-      const addressesResponse = await fetch('/api/users/addresses', {
+      const addressesResponse = await fetch('/api/v1/addresses', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

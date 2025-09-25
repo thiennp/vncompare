@@ -84,7 +84,7 @@ export default function CoverageCalculator() {
     setError('');
 
     try {
-      const response = await fetch('/api/coverage/calculate', {
+      const response = await fetch('/api/v1/coverage/calculate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
