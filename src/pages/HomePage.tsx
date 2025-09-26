@@ -213,7 +213,6 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/* Brand Highlights - Accessible & Colorful */}
       <section
         className="py-16 bg-gradient-to-r from-blue-50 to-purple-50"
