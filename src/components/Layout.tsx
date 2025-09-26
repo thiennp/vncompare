@@ -30,9 +30,21 @@ export default function Layout() {
 
   const navigation = [
     { name: 'Trang chủ', href: '/', icon: null },
-    { name: 'Sơn nội thất', href: '/products?category=interior', icon: Package },
-    { name: 'Sơn ngoại thất', href: '/products?category=exterior', icon: Package },
-    { name: 'Sơn chuyên dụng', href: '/products?category=specialty', icon: Package },
+    {
+      name: 'Sơn nội thất',
+      href: '/products?category=interior',
+      icon: Package,
+    },
+    {
+      name: 'Sơn ngoại thất',
+      href: '/products?category=exterior',
+      icon: Package,
+    },
+    {
+      name: 'Sơn chuyên dụng',
+      href: '/products?category=specialty',
+      icon: Package,
+    },
     { name: 'Máy tính độ phủ', href: '/coverage-calculator', icon: Calculator },
     { name: 'Tính phí vận chuyển', href: '/shipping-calculator', icon: Truck },
   ];
@@ -59,7 +71,9 @@ export default function Layout() {
               <Paintbrush className="h-4 w-4 text-white" />
             </div>
             <span className="font-bold text-xl">VNCompare</span>
-            <Badge variant="secondary" className="text-xs">Sơn</Badge>
+            <Badge variant="secondary" className="text-xs">
+              Sơn
+            </Badge>
           </Link>
 
           {/* Desktop Navigation */}
@@ -190,78 +204,96 @@ export default function Layout() {
             <div>
               <h3 className="font-semibold mb-4">VNCompare Sơn</h3>
               <p className="text-sm text-muted-foreground">
-                Deutschlands größtes Vergleichsportal für Sơn. Über 1 Million Angebote, 
-                Top-Marken & bequeme Montage bei über 1.000 Partnerwerkstätten.
+                Nền tảng so sánh sơn hàng đầu Việt Nam. Hơn 1 triệu đề xuất,
+                 thương hiệu hàng đầu & thi công tiện lợi tại hơn 1.000
+                 đối tác.
               </p>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Sơn nach Typ</h3>
+              <h3 className="font-semibold mb-4">Sơn theo loại</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link to="/products?category=interior" className="hover:text-primary">
+                  <Link
+                    to="/products?category=interior"
+                    className="hover:text-primary"
+                  >
                     Sơn nội thất
                   </Link>
                 </li>
                 <li>
-                  <Link to="/products?category=exterior" className="hover:text-primary">
+                  <Link
+                    to="/products?category=exterior"
+                    className="hover:text-primary"
+                  >
                     Sơn ngoại thất
                   </Link>
                 </li>
                 <li>
-                  <Link to="/products?category=specialty" className="hover:text-primary">
+                  <Link
+                    to="/products?category=specialty"
+                    className="hover:text-primary"
+                  >
                     Sơn chuyên dụng
                   </Link>
                 </li>
                 <li>
-                  <Link to="/coverage-calculator" className="hover:text-primary">
-                    Coverage Calculator
+                  <Link
+                    to="/coverage-calculator"
+                    className="hover:text-primary"
+                  >
+                    Máy tính độ phủ
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Service</h3>
+              <h3 className="font-semibold mb-4">Dịch vụ</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <Link to="/help" className="hover:text-primary">
-                    Hilfe und Kontakt
+                    Trợ giúp và liên hệ
                   </Link>
                 </li>
                 <li>
-                  <Link to="/shipping-calculator" className="hover:text-primary">
-                    Versandkosten berechnen
+                  <Link
+                    to="/shipping-calculator"
+                    className="hover:text-primary"
+                  >
+                    Tính phí vận chuyển
                   </Link>
                 </li>
                 <li>
                   <Link to="/about" className="hover:text-primary">
-                    Über VNCompare
+                    Về VNCompare
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Rechtliches</h3>
+              <h3 className="font-semibold mb-4">Pháp lý</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <Link to="/privacy" className="hover:text-primary">
-                    Datenschutz
+                    Chính sách bảo mật
                   </Link>
                 </li>
                 <li>
                   <Link to="/terms" className="hover:text-primary">
-                    AGB
+                    Điều khoản
                   </Link>
                 </li>
                 <li>
                   <Link to="/imprint" className="hover:text-primary">
-                    Impressum
+                    Thông tin công ty
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 VNCompare Vergleichsportal Sơn GmbH. Alle Inhalte unterliegen unserem Copyright.</p>
+            <p>
+               &copy; 2025 VNCompare Nền tảng so sánh Sơn. Tất cả nội dung thuộc bản quyền của chúng tôi.
+            </p>
           </div>
         </div>
       </footer>
