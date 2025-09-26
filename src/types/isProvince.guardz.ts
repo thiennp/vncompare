@@ -10,6 +10,6 @@ export function isProvince(
     _id: isUndefinedOr(isString),
     name: isString,
     code: isString,
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

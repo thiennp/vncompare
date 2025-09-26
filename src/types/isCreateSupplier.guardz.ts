@@ -12,6 +12,6 @@ export function isCreateSupplier(
     phone: isString,
     address: isString,
     isVerified: isUndefinedOr(isBoolean),
-    isActive: isUndefinedOr(isBoolean)
+    isActive: isUndefinedOr(isBoolean),
   })(value, config);
 }

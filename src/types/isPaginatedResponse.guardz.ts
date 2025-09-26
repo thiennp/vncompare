@@ -17,7 +17,7 @@ export function isPaginatedResponse<T = any>(
       total: isNumber,
       page: isNumber,
       limit: isNumber,
-      totalPages: isNumber
+      totalPages: isNumber,
     })(value, config);
   };
 }

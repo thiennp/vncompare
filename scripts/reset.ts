@@ -1,30 +1,19 @@
-import { getDatabase } from '../src/lib/mongodb';
+// Note: This script is for Node.js environment
+// For browser environment, use the resetDatabase method from the database service
+// or simply refresh the browser to clear localStorage
 
 async function resetDatabase() {
   try {
-    const db = await getDatabase();
-
-    console.log('🗑️ Starting database reset...');
-
-    // Clear all collections
-    await db.collection('users').deleteMany({});
-    await db.collection('products').deleteMany({});
-    await db.collection('suppliers').deleteMany({});
-    await db.collection('provinces').deleteMany({});
-    await db.collection('districts').deleteMany({});
-    await db.collection('wards').deleteMany({});
-    await db.collection('orders').deleteMany({});
-    await db.collection('orderItems').deleteMany({});
-    await db.collection('addresses').deleteMany({});
-    await db.collection('reviews').deleteMany({});
-    await db.collection('productCoverage').deleteMany({});
-    await db.collection('shippingZones').deleteMany({});
-    await db.collection('serviceAreas').deleteMany({});
-
-    console.log('✅ Database reset completed successfully!');
-    console.log('💡 Run "npm run db:seed" to populate with sample data');
+    console.log('🗑️ Database reset for browser environment:');
+    console.log('1. Open browser developer tools (F12)');
+    console.log('2. Go to Application/Storage tab');
+    console.log('3. Clear Local Storage');
+    console.log('4. Refresh the page');
+    console.log('5. Run "pnpm run db:seed" to populate with sample data');
+    console.log('');
+    console.log('✅ Instructions provided successfully!');
   } catch (error) {
-    console.error('❌ Error resetting database:', error);
+    console.error('❌ Error:', error);
     process.exit(1);
   }
 }

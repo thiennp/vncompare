@@ -67,9 +67,9 @@ export class DatabaseService {
     const users: User[] = [
       {
         _id: generateId(),
-        email: 'admin@vncompare.com',
-        password: 'admin123', // This will be hashed in auth service
-        name: 'Admin User',
+        email: 'nguyenphongthien@gmail.com',
+        password: 'Kimtuoc2', // This will be hashed in auth service
+        name: 'Nguyen Phong Thien',
         role: 'admin',
         createdAt: new Date().toISOString(),
         isActive: true,
@@ -566,6 +566,14 @@ export class DatabaseService {
 
   private getAddressesCollection(): Address[] {
     return getCollection<Address>(this.collections.addresses);
+  }
+
+  // Reset all data
+  async resetDatabase(): Promise<void> {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.clear();
+      this.initializeSampleData();
+    }
   }
 }
 

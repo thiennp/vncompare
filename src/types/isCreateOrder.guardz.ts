@@ -5,7 +5,7 @@ import {
   isNumber,
   isOneOf,
   isString,
-  isType
+  isType,
 } from 'guardz';
 import { isOrderItem } from './isOrderItem.guardz';
 
@@ -31,6 +31,6 @@ export function isCreateOrder(
       'pending',
       'refunded'
     ),
-    shippingAddress: isString
+    shippingAddress: isString,
   })(value, config);
 }

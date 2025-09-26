@@ -11,6 +11,6 @@ export function isWard(
     name: isString,
     code: isString,
     districtId: isString,
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

@@ -17,6 +17,6 @@ export function isRegisterRequest(
         'customer',
         'supplier'
       )
-    )
+    ),
   })(value, config);
 }

@@ -21,6 +21,6 @@ export function isUser(
     lastLoginAt: isUndefinedOr(isString),
     resetToken: isUndefinedOr(isString),
     resetTokenExpiry: isUndefinedOr(isString),
-    isActive: isUndefinedOr(isBoolean)
+    isActive: isUndefinedOr(isBoolean),
   })(value, config);
 }

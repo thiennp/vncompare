@@ -11,6 +11,6 @@ export function isDistrict(
     name: isString,
     code: isString,
     provinceId: isString,
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

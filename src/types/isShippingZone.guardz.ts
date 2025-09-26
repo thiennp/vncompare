@@ -5,7 +5,7 @@ import {
   isNumber,
   isString,
   isType,
-  isUndefinedOr
+  isUndefinedOr,
 } from 'guardz';
 
 export function isShippingZone(
@@ -17,6 +17,6 @@ export function isShippingZone(
     name: isString,
     provinces: isArrayWithEachItem(isString),
     shippingCost: isNumber,
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

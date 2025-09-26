@@ -14,6 +14,6 @@ export function isSupplier(
     address: isString,
     isVerified: isUndefinedOr(isBoolean),
     createdAt: isString,
-    isActive: isUndefinedOr(isBoolean)
+    isActive: isUndefinedOr(isBoolean),
   })(value, config);
 }

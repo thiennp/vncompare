@@ -10,6 +10,6 @@ export function isHomePageData(
 ): value is HomePageData {
   return isType<HomePageData>({
     featuredProducts: isArrayWithEachItem(isProduct),
-    suppliers: isArrayWithEachItem(isSupplier)
+    suppliers: isArrayWithEachItem(isSupplier),
   })(value, config);
 }
