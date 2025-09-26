@@ -76,7 +76,9 @@ export class DatabaseService {
       {
         _id: generateId(),
         email: 'nguyenphongthien@gmail.com',
-        password: btoa('Kimtuoc2' + 'your-super-secret-jwt-key-for-development-only'), // Hashed password
+        password: btoa(
+          'Kimtuoc2' + 'your-super-secret-jwt-key-for-development-only'
+        ), // Hashed password
         name: 'Nguyen Phong Thien',
         role: 'admin',
         createdAt: new Date().toISOString(),
@@ -85,7 +87,9 @@ export class DatabaseService {
       {
         _id: generateId(),
         email: 'customer@example.com',
-        password: btoa('customer123' + 'your-super-secret-jwt-key-for-development-only'), // Hashed password
+        password: btoa(
+          'customer123' + 'your-super-secret-jwt-key-for-development-only'
+        ), // Hashed password
         name: 'Customer User',
         role: 'customer',
         createdAt: new Date().toISOString(),
@@ -274,13 +278,16 @@ export class DatabaseService {
     }
     if (filters.$or) {
       products = products.filter(product =>
-        (filters.$or as Record<string, unknown>[]).some((condition: Record<string, unknown>) =>
-          Object.keys(condition).some(key =>
-            product[key as keyof Product]
-              ?.toString()
-              .toLowerCase()
-              .includes((condition[key] as { $regex: string }).$regex.toLowerCase())
-          )
+        (filters.$or as Record<string, unknown>[]).some(
+          (condition: Record<string, unknown>) =>
+            Object.keys(condition).some(key =>
+              product[key as keyof Product]
+                ?.toString()
+                .toLowerCase()
+                .includes(
+                  (condition[key] as { $regex: string }).$regex.toLowerCase()
+                )
+            )
         )
       );
     }

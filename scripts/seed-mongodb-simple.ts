@@ -4,31 +4,36 @@ import { config } from 'dotenv';
 // Load environment variables
 config({ path: '.env.local' });
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vncompare';
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/vncompare';
 
 async function seedMongoDB() {
   let client: MongoClient;
-  
+
   try {
     console.log('🌱 Seeding MongoDB database...');
-    
+
     // Connect to MongoDB
     client = new MongoClient(MONGODB_URI);
     await client.connect();
     console.log('✅ Connected to MongoDB');
-    
+
     const db = client.db('vncompare');
-    
+
     // Simple password hashing function
     const hashPassword = (password: string) => {
-      return Buffer.from(password + 'your-super-secret-jwt-key-for-development-only').toString('base64');
+      return Buffer.from(
+        password + 'your-super-secret-jwt-key-for-development-only'
+      ).toString('base64');
     };
-    
+
     // Create users collection and insert users
     const usersCollection = db.collection('users');
-    
+
     // Check if admin user exists
-    const existingAdmin = await usersCollection.findOne({ email: 'nguyenphongthien@gmail.com' });
+    const existingAdmin = await usersCollection.findOne({
+      email: 'nguyenphongthien@gmail.com',
+    });
     if (!existingAdmin) {
       await usersCollection.insertOne({
         email: 'nguyenphongthien@gmail.com',
@@ -42,9 +47,11 @@ async function seedMongoDB() {
     } else {
       console.log('⚠️ Admin user already exists');
     }
-    
+
     // Check if customer user exists
-    const existingCustomer = await usersCollection.findOne({ email: 'customer@example.com' });
+    const existingCustomer = await usersCollection.findOne({
+      email: 'customer@example.com',
+    });
     if (!existingCustomer) {
       await usersCollection.insertOne({
         email: 'customer@example.com',
@@ -58,7 +65,7 @@ async function seedMongoDB() {
     } else {
       console.log('⚠️ Customer user already exists');
     }
-    
+
     // Create products collection and insert products
     const productsCollection = db.collection('products');
     const products = [
@@ -117,7 +124,7 @@ async function seedMongoDB() {
         createdAt: new Date().toISOString(),
       },
     ];
-    
+
     // Insert products (ignore duplicates)
     for (const product of products) {
       const existing = await productsCollection.findOne({ name: product.name });
@@ -128,7 +135,7 @@ async function seedMongoDB() {
         console.log(`⚠️ Product already exists: ${product.name}`);
       }
     }
-    
+
     // Create suppliers collection and insert suppliers
     const suppliersCollection = db.collection('suppliers');
     const suppliers = [
@@ -165,10 +172,12 @@ async function seedMongoDB() {
         createdAt: new Date().toISOString(),
       },
     ];
-    
+
     // Insert suppliers (ignore duplicates)
     for (const supplier of suppliers) {
-      const existing = await suppliersCollection.findOne({ name: supplier.name });
+      const existing = await suppliersCollection.findOne({
+        name: supplier.name,
+      });
       if (!existing) {
         await suppliersCollection.insertOne(supplier);
         console.log(`✅ Supplier created: ${supplier.name}`);
@@ -176,7 +185,7 @@ async function seedMongoDB() {
         console.log(`⚠️ Supplier already exists: ${supplier.name}`);
       }
     }
-    
+
     console.log('');
     console.log('🎉 MongoDB seeding completed successfully!');
     console.log('');
@@ -187,7 +196,6 @@ async function seedMongoDB() {
     console.log('👤 Customer Login Credentials:');
     console.log('📧 Email: customer@example.com');
     console.log('🔑 Password: customer123');
-    
   } catch (error) {
     console.error('❌ Error seeding MongoDB:', error);
     process.exit(1);

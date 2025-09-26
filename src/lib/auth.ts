@@ -38,12 +38,12 @@ function verifyJWT(token: string): Record<string, unknown> {
     if (parts.length !== 3) throw new Error('Invalid token');
 
     const [header, payload, signature] = parts;
-    
+
     console.log('🔍 Verifying JWT parts:');
     console.log('  Header:', header);
     console.log('  Payload:', payload);
     console.log('  Signature:', signature);
-    
+
     // Create the expected signature the same way as createJWT
     const expectedSignature = btoa(header + '.' + payload + '.' + JWT_SECRET);
     console.log('🔍 Expected signature:', expectedSignature);
@@ -51,7 +51,7 @@ function verifyJWT(token: string): Record<string, unknown> {
     // Normalize signatures by removing base64 padding for comparison
     const normalizedExpected = expectedSignature.replace(/=+$/, '');
     const normalizedReceived = signature.replace(/=+$/, '');
-    
+
     console.log('🔍 Normalized comparison:');
     console.log('  Expected (normalized):', normalizedExpected);
     console.log('  Received (normalized):', normalizedReceived);
@@ -233,7 +233,7 @@ export class AuthService {
       console.log('🔍 Verifying token...');
       const decoded = verifyJWT(token);
       console.log('🔍 Decoded payload:', decoded);
-      
+
       const user = await db.findUserById(decoded.userId as string);
       console.log('🔍 Found user:', !!user);
 

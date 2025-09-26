@@ -28,10 +28,10 @@ async function verifyAuth() {
     .split('; ')
     .find(row => row.startsWith('auth_token='))
     ?.split('=')[1];
-  
+
   console.log('🔍 Auth check - Token exists:', !!token);
   console.log('🔍 Auth check - All cookies:', document.cookie);
-  
+
   if (!token) {
     console.log('❌ No auth token found');
     throw new Response('Unauthorized', { status: 401 });
@@ -39,11 +39,12 @@ async function verifyAuth() {
 
   const result = await authService.verifyToken(token);
   console.log('🔍 Token verification result:', result.success);
-  
+
   if (!result.success || !result.user) {
     console.log('❌ Token verification failed');
     // Remove invalid token cookie
-    document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie =
+      'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     throw new Response('Unauthorized', { status: 401 });
   }
 

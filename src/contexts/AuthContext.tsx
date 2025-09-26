@@ -29,7 +29,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() { // eslint-disable-line react-refresh/only-export-components
+export function useAuth() {
+  // eslint-disable-line react-refresh/only-export-components
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -84,15 +85,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log('🔐 Attempting login for:', email);
       const result = await authService.login(email, password);
       console.log('🔐 Login result:', result.success);
-      
+
       if (result.success && result.user && result.token) {
         setUser(result.user);
         setToken(result.token);
-        Cookies.set('auth_token', result.token, { 
-          expires: 7, 
+        Cookies.set('auth_token', result.token, {
+          expires: 7,
           path: '/',
           secure: false, // Set to true in production with HTTPS
-          sameSite: 'lax'
+          sameSite: 'lax',
         }); // 7 days
         console.log('✅ Login successful, cookie set');
         return { success: true };
@@ -117,11 +118,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (result.success && result.user && result.token) {
         setUser(result.user);
         setToken(result.token);
-        Cookies.set('auth_token', result.token, { 
-          expires: 7, 
+        Cookies.set('auth_token', result.token, {
+          expires: 7,
           path: '/',
           secure: false, // Set to true in production with HTTPS
-          sameSite: 'lax'
+          sameSite: 'lax',
         }); // 7 days
         return { success: true };
       } else {
