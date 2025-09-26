@@ -12,6 +12,9 @@ import {
   Package,
   Settings,
   BarChart3,
+  Calculator,
+  Truck,
+  Paintbrush,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -27,9 +30,11 @@ export default function Layout() {
 
   const navigation = [
     { name: 'Trang chủ', href: '/', icon: null },
-    { name: 'Sản phẩm', href: '/products', icon: Package },
-    { name: 'Máy tính độ phủ', href: '/coverage-calculator', icon: null },
-    { name: 'Tính phí vận chuyển', href: '/shipping-calculator', icon: null },
+    { name: 'Sơn nội thất', href: '/products?category=interior', icon: Package },
+    { name: 'Sơn ngoại thất', href: '/products?category=exterior', icon: Package },
+    { name: 'Sơn chuyên dụng', href: '/products?category=specialty', icon: Package },
+    { name: 'Máy tính độ phủ', href: '/coverage-calculator', icon: Calculator },
+    { name: 'Tính phí vận chuyển', href: '/shipping-calculator', icon: Truck },
   ];
 
   const adminNavigation = [
@@ -50,12 +55,11 @@ export default function Layout() {
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">
-                VN
-              </span>
+            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <Paintbrush className="h-4 w-4 text-white" />
             </div>
             <span className="font-bold text-xl">VNCompare</span>
+            <Badge variant="secondary" className="text-xs">Sơn</Badge>
           </Link>
 
           {/* Desktop Navigation */}
@@ -179,81 +183,85 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t bg-muted/50">
+      {/* Footer - CHECK24 Style */}
+      <footer className="border-t bg-gray-50">
         <div className="container py-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="font-semibold mb-4">VNCompare</h3>
+              <h3 className="font-semibold mb-4">VNCompare Sơn</h3>
               <p className="text-sm text-muted-foreground">
-                Nền tảng so sánh sơn hàng đầu Việt Nam. Tìm kiếm, so sánh giá và
-                mua sơn chất lượng cao.
+                Deutschlands größtes Vergleichsportal für Sơn. Über 1 Million Angebote, 
+                Top-Marken & bequeme Montage bei über 1.000 Partnerwerkstätten.
               </p>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Sản phẩm</h3>
+              <h3 className="font-semibold mb-4">Sơn nach Typ</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <Link to="/products" className="hover:text-primary">
-                    Tất cả sản phẩm
+                  <Link to="/products?category=interior" className="hover:text-primary">
+                    Sơn nội thất
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/coverage-calculator"
-                    className="hover:text-primary"
-                  >
-                    Máy tính độ phủ
+                  <Link to="/products?category=exterior" className="hover:text-primary">
+                    Sơn ngoại thất
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/shipping-calculator"
-                    className="hover:text-primary"
-                  >
-                    Tính phí vận chuyển
+                  <Link to="/products?category=specialty" className="hover:text-primary">
+                    Sơn chuyên dụng
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/coverage-calculator" className="hover:text-primary">
+                    Coverage Calculator
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Hỗ trợ</h3>
+              <h3 className="font-semibold mb-4">Service</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <Link to="/help" className="hover:text-primary">
-                    Trợ giúp
+                    Hilfe und Kontakt
                   </Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="hover:text-primary">
-                    Liên hệ
+                  <Link to="/shipping-calculator" className="hover:text-primary">
+                    Versandkosten berechnen
                   </Link>
                 </li>
                 <li>
                   <Link to="/about" className="hover:text-primary">
-                    Về chúng tôi
+                    Über VNCompare
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold mb-4">Liên kết</h3>
+              <h3 className="font-semibold mb-4">Rechtliches</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <Link to="/privacy" className="hover:text-primary">
-                    Chính sách bảo mật
+                    Datenschutz
                   </Link>
                 </li>
                 <li>
                   <Link to="/terms" className="hover:text-primary">
-                    Điều khoản sử dụng
+                    AGB
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/imprint" className="hover:text-primary">
+                    Impressum
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 VNCompare. Tất cả quyền được bảo lưu.</p>
+            <p>&copy; 2025 VNCompare Vergleichsportal Sơn GmbH. Alle Inhalte unterliegen unserem Copyright.</p>
           </div>
         </div>
       </footer>
