@@ -18,11 +18,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "functions": {
-    "src/routes.tsx": {
-      "runtime": "nodejs18.x"
-    }
-  },
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
