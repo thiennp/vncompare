@@ -55,6 +55,14 @@ export class DatabaseService {
     this.initializeSampleData();
   }
 
+  // Method to clear all data and reseed
+  clearAllData(): void {
+    Object.values(this.collections).forEach(collectionName => {
+      localStorage.removeItem(collectionName);
+    });
+    this.initializeSampleData();
+  }
+
   private initializeSampleData() {
     // Initialize with sample data if collections are empty
     if (this.getUsersCollection().length === 0) {
@@ -63,12 +71,12 @@ export class DatabaseService {
   }
 
   private seedSampleData() {
-    // Sample users
+    // Sample users with hashed passwords (same as MongoDB)
     const users: User[] = [
       {
         _id: generateId(),
         email: 'nguyenphongthien@gmail.com',
-        password: 'Kimtuoc2', // This will be hashed in auth service
+        password: btoa('Kimtuoc2' + 'your-super-secret-jwt-key-for-development-only'), // Hashed password
         name: 'Nguyen Phong Thien',
         role: 'admin',
         createdAt: new Date().toISOString(),
@@ -77,7 +85,7 @@ export class DatabaseService {
       {
         _id: generateId(),
         email: 'customer@example.com',
-        password: 'customer123', // This will be hashed in auth service
+        password: btoa('customer123' + 'your-super-secret-jwt-key-for-development-only'), // Hashed password
         name: 'Customer User',
         role: 'customer',
         createdAt: new Date().toISOString(),
@@ -204,7 +212,7 @@ export class DatabaseService {
   }
 
   async getUsers(
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page: number = 1,
     limit: number = 20
   ): Promise<{ users: User[]; total: number }> {
@@ -247,7 +255,7 @@ export class DatabaseService {
   }
 
   async getProducts(
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page: number = 1,
     limit: number = 20
   ): Promise<{ products: Product[]; total: number }> {
@@ -266,12 +274,12 @@ export class DatabaseService {
     }
     if (filters.$or) {
       products = products.filter(product =>
-        filters.$or.some((condition: any) =>
+        (filters.$or as Record<string, unknown>[]).some((condition: Record<string, unknown>) =>
           Object.keys(condition).some(key =>
             product[key as keyof Product]
               ?.toString()
               .toLowerCase()
-              .includes(condition[key].$regex.toLowerCase())
+              .includes((condition[key] as { $regex: string }).$regex.toLowerCase())
           )
         )
       );
@@ -323,7 +331,7 @@ export class DatabaseService {
   }
 
   async getSuppliers(
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page: number = 1,
     limit: number = 20
   ): Promise<{ suppliers: Supplier[]; total: number }> {
@@ -384,7 +392,7 @@ export class DatabaseService {
 
   async getOrders(
     userId?: string,
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page: number = 1,
     limit: number = 20
   ): Promise<{ orders: Order[]; total: number }> {
@@ -438,7 +446,7 @@ export class DatabaseService {
 
   async getReviews(
     productId?: string,
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page: number = 1,
     limit: number = 20
   ): Promise<{ reviews: Review[]; total: number }> {
@@ -523,7 +531,7 @@ export class DatabaseService {
   }
 
   // Dashboard stats
-  async getDashboardStats(): Promise<any> {
+  async getDashboardStats(): Promise<Record<string, unknown>> {
     const users = this.getUsersCollection();
     const products = this.getProductsCollection();
     const orders = this.getOrdersCollection();

@@ -18,7 +18,7 @@ function base64UrlDecode(str: string): string {
   return atob(str);
 }
 
-function createJWT(payload: any): string {
+function createJWT(payload: Record<string, unknown>): string {
   const header = { alg: 'HS256', typ: 'JWT' };
   const encodedHeader = base64UrlEncode(JSON.stringify(header));
   const encodedPayload = base64UrlEncode(JSON.stringify(payload));
@@ -28,23 +28,46 @@ function createJWT(payload: any): string {
     encodedHeader + '.' + encodedPayload + '.' + JWT_SECRET
   );
 
+  console.log('🔐 Creating JWT signature:', signature);
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
 
-function verifyJWT(token: string): any {
+function verifyJWT(token: string): Record<string, unknown> {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) throw new Error('Invalid token');
 
     const [header, payload, signature] = parts;
+    
+    console.log('🔍 Verifying JWT parts:');
+    console.log('  Header:', header);
+    console.log('  Payload:', payload);
+    console.log('  Signature:', signature);
+    
+    // Create the expected signature the same way as createJWT
     const expectedSignature = btoa(header + '.' + payload + '.' + JWT_SECRET);
+    console.log('🔍 Expected signature:', expectedSignature);
 
-    if (signature !== expectedSignature) {
+    // Normalize signatures by removing base64 padding for comparison
+    const normalizedExpected = expectedSignature.replace(/=+$/, '');
+    const normalizedReceived = signature.replace(/=+$/, '');
+    
+    console.log('🔍 Normalized comparison:');
+    console.log('  Expected (normalized):', normalizedExpected);
+    console.log('  Received (normalized):', normalizedReceived);
+
+    if (normalizedReceived !== normalizedExpected) {
+      console.log('❌ Signature mismatch after normalization');
+      console.log('Expected length:', normalizedExpected.length);
+      console.log('Received length:', normalizedReceived.length);
       throw new Error('Invalid signature');
     }
 
-    return JSON.parse(base64UrlDecode(payload));
+    const decodedPayload = JSON.parse(base64UrlDecode(payload));
+    console.log('✅ JWT verification successful, payload:', decodedPayload);
+    return decodedPayload;
   } catch (error) {
+    console.log('❌ JWT verification failed:', error);
     throw new Error('Invalid token');
   }
 }
@@ -113,7 +136,8 @@ export class AuthService {
       });
 
       // Remove password from response
-      const { password: _password, ...userWithoutPassword } = user;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+      const { password: _, ...userWithoutPassword } = user;
 
       return {
         success: true,
@@ -185,6 +209,7 @@ export class AuthService {
       });
 
       // Remove password from response
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
       const { password: _, ...userWithoutPassword } = user;
 
       return {
@@ -205,10 +230,15 @@ export class AuthService {
     token: string
   ): Promise<{ success: boolean; user?: User; message?: string }> {
     try {
+      console.log('🔍 Verifying token...');
       const decoded = verifyJWT(token);
-      const user = await db.findUserById(decoded.userId);
+      console.log('🔍 Decoded payload:', decoded);
+      
+      const user = await db.findUserById(decoded.userId as string);
+      console.log('🔍 Found user:', !!user);
 
       if (!user) {
+        console.log('❌ User not found');
         return {
           success: false,
           message: 'User not found',
@@ -216,13 +246,16 @@ export class AuthService {
       }
 
       // Remove password from response
-      const { password: _password, ...userWithoutPassword } = user;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+      const { password: _, ...userWithoutPassword } = user;
 
+      console.log('✅ Token verification successful');
       return {
         success: true,
         user: userWithoutPassword as User,
       };
     } catch (error) {
+      console.log('❌ Token verification error:', error);
       return {
         success: false,
         message: 'Invalid token',
@@ -317,7 +350,7 @@ export class AuthService {
   ): Promise<AuthResult> {
     try {
       const decoded = verifyJWT(token);
-      const user = await db.findUserById(decoded.userId);
+      const user = await db.findUserById(decoded.userId as string);
 
       if (!user || !user.resetToken || user.resetToken !== token) {
         return {

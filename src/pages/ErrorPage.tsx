@@ -10,7 +10,7 @@ import {
 import { AlertTriangle, Home } from 'lucide-react';
 
 export default function ErrorPage() {
-  const error = useRouteError() as any;
+  const error = useRouteError() as Error;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">

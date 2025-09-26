@@ -7,6 +7,7 @@ import {
 } from 'react';
 import { User } from '../lib/models';
 import { authService } from '../lib/auth';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
   user: User | null;
@@ -28,7 +29,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() {
+export function useAuth() { // eslint-disable-line react-refresh/only-export-components
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     // Check for stored token on mount
-    const storedToken = localStorage.getItem('token');
+    const storedToken = Cookies.get('auth_token');
     if (storedToken) {
       setToken(storedToken);
       verifyToken(storedToken);
@@ -64,13 +65,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setToken(tokenToVerify);
       } else {
         // Token is invalid, remove it
-        localStorage.removeItem('token');
+        Cookies.remove('auth_token');
         setToken(null);
         setUser(null);
       }
     } catch (error) {
       console.error('Token verification failed:', error);
-      localStorage.removeItem('token');
+      Cookies.remove('auth_token');
       setToken(null);
       setUser(null);
     } finally {
@@ -80,13 +81,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('🔐 Attempting login for:', email);
       const result = await authService.login(email, password);
+      console.log('🔐 Login result:', result.success);
+      
       if (result.success && result.user && result.token) {
         setUser(result.user);
         setToken(result.token);
-        localStorage.setItem('token', result.token);
+        Cookies.set('auth_token', result.token, { 
+          expires: 7, 
+          path: '/',
+          secure: false, // Set to true in production with HTTPS
+          sameSite: 'lax'
+        }); // 7 days
+        console.log('✅ Login successful, cookie set');
         return { success: true };
       } else {
+        console.log('❌ Login failed:', result.message);
         return { success: false, message: result.message };
       }
     } catch (error) {
@@ -106,7 +117,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (result.success && result.user && result.token) {
         setUser(result.user);
         setToken(result.token);
-        localStorage.setItem('token', result.token);
+        Cookies.set('auth_token', result.token, { 
+          expires: 7, 
+          path: '/',
+          secure: false, // Set to true in production with HTTPS
+          sameSite: 'lax'
+        }); // 7 days
         return { success: true };
       } else {
         return { success: false, message: result.message };
@@ -120,7 +136,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('token');
+    Cookies.remove('auth_token');
   };
 
   const value: AuthContextType = {

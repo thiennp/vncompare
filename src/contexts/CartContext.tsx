@@ -24,7 +24,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function useCart() {
+export function useCart() { // eslint-disable-line react-refresh/only-export-components
   const context = useContext(CartContext);
   if (context === undefined) {
     throw new Error('useCart must be used within a CartProvider');

@@ -13,39 +13,49 @@ import {
 import { ObjectId } from 'mongodb';
 
 export class DatabaseService {
-  private db: any;
+  private db: unknown;
+  private initPromise: Promise<void>;
 
   constructor() {
-    this.init();
+    this.initPromise = this.init();
   }
 
   private async init() {
     this.db = await getDatabase();
   }
 
+  private async ensureDb() {
+    await this.initPromise;
+    return this.db;
+  }
+
   // User operations
   async createUser(userData: Omit<User, '_id' | 'createdAt'>): Promise<User> {
+    const db = await this.ensureDb();
     const user: User = {
       ...userData,
       createdAt: new Date().toISOString(),
     };
-    const result = await this.db.collection('users').insertOne(user);
+    const result = await db.collection('users').insertOne(user);
     return { ...user, _id: result.insertedId };
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    return await this.db.collection('users').findOne({ email });
+    const db = await this.ensureDb();
+    return await db.collection('users').findOne({ email });
   }
 
   async findUserById(id: string): Promise<User | null> {
-    return await this.db.collection('users').findOne({ _id: new ObjectId(id) });
+    const db = await this.ensureDb();
+    return await db.collection('users').findOne({ _id: new ObjectId(id) });
   }
 
   async updateUser(
     id: string,
     updateData: Partial<User>
   ): Promise<User | null> {
-    const result = await this.db
+    const db = await this.ensureDb();
+    const result = await db
       .collection('users')
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
@@ -57,7 +67,7 @@ export class DatabaseService {
 
   // Product operations
   async getProducts(
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page = 1,
     limit = 20
   ): Promise<{ products: Product[]; total: number }> {
@@ -116,7 +126,7 @@ export class DatabaseService {
   // Order operations
   async getOrders(
     userId?: string,
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page = 1,
     limit = 20
   ): Promise<{ orders: Order[]; total: number }> {
@@ -171,7 +181,7 @@ export class DatabaseService {
 
   // Supplier operations
   async getSuppliers(
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page = 1,
     limit = 20
   ): Promise<{ suppliers: Supplier[]; total: number }> {
@@ -222,7 +232,7 @@ export class DatabaseService {
   // Review operations
   async getReviews(
     productId?: string,
-    filters: any = {},
+    filters: Record<string, unknown> = {},
     page = 1,
     limit = 20
   ): Promise<{ reviews: Review[]; total: number }> {
@@ -375,4 +385,12 @@ export class DatabaseService {
   }
 }
 
-export const db = new DatabaseService();
+// Create database instance and wait for initialization
+const createDatabase = async () => {
+  const dbService = new DatabaseService();
+  // Wait for initialization to complete
+  await (dbService as any).initPromise;
+  return dbService;
+};
+
+export const db = await createDatabase();

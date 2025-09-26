@@ -2,7 +2,7 @@ import type { ApiResponse } from './index';
 import type { TypeGuardFn, TypeGuardFnConfig } from 'guardz';
 import { isBoolean, isString, isType, isUndefinedOr } from 'guardz';
 
-export function isApiResponse<T = any>(
+export function isApiResponse<T = unknown>(
   typeGuardT: TypeGuardFn<T>
 ): (
   value: unknown,

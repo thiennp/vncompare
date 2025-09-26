@@ -53,7 +53,7 @@ export interface Product {
   isActive?: boolean;
   createdAt: string;
   images?: string[];
-  specifications?: Record<string, any>;
+  specifications?: Record<string, unknown>;
 }
 
 export interface CreateProduct {
@@ -72,7 +72,7 @@ export interface CreateProduct {
   coverage: number;
   isActive?: boolean;
   images?: string[];
-  specifications?: Record<string, any>;
+  specifications?: Record<string, unknown>;
 }
 
 // Supplier types
@@ -183,14 +183,14 @@ export interface CreateAddress {
 }
 
 // API Response types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
   data?: T;
   error?: string;
 }
 
-export interface PaginatedResponse<T = any> {
+export interface PaginatedResponse<T = unknown> {
   items: T[];
   total: number;
   page: number;

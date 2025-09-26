@@ -21,27 +21,39 @@ import AdminSuppliersPage from './pages/admin/AdminSuppliersPage';
 import AdminReviewsPage from './pages/admin/AdminReviewsPage';
 import ErrorPage from './pages/ErrorPage';
 
-// Helper function to verify authentication
-async function verifyAuth(request: Request) {
-  const token =
-    request.headers.get('Authorization')?.replace('Bearer ', '') ||
-    new URL(request.url).searchParams.get('token');
-
+// Helper function to verify authentication - using cookies
+async function verifyAuth() {
+  // Get token from cookies
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('auth_token='))
+    ?.split('=')[1];
+  
+  console.log('🔍 Auth check - Token exists:', !!token);
+  console.log('🔍 Auth check - All cookies:', document.cookie);
+  
   if (!token) {
+    console.log('❌ No auth token found');
     throw new Response('Unauthorized', { status: 401 });
   }
 
   const result = await authService.verifyToken(token);
+  console.log('🔍 Token verification result:', result.success);
+  
   if (!result.success || !result.user) {
+    console.log('❌ Token verification failed');
+    // Remove invalid token cookie
+    document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     throw new Response('Unauthorized', { status: 401 });
   }
 
+  console.log('✅ Authentication successful for user:', result.user.email);
   return result.user;
 }
 
 // Helper function to verify admin role
-async function verifyAdmin(request: Request) {
-  const user = await verifyAuth(request);
+async function verifyAdmin() {
+  const user = await verifyAuth();
   if (user.role !== 'admin') {
     throw new Response('Forbidden', { status: 403 });
   }
@@ -78,7 +90,7 @@ export const router = createBrowserRouter([
           const category = url.searchParams.get('category') || '';
           const search = url.searchParams.get('search') || '';
 
-          const filters: any = { isActive: true };
+          const filters: Record<string, unknown> = { isActive: true };
           if (category) filters.category = category;
           if (search) {
             filters.$or = [
@@ -132,8 +144,8 @@ export const router = createBrowserRouter([
       {
         path: 'dashboard',
         element: <DashboardPage />,
-        loader: async ({ request }) => {
-          const user = await verifyAuth(request);
+        loader: async () => {
+          const user = await verifyAuth();
           const [ordersResult, addresses] = await Promise.all([
             db.getOrders(user._id!.toString(), {}, 1, 10),
             db.getAddresses(user._id!.toString()),
@@ -150,12 +162,12 @@ export const router = createBrowserRouter([
         path: 'orders',
         element: <OrdersPage />,
         loader: async ({ request }) => {
-          const user = await verifyAuth(request);
+          const user = await verifyAuth();
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const status = url.searchParams.get('status') || '';
 
-          const filters: any = {};
+          const filters: Record<string, unknown> = {};
           if (status) filters.status = status;
 
           const ordersResult = await db.getOrders(
@@ -176,8 +188,8 @@ export const router = createBrowserRouter([
       {
         path: 'orders/:id',
         element: <OrderDetailPage />,
-        loader: async ({ params, request }) => {
-          const user = await verifyAuth(request);
+        loader: async ({ params }) => {
+          const user = await verifyAuth();
           const order = await db.getOrderById(params.id!);
 
           if (!order) {
@@ -198,8 +210,8 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <ProfilePage />,
-        loader: async ({ request }) => {
-          const user = await verifyAuth(request);
+        loader: async () => {
+          const user = await verifyAuth();
           const addresses = await db.getAddresses(user._id!.toString());
 
           return { user, addresses };
@@ -239,8 +251,8 @@ export const router = createBrowserRouter([
           {
             index: true,
             element: <AdminDashboardPage />,
-            loader: async ({ request }) => {
-              const _user = await verifyAdmin(request);
+            loader: async () => {
+              const _user = await verifyAdmin();
               const stats = await db.getDashboardStats();
 
               return { user: _user, stats };
@@ -250,12 +262,12 @@ export const router = createBrowserRouter([
             path: 'products',
             element: <AdminProductsPage />,
             loader: async ({ request }) => {
-              await verifyAdmin(request);
+              await verifyAdmin();
               const url = new URL(request.url);
               const page = parseInt(url.searchParams.get('page') || '1');
               const search = url.searchParams.get('search') || '';
 
-              const filters: any = {};
+              const filters: Record<string, unknown> = {};
               if (search) {
                 filters.$or = [
                   { name: { $regex: search, $options: 'i' } },
@@ -277,12 +289,12 @@ export const router = createBrowserRouter([
             path: 'orders',
             element: <AdminOrdersPage />,
             loader: async ({ request }) => {
-              await verifyAdmin(request);
+              await verifyAdmin();
               const url = new URL(request.url);
               const page = parseInt(url.searchParams.get('page') || '1');
               const status = url.searchParams.get('status') || '';
 
-              const filters: any = {};
+              const filters: Record<string, unknown> = {};
               if (status) filters.status = status;
 
               const ordersResult = await db.getOrders(
@@ -304,12 +316,12 @@ export const router = createBrowserRouter([
             path: 'users',
             element: <AdminUsersPage />,
             loader: async ({ request }) => {
-              await verifyAdmin(request);
+              await verifyAdmin();
               const url = new URL(request.url);
               const page = parseInt(url.searchParams.get('page') || '1');
               const role = url.searchParams.get('role') || '';
 
-              const filters: any = {};
+              const filters: Record<string, unknown> = {};
               if (role) filters.role = role;
 
               const usersResult = await db.getUsers(filters, page, 20);
@@ -326,12 +338,12 @@ export const router = createBrowserRouter([
             path: 'suppliers',
             element: <AdminSuppliersPage />,
             loader: async ({ request }) => {
-              await verifyAdmin(request);
+              await verifyAdmin();
               const url = new URL(request.url);
               const page = parseInt(url.searchParams.get('page') || '1');
               const verified = url.searchParams.get('verified');
 
-              const filters: any = {};
+              const filters: Record<string, unknown> = {};
               if (verified !== null) filters.isVerified = verified === 'true';
 
               const suppliersResult = await db.getSuppliers(filters, page, 20);
@@ -348,12 +360,12 @@ export const router = createBrowserRouter([
             path: 'reviews',
             element: <AdminReviewsPage />,
             loader: async ({ request }) => {
-              await verifyAdmin(request);
+              await verifyAdmin();
               const url = new URL(request.url);
               const page = parseInt(url.searchParams.get('page') || '1');
               const status = url.searchParams.get('status') || '';
 
-              const filters: any = {};
+              const filters: Record<string, unknown> = {};
               if (status) filters.status = status;
 
               const reviewsResult = await db.getReviews(

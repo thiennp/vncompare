@@ -70,8 +70,8 @@ export interface Supplier {
   email?: string;
   phone?: string;
   address?: string;
-  businessInfo?: any;
-  contactInfo?: any;
+  businessInfo?: Record<string, unknown>;
+  contactInfo?: Record<string, unknown>;
   isVerified: boolean;
   createdAt: string;
 }

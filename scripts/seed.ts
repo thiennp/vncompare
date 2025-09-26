@@ -14,6 +14,7 @@ async function seedDatabase() {
     console.log('✅ Instructions provided successfully!');
   } catch (error) {
     console.error('❌ Error:', error);
+    // eslint-disable-next-line no-undef
     process.exit(1);
   }
 }
