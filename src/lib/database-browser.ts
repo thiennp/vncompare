@@ -71,7 +71,7 @@ export class DatabaseService {
         password: 'admin123', // This will be hashed in auth service
         name: 'Admin User',
         role: 'admin',
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         isActive: true,
       },
       {
@@ -80,7 +80,7 @@ export class DatabaseService {
         password: 'customer123', // This will be hashed in auth service
         name: 'Customer User',
         role: 'customer',
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         isActive: true,
       },
     ];
@@ -97,7 +97,7 @@ export class DatabaseService {
         unit: 'thùng',
         coverage: 12,
         isActive: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         images: ['/images/dulux-weathershield.jpg'],
         specifications: {
           color: 'White',
@@ -115,7 +115,7 @@ export class DatabaseService {
         unit: 'thùng',
         coverage: 15,
         isActive: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         images: ['/images/jotun-lady.jpg'],
         specifications: {
           color: 'White',
@@ -134,7 +134,7 @@ export class DatabaseService {
         phone: '0123456789',
         address: '123 Nguyễn Huệ, Q1, TP.HCM',
         isVerified: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         isActive: true,
       },
       {
@@ -144,7 +144,7 @@ export class DatabaseService {
         phone: '0987654321',
         address: '456 Lê Lợi, Q1, TP.HCM',
         isVerified: true,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         isActive: true,
       },
     ];
@@ -172,7 +172,7 @@ export class DatabaseService {
       ...userData,
       role: userData.role || 'customer', // Default to customer if not specified
       _id: generateId(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const users = this.getUsersCollection();
     users.push(user);
@@ -233,7 +233,7 @@ export class DatabaseService {
     const product: Product = {
       ...productData,
       _id: generateId(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const products = this.getProductsCollection();
     products.push(product);
@@ -314,7 +314,7 @@ export class DatabaseService {
     const supplier: Supplier = {
       ...supplierData,
       _id: generateId(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const suppliers = this.getSuppliersCollection();
     suppliers.push(supplier);
@@ -369,7 +369,7 @@ export class DatabaseService {
     const order: Order = {
       ...orderData,
       _id: generateId(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const orders = this.getOrdersCollection();
     orders.push(order);
@@ -428,7 +428,7 @@ export class DatabaseService {
     const review: Review = {
       ...reviewData,
       _id: generateId(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const reviews = this.getReviewsCollection();
     reviews.push(review);
@@ -482,7 +482,7 @@ export class DatabaseService {
     const address: Address = {
       ...addressData,
       _id: generateId(),
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const addresses = this.getAddressesCollection();
     addresses.push(address);

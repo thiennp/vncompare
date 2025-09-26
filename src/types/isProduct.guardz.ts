@@ -4,13 +4,12 @@ import {
   isAny,
   isArrayWithEachItem,
   isBoolean,
-  isDate,
   isNumber,
   isObjectWithEachItem,
   isOneOf,
   isString,
   isType,
-  isUndefinedOr,
+  isUndefinedOr
 } from 'guardz';
 
 export function isProduct(
@@ -41,8 +40,8 @@ export function isProduct(
     unit: isString,
     coverage: isNumber,
     isActive: isUndefinedOr(isBoolean),
-    createdAt: isDate,
+    createdAt: isString,
     images: isUndefinedOr(isArrayWithEachItem(isString)),
-    specifications: isUndefinedOr(isObjectWithEachItem(isAny)),
+    specifications: isUndefinedOr(isObjectWithEachItem(isAny))
   })(value, config);
 }

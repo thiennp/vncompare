@@ -1,6 +1,6 @@
 import type { Address } from './index';
 import type { TypeGuardFnConfig } from 'guardz';
-import { isBoolean, isDate, isString, isType, isUndefinedOr } from 'guardz';
+import { isBoolean, isString, isType, isUndefinedOr } from 'guardz';
 
 export function isAddress(
   value: unknown,
@@ -16,6 +16,6 @@ export function isAddress(
     district: isString,
     ward: isString,
     isDefault: isUndefinedOr(isBoolean),
-    createdAt: isDate,
+    createdAt: isString
   })(value, config);
 }

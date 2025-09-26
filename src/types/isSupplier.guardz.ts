@@ -1,6 +1,6 @@
 import type { Supplier } from './index';
 import type { TypeGuardFnConfig } from 'guardz';
-import { isBoolean, isDate, isString, isType, isUndefinedOr } from 'guardz';
+import { isBoolean, isString, isType, isUndefinedOr } from 'guardz';
 
 export function isSupplier(
   value: unknown,
@@ -13,7 +13,7 @@ export function isSupplier(
     phone: isString,
     address: isString,
     isVerified: isUndefinedOr(isBoolean),
-    createdAt: isDate,
-    isActive: isUndefinedOr(isBoolean),
+    createdAt: isString,
+    isActive: isUndefinedOr(isBoolean)
   })(value, config);
 }

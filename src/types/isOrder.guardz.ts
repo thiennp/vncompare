@@ -2,12 +2,11 @@ import type { Order } from './index';
 import type { TypeGuardFnConfig } from 'guardz';
 import {
   isArrayWithEachItem,
-  isDate,
   isNumber,
   isOneOf,
   isString,
   isType,
-  isUndefinedOr,
+  isUndefinedOr
 } from 'guardz';
 import { isOrderItem } from './isOrderItem.guardz';
 
@@ -35,7 +34,7 @@ export function isOrder(
       'refunded'
     ),
     shippingAddress: isString,
-    createdAt: isDate,
-    updatedAt: isUndefinedOr(isDate),
+    createdAt: isString,
+    updatedAt: isUndefinedOr(isString)
   })(value, config);
 }

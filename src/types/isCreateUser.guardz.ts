@@ -17,6 +17,6 @@ export function isCreateUser(
         'customer',
         'supplier'
       )
-    ),
+    )
   })(value, config);
 }

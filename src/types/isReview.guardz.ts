@@ -1,13 +1,6 @@
 import type { Review } from './index';
 import type { TypeGuardFnConfig } from 'guardz';
-import {
-  isDate,
-  isNumber,
-  isOneOf,
-  isString,
-  isType,
-  isUndefinedOr,
-} from 'guardz';
+import { isNumber, isOneOf, isString, isType, isUndefinedOr } from 'guardz';
 
 export function isReview(
   value: unknown,
@@ -27,6 +20,6 @@ export function isReview(
         'rejected'
       )
     ),
-    createdAt: isDate,
+    createdAt: isString
   })(value, config);
 }

@@ -10,6 +10,6 @@ export function isOrderItem(
     productId: isString,
     quantity: isNumber,
     price: isNumber,
-    total: isNumber,
+    total: isNumber
   })(value, config);
 }

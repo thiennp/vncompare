@@ -11,6 +11,6 @@ export function isCreateReview(
     userId: isString,
     rating: isNumber,
     title: isString,
-    comment: isString,
+    comment: isString
   })(value, config);
 }

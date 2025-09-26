@@ -27,7 +27,7 @@ export class DatabaseService {
   async createUser(userData: Omit<User, '_id' | 'createdAt'>): Promise<User> {
     const user: User = {
       ...userData,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const result = await this.db.collection('users').insertOne(user);
     return { ...user, _id: result.insertedId };
@@ -85,8 +85,8 @@ export class DatabaseService {
   ): Promise<Product> {
     const product: Product = {
       ...productData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     const result = await this.db.collection('products').insertOne(product);
     return { ...product, _id: result.insertedId };
@@ -149,7 +149,7 @@ export class DatabaseService {
   ): Promise<Order> {
     const order: Order = {
       ...orderData,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const result = await this.db.collection('orders').insertOne(order);
     return { ...order, _id: result.insertedId };
@@ -199,7 +199,7 @@ export class DatabaseService {
   ): Promise<Supplier> {
     const supplier: Supplier = {
       ...supplierData,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const result = await this.db.collection('suppliers').insertOne(supplier);
     return { ...supplier, _id: result.insertedId };
@@ -249,7 +249,7 @@ export class DatabaseService {
   ): Promise<Review> {
     const review: Review = {
       ...reviewData,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const result = await this.db.collection('reviews').insertOne(review);
     return { ...review, _id: result.insertedId };
@@ -283,7 +283,7 @@ export class DatabaseService {
   ): Promise<Address> {
     const address: Address = {
       ...addressData,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     const result = await this.db.collection('addresses').insertOne(address);
     return { ...address, _id: result.insertedId };

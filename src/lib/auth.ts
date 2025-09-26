@@ -172,7 +172,7 @@ export class AuthService {
       }
 
       // Update last login
-      await db.updateUser(user._id!.toString(), { lastLoginAt: new Date() });
+      await db.updateUser(user._id!.toString(), { lastLoginAt: new Date().toISOString() });
 
       // Generate token
       const token = createJWT({
@@ -290,7 +290,7 @@ export class AuthService {
       // Update user with reset token
       await db.updateUser(user._id!.toString(), {
         resetToken,
-        resetTokenExpiry: new Date(Date.now() + 3600000), // 1 hour
+        resetTokenExpiry: new Date(Date.now() + 3600000).toISOString(), // 1 hour
       });
 
       // In a real application, you would send an email here
@@ -324,7 +324,7 @@ export class AuthService {
         };
       }
 
-      if (user.resetTokenExpiry && user.resetTokenExpiry < new Date()) {
+      if (user.resetTokenExpiry && new Date(user.resetTokenExpiry) < new Date()) {
         return {
           success: false,
           message: 'Reset token has expired',

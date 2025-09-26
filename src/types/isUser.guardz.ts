@@ -1,13 +1,6 @@
 import type { User } from './index';
 import type { TypeGuardFnConfig } from 'guardz';
-import {
-  isBoolean,
-  isDate,
-  isOneOf,
-  isString,
-  isType,
-  isUndefinedOr,
-} from 'guardz';
+import { isBoolean, isOneOf, isString, isType, isUndefinedOr } from 'guardz';
 
 export function isUser(
   value: unknown,
@@ -24,10 +17,10 @@ export function isUser(
       'customer',
       'supplier'
     ),
-    createdAt: isDate,
-    lastLoginAt: isUndefinedOr(isDate),
+    createdAt: isString,
+    lastLoginAt: isUndefinedOr(isString),
     resetToken: isUndefinedOr(isString),
-    resetTokenExpiry: isUndefinedOr(isDate),
-    isActive: isUndefinedOr(isBoolean),
+    resetTokenExpiry: isUndefinedOr(isString),
+    isActive: isUndefinedOr(isBoolean)
   })(value, config);
 }

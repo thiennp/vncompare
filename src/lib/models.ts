@@ -8,10 +8,10 @@ export interface User {
   name?: string;
   phone?: string;
   role: 'customer' | 'admin' | 'supplier';
-  createdAt: Date;
-  lastLoginAt?: Date;
+  createdAt: string;
+  lastLoginAt?: string;
   resetToken?: string;
-  resetTokenExpiry?: Date;
+  resetTokenExpiry?: string;
 }
 
 // Vietnam Address System
@@ -50,8 +50,8 @@ export interface Product {
   coverageRate?: number; // m²/liter
   unit?: string;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProductCoverage {
@@ -73,7 +73,7 @@ export interface Supplier {
   businessInfo?: any;
   contactInfo?: any;
   isVerified: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ShippingZone {
@@ -106,7 +106,7 @@ export interface Order {
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   shippingAddress: string;
-  createdAt: Date;
+  createdAt: string;
   orderItems: OrderItem[];
 }
 
@@ -129,7 +129,7 @@ export interface Address {
   district: string;
   ward: string;
   isDefault: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 // Product Reviews
@@ -141,7 +141,7 @@ export interface Review {
   title: string;
   comment: string;
   status: 'pending' | 'approved' | 'rejected';
-  createdAt: Date;
+  createdAt: string;
 }
 
 // Database Collections

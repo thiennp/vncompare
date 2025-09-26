@@ -6,10 +6,10 @@ export interface User {
   name?: string;
   phone?: string;
   role: 'customer' | 'admin' | 'supplier';
-  createdAt: Date;
-  lastLoginAt?: Date;
+  createdAt: string;
+  lastLoginAt?: string;
   resetToken?: string;
-  resetTokenExpiry?: Date;
+  resetTokenExpiry?: string;
   isActive?: boolean;
 }
 
@@ -51,7 +51,7 @@ export interface Product {
   unit: string;
   coverage: number;
   isActive?: boolean;
-  createdAt: Date;
+  createdAt: string;
   images?: string[];
   specifications?: Record<string, any>;
 }
@@ -83,7 +83,7 @@ export interface Supplier {
   phone: string;
   address: string;
   isVerified?: boolean;
-  createdAt: Date;
+  createdAt: string;
   isActive?: boolean;
 }
 
@@ -111,8 +111,8 @@ export interface Order {
     | 'refunded';
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   shippingAddress: string;
-  createdAt: Date;
-  updatedAt?: Date;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface CreateOrder {
@@ -146,7 +146,7 @@ export interface Review {
   title: string;
   comment: string;
   status?: 'pending' | 'approved' | 'rejected';
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface CreateReview {
@@ -168,7 +168,7 @@ export interface Address {
   district: string;
   ward: string;
   isDefault?: boolean;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface CreateAddress {
@@ -219,7 +219,7 @@ export interface Province {
   _id?: string;
   name: string;
   code: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface District {
@@ -227,7 +227,7 @@ export interface District {
   name: string;
   code: string;
   provinceId: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface Ward {
@@ -235,7 +235,7 @@ export interface Ward {
   name: string;
   code: string;
   districtId: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ProductCoverage {
@@ -243,7 +243,7 @@ export interface ProductCoverage {
   productId: string;
   area: number;
   unit: string;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ShippingZone {
@@ -251,7 +251,7 @@ export interface ShippingZone {
   name: string;
   provinces: string[];
   shippingCost: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export interface ServiceArea {
@@ -259,7 +259,7 @@ export interface ServiceArea {
   supplierId: string;
   provinces: string[];
   districts: string[];
-  createdAt: Date;
+  createdAt: string;
 }
 
 // Type aliases for better readability
