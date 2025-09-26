@@ -7,6 +7,7 @@ The VNCompare.com backoffice is an Angular-based admin panel that allows paint s
 ## 📋 Core Features
 
 ### 1. Provider Registration & Onboarding
+
 - **Company Registration**: Business information, tax codes, contact details
 - **Service Area Setup**: Define provinces, districts, and wards where service is available
 - **Documentation Upload**: Business licenses, certifications, insurance
@@ -15,8 +16,9 @@ The VNCompare.com backoffice is an Angular-based admin panel that allows paint s
 ### 2. Product Management
 
 #### Product Information
+
 - **Basic Details**: Name, brand, category, description
-- **Specifications**: 
+- **Specifications**:
   - Paint type (Interior, Exterior, Specialty, Industrial, Decorative, Eco-friendly)
   - Coverage rate (m²/liter) - **Critical for calculations**
   - Drying time, VOC levels, durability ratings
@@ -25,6 +27,7 @@ The VNCompare.com backoffice is an Angular-based admin panel that allows paint s
 - **Technical Data**: Safety data sheets, application instructions
 
 #### Coverage Data Management
+
 - **Coverage Rate**: Set m²/liter for different surfaces
   - Smooth walls: 12-15 m²/liter
   - Textured walls: 8-10 m²/liter
@@ -37,12 +40,14 @@ The VNCompare.com backoffice is an Angular-based admin panel that allows paint s
 ### 3. Pricing Management
 
 #### Base Pricing
+
 - **Product Price**: Base price per unit (liter, gallon, kg)
 - **Volume Discounts**: Tiered pricing for bulk purchases
 - **Promotional Pricing**: Time-limited discounts and offers
 - **Seasonal Pricing**: Adjust prices based on market demand
 
 #### Price Calculation Components
+
 ```
 Total Price = Base Price + Shipping Cost + Taxes + Additional Fees
 ```
@@ -50,12 +55,14 @@ Total Price = Base Price + Shipping Cost + Taxes + Additional Fees
 ### 4. Address & Service Area Management
 
 #### Vietnam Address System
+
 - **Provinces (Tỉnh/Thành phố)**: 63 provinces and cities
 - **Districts (Quận/Huyện)**: Administrative districts within provinces
 - **Wards (Phường/Xã)**: Sub-district level areas
 - **Street Address**: Detailed street names and building numbers
 
 #### Service Area Configuration
+
 - **Primary Service Areas**: Full service with standard delivery
 - **Extended Service Areas**: Additional delivery fees
 - **Remote Areas**: Special handling and extended delivery times
@@ -64,29 +71,34 @@ Total Price = Base Price + Shipping Cost + Taxes + Additional Fees
 ### 5. Shipping & Delivery Management
 
 #### Shipping Zones
+
 - **Zone 1**: Same district - 1-2 business days
-- **Zone 2**: Same province - 2-3 business days  
+- **Zone 2**: Same province - 2-3 business days
 - **Zone 3**: Adjacent provinces - 3-5 business days
 - **Zone 4**: Remote provinces - 5-7 business days
 
 #### Shipping Cost Calculation
+
 ```
 Base Shipping Cost = Zone Rate + Weight Factor + Distance Factor
 ```
 
 **Zone Rates (VND)**:
+
 - Zone 1: 30,000 - 50,000
 - Zone 2: 50,000 - 80,000
 - Zone 3: 80,000 - 120,000
 - Zone 4: 120,000 - 200,000
 
 **Weight Factors**:
+
 - 1-5 liters: +0 VND
 - 6-10 liters: +20,000 VND
 - 11-20 liters: +40,000 VND
 - 20+ liters: +60,000 VND
 
 #### Delivery Timeframes
+
 - **Standard Delivery**: 1-7 business days based on zone
 - **Express Delivery**: +50% cost, 1-3 business days
 - **Same Day Delivery**: +100% cost, same day (limited areas)
@@ -95,16 +107,19 @@ Base Shipping Cost = Zone Rate + Weight Factor + Distance Factor
 ### 6. Coverage Calculator Integration
 
 #### Coverage Calculation Formula
+
 ```
 Paint Needed (liters) = Total Area (m²) ÷ Coverage Rate (m²/liter) × Number of Coats
 ```
 
 #### Room Coverage Examples
+
 - **Living Room (20m²)**: 20 ÷ 12 × 2 = 3.33 liters
 - **Bedroom (15m²)**: 15 ÷ 12 × 2 = 2.5 liters
 - **Kitchen (12m²)**: 12 ÷ 10 × 2 = 2.4 liters (textured walls)
 
 #### Project Cost Calculation
+
 ```
 Total Project Cost = Paint Cost + Shipping Cost + Labor Cost (optional)
 ```
@@ -112,12 +127,14 @@ Total Project Cost = Paint Cost + Shipping Cost + Labor Cost (optional)
 ### 7. Inventory Management
 
 #### Stock Levels
+
 - **Available Stock**: Current inventory quantities
 - **Low Stock Alerts**: Automatic notifications when stock is low
 - **Out of Stock Handling**: Backorder options or alternative products
 - **Seasonal Stock Planning**: Forecast demand and adjust inventory
 
 #### Warehouse Management
+
 - **Multiple Locations**: Manage inventory across different warehouses
 - **Location-based Pricing**: Different prices for different regions
 - **Cross-location Transfers**: Move inventory between locations
@@ -125,12 +142,14 @@ Total Project Cost = Paint Cost + Shipping Cost + Labor Cost (optional)
 ### 8. Analytics & Reporting
 
 #### Sales Analytics
+
 - **Product Performance**: Best-selling products and categories
 - **Geographic Analysis**: Sales by province, district, ward
 - **Customer Insights**: Purchase patterns and preferences
 - **Revenue Tracking**: Daily, weekly, monthly revenue reports
 
 #### Operational Metrics
+
 - **Delivery Performance**: On-time delivery rates
 - **Customer Satisfaction**: Ratings and feedback analysis
 - **Inventory Turnover**: Stock movement and efficiency
@@ -139,6 +158,7 @@ Total Project Cost = Paint Cost + Shipping Cost + Labor Cost (optional)
 ## 🔧 Technical Implementation
 
 ### Angular Backoffice Structure
+
 ```
 apps/admin/
 ├── src/
@@ -169,6 +189,7 @@ apps/admin/
 ### Database Schema Extensions
 
 #### Address Management
+
 ```sql
 -- Vietnam Address Database
 CREATE TABLE provinces (
@@ -196,6 +217,7 @@ CREATE TABLE wards (
 ```
 
 #### Shipping Configuration
+
 ```sql
 CREATE TABLE shipping_zones (
   id SERIAL PRIMARY KEY,
@@ -221,6 +243,7 @@ CREATE TABLE service_areas (
 ```
 
 #### Coverage Data
+
 ```sql
 CREATE TABLE product_coverage (
   id SERIAL PRIMARY KEY,
@@ -235,6 +258,7 @@ CREATE TABLE product_coverage (
 ### API Endpoints
 
 #### Product Management
+
 ```
 POST   /api/admin/products
 GET    /api/admin/products
@@ -244,6 +268,7 @@ POST   /api/admin/products/:id/coverage
 ```
 
 #### Address Management
+
 ```
 GET    /api/admin/addresses/provinces
 GET    /api/admin/addresses/districts/:provinceId
@@ -252,6 +277,7 @@ POST   /api/admin/addresses/validate
 ```
 
 #### Shipping Management
+
 ```
 POST   /api/admin/shipping/zones
 GET    /api/admin/shipping/calculate
@@ -259,6 +285,7 @@ POST   /api/admin/shipping/service-areas
 ```
 
 #### Pricing Management
+
 ```
 POST   /api/admin/pricing/calculate
 PUT    /api/admin/pricing/products/:id
@@ -268,12 +295,14 @@ POST   /api/admin/pricing/promotions
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - Angular CLI 17+
 - PostgreSQL 14+
 - Google Maps API key
 
 ### Installation
+
 ```bash
 # Install Angular CLI globally
 npm install -g @angular/cli
@@ -289,19 +318,21 @@ ng serve
 ```
 
 ### Environment Configuration
+
 ```typescript
 // environment.ts
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000/api',
   googleMapsApiKey: 'your-google-maps-api-key',
-  appName: 'VNCompare Admin'
+  appName: 'VNCompare Admin',
 };
 ```
 
 ## 📊 Data Flow
 
 ### Coverage Calculation Flow
+
 1. **Provider Input**: Set coverage rates (m²/liter) for different surfaces
 2. **User Input**: Enter room dimensions and surface types
 3. **Calculation**: System calculates paint needed using coverage formula
@@ -310,6 +341,7 @@ export const environment = {
 6. **Total**: Display total cost including all components
 
 ### Address Management Flow
+
 1. **Address Input**: User enters address or selects from dropdown
 2. **Validation**: Google Maps API validates and standardizes address
 3. **Service Check**: System checks if address is in provider's service area
@@ -319,18 +351,21 @@ export const environment = {
 ## 🔒 Security & Permissions
 
 ### Provider Authentication
+
 - **JWT-based authentication**
 - **Role-based access control**
 - **Two-factor authentication (optional)**
 - **Session management**
 
 ### Data Validation
+
 - **Input sanitization**
 - **Address validation**
 - **Price range validation**
 - **Coverage rate validation**
 
 ### Audit Trail
+
 - **All changes logged**
 - **User action tracking**
 - **Price change history**
@@ -339,24 +374,28 @@ export const environment = {
 ## 📱 User Interface Features
 
 ### Dashboard
+
 - **Overview metrics**
 - **Recent orders**
 - **Low stock alerts**
 - **Performance charts**
 
 ### Product Management
+
 - **Bulk import/export**
 - **Image upload with optimization**
 - **Category management**
 - **Pricing templates**
 
 ### Address Management
+
 - **Interactive map interface**
 - **Address autocomplete**
 - **Service area visualization**
 - **Zone configuration**
 
 ### Analytics
+
 - **Real-time sales data**
 - **Geographic heat maps**
 - **Customer behavior analysis**

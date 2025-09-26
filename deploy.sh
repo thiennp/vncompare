@@ -41,8 +41,8 @@ check_dependencies() {
         exit 1
     fi
     
-    if ! command -v npm &> /dev/null; then
-        print_error "npm is not installed"
+    if ! command -v pnpm &> /dev/null; then
+        print_error "pnpm is not installed. Please install pnpm: npm install -g pnpm"
         exit 1
     fi
     
@@ -57,28 +57,28 @@ check_dependencies() {
 # Install dependencies
 install_dependencies() {
     print_status "Installing dependencies..."
-    npm install
+    pnpm install
     print_success "Dependencies installed"
 }
 
 # Build the project
 build_project() {
     print_status "Building the project..."
-    npm run build
+    pnpm run build
     print_success "Project built successfully"
 }
 
 # Run type checking
 type_check() {
     print_status "Running type checking..."
-    npm run type-check
+    pnpm run type-check
     print_success "Type checking passed"
 }
 
 # Run linting
 lint_project() {
     print_status "Running linting..."
-    npm run lint
+    pnpm run lint
     print_success "Linting passed"
 }
 
@@ -101,7 +101,7 @@ deploy_vercel() {
     
     if ! command -v vercel &> /dev/null; then
         print_status "Installing Vercel CLI..."
-        npm install -g vercel
+        pnpm install -g vercel
     fi
     
     cd apps/web
@@ -117,7 +117,7 @@ deploy_backoffice() {
     
     if ! command -v netlify &> /dev/null; then
         print_status "Installing Netlify CLI..."
-        npm install -g netlify-cli
+        pnpm install -g netlify-cli
     fi
     
     cd apps/backoffice
@@ -179,7 +179,7 @@ dev_setup() {
     fi
     
     print_success "Development environment ready!"
-    print_status "Run 'npm run dev' to start development server"
+    print_status "Run 'pnpm dev' to start development server"
 }
 
 # Parse command line arguments

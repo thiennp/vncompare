@@ -5,6 +5,7 @@
 The web application is **fully functional** and ready for deployment with all features implemented:
 
 ### ✅ Completed Features:
+
 - **Authentication System** - Login/Register with JWT
 - **Shopping Cart & Checkout** - Full e-commerce functionality
 - **Product Management** - Search, filter, detailed views
@@ -18,6 +19,7 @@ The web application is **fully functional** and ready for deployment with all fe
 ### 🌐 Deployment Options:
 
 #### Option 1: Vercel (Recommended)
+
 ```bash
 cd apps/web
 npm run build
@@ -25,6 +27,7 @@ npm run build
 ```
 
 #### Option 2: Netlify
+
 ```bash
 cd apps/web
 npm run build
@@ -32,6 +35,7 @@ npm run build
 ```
 
 #### Option 3: Manual Deployment
+
 ```bash
 cd apps/web
 npm run build
@@ -39,6 +43,7 @@ npm run build
 ```
 
 ### 🔧 Environment Variables Needed:
+
 ```env
 DATABASE_URL="your-database-url"
 JWT_SECRET="your-jwt-secret"
@@ -46,6 +51,7 @@ NODE_ENV="production"
 ```
 
 ### 📊 Database Setup:
+
 1. Run Prisma migrations: `npx prisma migrate deploy`
 2. Seed the database: `npm run db:seed`
 

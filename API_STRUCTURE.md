@@ -5,6 +5,7 @@
 The VNCompare API is built with **Symfony 7.x** and follows RESTful principles with a clean, scalable architecture designed for Vietnam's paint comparison platform.
 
 ### Tech Stack
+
 - **Framework**: Symfony 7.x with PHP 8.2+
 - **Database**: PostgreSQL 14+ with Doctrine ORM
 - **Authentication**: JWT (JSON Web Tokens)
@@ -105,6 +106,7 @@ apps/api/
 ### Core Entities
 
 #### User Entity
+
 ```php
 User {
     id: UUID (Primary Key)
@@ -129,6 +131,7 @@ User {
 ```
 
 #### Product Entity
+
 ```php
 Product {
     id: UUID (Primary Key)
@@ -159,6 +162,7 @@ Product {
 ```
 
 #### Supplier Entity
+
 ```php
 Supplier {
     id: UUID (Primary Key)
@@ -182,6 +186,7 @@ Supplier {
 ```
 
 #### Order Entity
+
 ```php
 Order {
     id: UUID (Primary Key)
@@ -204,6 +209,7 @@ Order {
 ```
 
 #### Address Entity (Vietnam-specific)
+
 ```php
 Address {
     id: UUID (Primary Key)
@@ -225,6 +231,7 @@ Address {
 ```
 
 #### Shipping Entity
+
 ```php
 Shipping {
     id: UUID (Primary Key)
@@ -246,6 +253,7 @@ Shipping {
 ## 🔌 API Endpoints
 
 ### Base URL
+
 ```
 Production: https://api.vncompare.com/v1
 Development: http://localhost:8000/api/v1
@@ -254,7 +262,9 @@ Development: http://localhost:8000/api/v1
 ### Authentication Endpoints
 
 #### POST /auth/register
+
 Register a new user account
+
 ```json
 Request Body:
 {
@@ -289,7 +299,9 @@ Response:
 ```
 
 #### POST /auth/login
+
 Authenticate user and return JWT token
+
 ```json
 Request Body:
 {
@@ -316,7 +328,9 @@ Response:
 ```
 
 #### POST /auth/refresh
+
 Refresh JWT token
+
 ```json
 Response:
 {
@@ -329,7 +343,9 @@ Response:
 ```
 
 #### POST /auth/logout
+
 Logout user (invalidate token)
+
 ```json
 Response:
 {
@@ -341,7 +357,9 @@ Response:
 ### Product Endpoints
 
 #### GET /products
+
 Get paginated list of products with filtering and search
+
 ```json
 Query Parameters:
 - page: integer (default: 1)
@@ -411,7 +429,9 @@ Response:
 ```
 
 #### GET /products/{id}
+
 Get detailed product information
+
 ```json
 Response:
 {
@@ -454,7 +474,9 @@ Response:
 ```
 
 #### POST /products (Admin/Supplier only)
+
 Create new product
+
 ```json
 Request Body:
 {
@@ -476,7 +498,9 @@ Request Body:
 ### Supplier Endpoints
 
 #### GET /suppliers
+
 Get list of suppliers with filtering
+
 ```json
 Query Parameters:
 - page: integer
@@ -510,7 +534,9 @@ Response:
 ```
 
 #### GET /suppliers/{id}
+
 Get detailed supplier information
+
 ```json
 Response:
 {
@@ -537,7 +563,9 @@ Response:
 ### Order Endpoints
 
 #### GET /orders (Authenticated)
+
 Get user's orders
+
 ```json
 Query Parameters:
 - page: integer
@@ -580,7 +608,9 @@ Response:
 ```
 
 #### POST /orders (Authenticated)
+
 Create new order
+
 ```json
 Request Body:
 {
@@ -610,7 +640,9 @@ Response:
 ### Address Endpoints
 
 #### GET /addresses (Authenticated)
+
 Get user's addresses
+
 ```json
 Response:
 {
@@ -640,7 +672,9 @@ Response:
 ```
 
 #### POST /addresses (Authenticated)
+
 Create new address
+
 ```json
 Request Body:
 {
@@ -660,7 +694,9 @@ Request Body:
 ### Shipping Endpoints
 
 #### GET /shipping/calculate
+
 Calculate shipping cost
+
 ```json
 Query Parameters:
 - supplierId: string
@@ -698,7 +734,9 @@ Response:
 ### Review Endpoints
 
 #### GET /products/{id}/reviews
+
 Get product reviews
+
 ```json
 Query Parameters:
 - page: integer
@@ -739,7 +777,9 @@ Response:
 ```
 
 #### POST /products/{id}/reviews (Authenticated)
+
 Create product review
+
 ```json
 Request Body:
 {
@@ -753,7 +793,9 @@ Request Body:
 ### Analytics Endpoints (Admin only)
 
 #### GET /analytics/dashboard
+
 Get dashboard analytics
+
 ```json
 Response:
 {
@@ -779,28 +821,31 @@ Response:
 ## 🔐 Authentication & Authorization
 
 ### JWT Token Structure
+
 ```json
 {
-    "header": {
-        "alg": "HS256",
-        "typ": "JWT"
-    },
-    "payload": {
-        "sub": "user_uuid",
-        "email": "user@example.com",
-        "role": "USER",
-        "iat": 1640995200,
-        "exp": 1641081600
-    }
+  "header": {
+    "alg": "HS256",
+    "typ": "JWT"
+  },
+  "payload": {
+    "sub": "user_uuid",
+    "email": "user@example.com",
+    "role": "USER",
+    "iat": 1640995200,
+    "exp": 1641081600
+  }
 }
 ```
 
 ### Role-Based Access Control
+
 - **USER**: Can view products, create orders, manage profile
 - **SUPPLIER**: Can manage products, view orders, access supplier dashboard
 - **ADMIN**: Full access to all endpoints and analytics
 
 ### Security Headers
+
 ```http
 Authorization: Bearer <jwt_token>
 Content-Type: application/json
@@ -810,55 +855,60 @@ X-API-Version: v1
 ## 📊 Response Format
 
 ### Success Response
+
 ```json
 {
-    "success": true,
-    "message": "Operation completed successfully",
-    "data": {
-        // Response data
-    },
-    "meta": {
-        "timestamp": "2024-01-01T00:00:00Z",
-        "requestId": "req_123456789"
-    }
+  "success": true,
+  "message": "Operation completed successfully",
+  "data": {
+    // Response data
+  },
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "requestId": "req_123456789"
+  }
 }
 ```
 
 ### Error Response
+
 ```json
 {
-    "success": false,
-    "error": {
-        "code": "VALIDATION_ERROR",
-        "message": "Validation failed",
-        "details": [
-            {
-                "field": "email",
-                "message": "This email is already registered"
-            }
-        ]
-    },
-    "meta": {
-        "timestamp": "2024-01-01T00:00:00Z",
-        "requestId": "req_123456789"
-    }
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "details": [
+      {
+        "field": "email",
+        "message": "This email is already registered"
+      }
+    ]
+  },
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "requestId": "req_123456789"
+  }
 }
 ```
 
 ## 🚀 Performance & Caching
 
 ### Caching Strategy
+
 - **Product listings**: 5 minutes cache
 - **Product details**: 10 minutes cache
 - **Supplier data**: 15 minutes cache
 - **User profiles**: 30 minutes cache
 
 ### Rate Limiting
+
 - **General API**: 1000 requests/hour per IP
 - **Authenticated users**: 5000 requests/hour per user
 - **File uploads**: 100 requests/hour per user
 
 ### Database Optimization
+
 - Indexed fields: email, product SKU, order number
 - Composite indexes for common queries
 - Query optimization with Doctrine Query Builder
@@ -866,16 +916,19 @@ X-API-Version: v1
 ## 🧪 Testing Strategy
 
 ### Unit Tests
+
 - Service layer testing
 - Entity validation testing
 - Repository method testing
 
 ### Integration Tests
+
 - API endpoint testing
 - Database integration testing
 - Authentication flow testing
 
 ### Performance Tests
+
 - Load testing with Apache Bench
 - Database query performance testing
 - Memory usage monitoring
@@ -883,11 +936,14 @@ X-API-Version: v1
 ## 📚 API Documentation
 
 ### OpenAPI Specification
+
 The API follows OpenAPI 3.0 specification with comprehensive documentation available at:
+
 - Development: `http://localhost:8000/api/docs`
 - Production: `https://api.vncompare.com/api/docs`
 
 ### SDK Support
+
 - PHP SDK for backend services
 - JavaScript/TypeScript SDK for frontend
 - Mobile SDK for React Native app
@@ -895,6 +951,7 @@ The API follows OpenAPI 3.0 specification with comprehensive documentation avail
 ## 🔧 Development Setup
 
 ### Prerequisites
+
 - PHP 8.2+
 - Composer 2.0+
 - PostgreSQL 14+
@@ -902,6 +959,7 @@ The API follows OpenAPI 3.0 specification with comprehensive documentation avail
 - Symfony CLI
 
 ### Installation
+
 ```bash
 # Install dependencies
 composer install
@@ -920,6 +978,7 @@ symfony server:start
 ```
 
 ### Environment Variables
+
 ```env
 # Database
 DATABASE_URL="postgresql://user:password@localhost:5432/vncompare_api"
@@ -947,6 +1006,7 @@ AWS_S3_BUCKET="vncompare-api-assets"
 ## 🚀 Deployment
 
 ### Production Environment
+
 - **Server**: Ubuntu 22.04 LTS
 - **Web Server**: Nginx with PHP-FPM
 - **Database**: PostgreSQL 14+ with read replicas
@@ -955,6 +1015,7 @@ AWS_S3_BUCKET="vncompare-api-assets"
 - **Monitoring**: Sentry + New Relic
 
 ### CI/CD Pipeline
+
 - Automated testing on pull requests
 - Code quality checks with PHPStan
 - Security scanning with SensioLabs Security Checker

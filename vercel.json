@@ -2,29 +2,29 @@
   "version": 2,
   "builds": [
     {
-      "src": "apps/api/public/index.php",
-      "use": "@vercel/php"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "apps/api/public/index.php"
-    },
-    {
       "src": "/(.*)",
-      "dest": "apps/api/public/index.php"
+      "dest": "/index.html"
     }
   ],
   "env": {
-    "APP_ENV": "prod",
-    "APP_DEBUG": "false"
+    "NODE_ENV": "production"
   },
   "functions": {
-    "apps/api/public/index.php": {
-      "runtime": "vercel-php@0.6.0"
+    "src/routes.tsx": {
+      "runtime": "nodejs18.x"
     }
   },
-  "buildCommand": "cd apps/api && composer install --no-dev --optimize-autoloader",
-  "outputDirectory": "apps/api/public"
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite"
 }

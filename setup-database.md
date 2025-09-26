@@ -5,12 +5,14 @@
 ### 1. Get Your DATABASE_URL
 
 **Option A: Supabase (Recommended)**
+
 1. Go to [supabase.com](https://supabase.com)
 2. Create new project: `vncompare`
 3. Copy connection string from Settings → Database
 4. Format: `postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres`
 
 **Option B: Railway**
+
 1. Go to [railway.app](https://railway.app)
 2. Create PostgreSQL database
 3. Copy connection string from database settings
@@ -164,9 +166,9 @@ npx prisma studio
 Create `apps/web/prisma/seed.ts`:
 
 ```typescript
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
   // Seed Vietnam provinces
@@ -175,14 +177,14 @@ async function main() {
     { code: '79', name: 'TP. Hồ Chí Minh', type: 'Thành phố' },
     { code: '48', name: 'Đà Nẵng', type: 'Thành phố' },
     // Add more provinces...
-  ]
+  ];
 
   for (const province of provinces) {
     await prisma.province.upsert({
       where: { code: province.code },
       update: {},
       create: province,
-    })
+    });
   }
 
   // Seed sample products
@@ -194,28 +196,28 @@ async function main() {
       basePrice: 850000,
       originalPrice: 950000,
       coverageRate: 12.0,
-      unit: 'liter'
+      unit: 'liter',
     },
     // Add more products...
-  ]
+  ];
 
   for (const product of products) {
     await prisma.product.upsert({
       where: { name: product.name },
       update: {},
       create: product,
-    })
+    });
   }
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
+  .catch(e => {
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect()
-  })
+    await prisma.$disconnect();
+  });
 ```
 
 ### 6. Run Seed
@@ -235,11 +237,13 @@ npx prisma db seed
 ## 🔧 Troubleshooting
 
 **Common Issues:**
+
 - **Connection refused:** Check DATABASE_URL format
 - **Permission denied:** Ensure database user has proper permissions
 - **Schema not found:** Run `npx prisma db push` first
 
 **Need Help?**
+
 - Check Supabase logs in dashboard
 - Verify connection string format
 - Test connection with `npx prisma studio`

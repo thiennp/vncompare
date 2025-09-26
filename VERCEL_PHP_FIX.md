@@ -7,6 +7,7 @@ The error shows: `No Next.js version detected` - Vercel is trying to build a Nex
 ## ✅ **Solution: Force PHP API Deployment**
 
 ### **Updated vercel.json:**
+
 ```json
 {
   "version": 2,
@@ -39,6 +40,7 @@ The error shows: `No Next.js version detected` - Vercel is trying to build a Nex
 ## 🚀 **Deployment Steps**
 
 ### **1. Update Vercel Project Settings**
+
 - **Go to**: Vercel Dashboard → Your Project
 - **Click**: "Settings" → "General"
 - **Root Directory**: `apps/api`
@@ -46,11 +48,14 @@ The error shows: `No Next.js version detected` - Vercel is trying to build a Nex
 - **Output Directory**: `public`
 
 ### **2. Redeploy**
+
 - **Click**: "Deployments" → "Redeploy"
 - **Or**: Push new commit to trigger redeploy
 
 ### **3. Alternative: Create New Project**
+
 If settings don't work:
+
 - **Delete**: Current project
 - **Create**: New project
 - **Import**: `thiennp/vncompare`
@@ -62,14 +67,17 @@ If settings don't work:
 ## 🔧 **Why This Fixes It**
 
 ### **Root Directory Issue:**
+
 - **Problem**: Vercel looking at root `package.json` (Next.js)
 - **Solution**: Set root directory to `apps/api` (PHP)
 
 ### **Framework Detection:**
+
 - **Problem**: Vercel auto-detecting Next.js
 - **Solution**: Explicitly configure PHP runtime
 
 ### **Build Process:**
+
 - **Problem**: Vercel trying to build Next.js
 - **Solution**: Skip build, use PHP directly
 
@@ -78,6 +86,7 @@ If settings don't work:
 ## 📊 **Expected Result**
 
 After fix:
+
 - ✅ **PHP Runtime** - Vercel uses PHP instead of Node.js
 - ✅ **API Routes** - All requests go to Symfony
 - ✅ **No Build Process** - Direct PHP execution
@@ -94,4 +103,4 @@ After fix:
 
 ---
 
-*This should fix the Next.js detection issue!* 🚀
+_This should fix the Next.js detection issue!_ 🚀

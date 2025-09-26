@@ -1,6 +1,7 @@
 # Create New Component - VNCompare.com
 
 ## 🎯 Context
+
 You are working on VNCompare.com, a paint comparison platform for Vietnam. Before creating any new component, you MUST:
 
 1. **Read `AI_PROJECT_CONTEXT.md`** to understand the project structure
@@ -12,6 +13,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 1. Determine Application Type
 
 #### Next.js Web App (`apps/web/`)
+
 - **Location**: `apps/web/src/components/`
 - **Framework**: Next.js 14 with App Router
 - **Styling**: Tailwind CSS + Radix UI
@@ -19,6 +21,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 - **Language**: TypeScript
 
 #### Angular Admin (`apps/admin/`)
+
 - **Location**: `apps/admin/src/app/components/`
 - **Framework**: Angular 17
 - **Styling**: Angular Material + Tailwind CSS
@@ -26,6 +29,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 - **Language**: TypeScript
 
 #### Angular Backoffice (`apps/backoffice/`)
+
 - **Location**: `apps/backoffice/src/app/components/`
 - **Framework**: Angular 20
 - **Styling**: Angular Material
@@ -34,6 +38,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 2. Component Structure
 
 #### Next.js Component
+
 ```typescript
 // components/NewComponent.tsx
 'use client';
@@ -57,6 +62,7 @@ export function NewComponent({ ...props }: NewComponentProps) {
 ```
 
 #### Angular Component
+
 ```typescript
 // components/new-component/new-component.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
@@ -68,7 +74,7 @@ import { MatCardModule } from '@angular/material/card';
   standalone: true,
   imports: [CommonModule, MatCardModule],
   templateUrl: './new-component.component.html',
-  styleUrls: ['./new-component.component.scss']
+  styleUrls: ['./new-component.component.scss'],
 })
 export class NewComponentComponent {
   @Input() data: any;
@@ -81,6 +87,7 @@ export class NewComponentComponent {
 ### 3. Business Logic Considerations
 
 #### Paint-Specific Features
+
 - **Coverage Calculator**: Include paint quantity calculations
 - **Price Display**: Show VND currency formatting
 - **Address Input**: Use Vietnam address system
@@ -88,6 +95,7 @@ export class NewComponentComponent {
 - **Supplier Info**: Display supplier ratings and info
 
 #### Vietnam-Specific Features
+
 - **Address Validation**: Provinces, districts, wards
 - **Phone Format**: Vietnamese phone number validation
 - **Currency**: VND formatting with proper symbols
@@ -96,6 +104,7 @@ export class NewComponentComponent {
 ### 4. Styling Guidelines
 
 #### Next.js (Tailwind CSS)
+
 ```typescript
 // Use Tailwind classes with Radix UI components
 <div className="flex flex-col space-y-4 p-6 bg-white rounded-lg shadow-md">
@@ -109,6 +118,7 @@ export class NewComponentComponent {
 ```
 
 #### Angular (Material + Tailwind)
+
 ```html
 <!-- Use Angular Material with Tailwind utilities -->
 <mat-card class="p-6 shadow-md">
@@ -117,15 +127,14 @@ export class NewComponentComponent {
       Component Title
     </mat-card-title>
   </mat-card-header>
-  <mat-card-content class="text-gray-600">
-    Component content
-  </mat-card-content>
+  <mat-card-content class="text-gray-600"> Component content </mat-card-content>
 </mat-card>
 ```
 
 ### 5. State Management
 
 #### Next.js (Zustand + TanStack Query)
+
 ```typescript
 // Store
 import { create } from 'zustand';
@@ -137,11 +146,11 @@ interface ComponentStore {
   setLoading: (loading: boolean) => void;
 }
 
-export const useComponentStore = create<ComponentStore>((set) => ({
+export const useComponentStore = create<ComponentStore>(set => ({
   data: [],
   loading: false,
-  setData: (data) => set({ data }),
-  setLoading: (loading) => set({ loading }),
+  setData: data => set({ data }),
+  setLoading: loading => set({ loading }),
 }));
 
 // Query
@@ -154,6 +163,7 @@ const { data, isLoading } = useQuery({
 ```
 
 #### Angular (NgRx)
+
 ```typescript
 // Actions
 export const loadData = createAction('[Component] Load Data');
@@ -165,14 +175,19 @@ export const loadDataSuccess = createAction(
 // Reducer
 export const componentReducer = createReducer(
   initialState,
-  on(loadData, (state) => ({ ...state, loading: true })),
-  on(loadDataSuccess, (state, { data }) => ({ ...state, data, loading: false }))
+  on(loadData, state => ({ ...state, loading: true })),
+  on(loadDataSuccess, (state, { data }) => ({
+    ...state,
+    data,
+    loading: false,
+  }))
 );
 ```
 
 ### 6. Testing Requirements
 
 #### Next.js Testing
+
 ```typescript
 // __tests__/NewComponent.test.tsx
 import { render, screen } from '@testing-library/react';
@@ -187,6 +202,7 @@ describe('NewComponent', () => {
 ```
 
 #### Angular Testing
+
 ```typescript
 // new-component.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -198,7 +214,7 @@ describe('NewComponentComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NewComponentComponent]
+      imports: [NewComponentComponent],
     });
     fixture = TestBed.createComponent(NewComponentComponent);
     component = fixture.componentInstance;
@@ -214,6 +230,7 @@ describe('NewComponentComponent', () => {
 ### 7. Accessibility Guidelines
 
 #### ARIA Labels
+
 ```html
 <!-- Add proper ARIA labels -->
 <button aria-label="Add to cart">
@@ -226,6 +243,7 @@ describe('NewComponentComponent', () => {
 ```
 
 #### Keyboard Navigation
+
 - Ensure all interactive elements are keyboard accessible
 - Use proper tab order
 - Add focus indicators
@@ -234,20 +252,23 @@ describe('NewComponentComponent', () => {
 ### 8. Performance Considerations
 
 #### Next.js
+
 - Use `React.memo` for expensive components
 - Implement proper loading states
 - Use dynamic imports for code splitting
 - Optimize images with Next.js Image component
 
 #### Angular
+
 - Use OnPush change detection strategy
-- Implement trackBy functions for *ngFor
+- Implement trackBy functions for \*ngFor
 - Use async pipe for observables
 - Lazy load components when possible
 
 ### 9. Common Component Types
 
 #### Paint Product Card
+
 ```typescript
 interface PaintProductCardProps {
   product: {
@@ -265,6 +286,7 @@ interface PaintProductCardProps {
 ```
 
 #### Coverage Calculator
+
 ```typescript
 interface CoverageCalculatorProps {
   roomDimensions: {
@@ -279,6 +301,7 @@ interface CoverageCalculatorProps {
 ```
 
 #### Address Input (Vietnam)
+
 ```typescript
 interface AddressInputProps {
   value: Address;
@@ -292,6 +315,7 @@ interface AddressInputProps {
 ### 10. File Organization
 
 #### Next.js Structure
+
 ```
 components/
 ├── ui/                    # Reusable UI components
@@ -302,6 +326,7 @@ components/
 ```
 
 #### Angular Structure
+
 ```
 components/
 ├── shared/                # Shared components

@@ -3,6 +3,7 @@
 ## 🎯 **Vercel is NOT just for frontend!**
 
 ### **✅ Vercel Supports:**
+
 - **Frontend**: Next.js, React, Vue, Angular, Svelte
 - **Backend**: Node.js, Python, PHP, Go, Ruby, Java
 - **Serverless Functions**: All major languages
@@ -14,12 +15,14 @@
 ## 🚀 **Vercel PHP Support:**
 
 ### **✅ PHP Runtime:**
+
 - **Runtime**: `@vercel/php`
 - **Version**: PHP 8.2+
 - **Features**: Full PHP support, Composer, extensions
 - **Deployment**: Direct PHP deployment
 
 ### **✅ PHP Frameworks:**
+
 - **Symfony** (what we're using)
 - **Laravel**
 - **CodeIgniter**
@@ -30,6 +33,7 @@
 ## 📊 **Why Vercel for PHP API:**
 
 ### **✅ Advantages:**
+
 - **Serverless**: Auto-scaling
 - **Global CDN**: Fast worldwide
 - **Zero Config**: Auto-detection
@@ -37,6 +41,7 @@
 - **Easy Deployment**: Git integration
 
 ### **✅ Perfect for:**
+
 - **REST APIs**
 - **GraphQL APIs**
 - **Microservices**
@@ -47,6 +52,7 @@
 ## 🚀 **Our PHP API on Vercel:**
 
 ### **✅ What We're Deploying:**
+
 - **Symfony 7.x API**
 - **RESTful endpoints**
 - **JWT authentication**
@@ -54,6 +60,7 @@
 - **OpenAPI documentation**
 
 ### **✅ Expected Result:**
+
 - **Global API endpoints**
 - **Auto-scaling**
 - **Fast response times**
@@ -66,6 +73,7 @@
 **Vercel is PERFECT for PHP APIs!** 🚀
 
 It's not just for frontend - it's a full-stack platform that supports:
+
 - Frontend applications
 - Backend APIs
 - Serverless functions

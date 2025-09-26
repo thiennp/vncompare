@@ -3,35 +3,45 @@
 ## 🎯 **Recommended Alternatives to Render**
 
 ### **1. 🟢 Railway (Easiest)**
+
 **Best for**: Quick deployment, automatic detection
+
 - **URL**: https://railway.app/
 - **Pros**: Auto-detects PHP, simple setup, free tier
 - **Setup**: Connect GitHub → Auto-deploy
 - **Cost**: Free tier available
 
 ### **2. 🔵 Vercel (Fastest)**
+
 **Best for**: Performance, global CDN
+
 - **URL**: https://vercel.com/
 - **Pros**: Excellent performance, easy setup
 - **Setup**: Connect GitHub → Deploy
 - **Cost**: Free tier available
 
 ### **3. 🟡 Heroku (Most Popular)**
+
 **Best for**: Reliability, extensive documentation
+
 - **URL**: https://heroku.com/
 - **Pros**: Mature platform, great docs
 - **Setup**: Git-based deployment
 - **Cost**: Free tier discontinued, paid plans
 
 ### **4. 🟠 DigitalOcean App Platform**
+
 **Best for**: Full control, predictable pricing
+
 - **URL**: https://www.digitalocean.com/products/app-platform
 - **Pros**: Good performance, reasonable pricing
 - **Setup**: Connect GitHub → Configure
 - **Cost**: $5/month minimum
 
 ### **5. 🔴 AWS (Most Scalable)**
+
 **Best for**: Enterprise, maximum scalability
+
 - **URL**: https://aws.amazon.com/
 - **Pros**: Unlimited scalability, enterprise features
 - **Setup**: Complex but powerful
@@ -42,6 +52,7 @@
 ## 🏆 **Top 3 Recommendations**
 
 ### **🥇 Railway (Recommended)**
+
 ```bash
 # Setup steps:
 1. Go to https://railway.app/
@@ -51,6 +62,7 @@
 ```
 
 ### **🥈 Vercel**
+
 ```bash
 # Setup steps:
 1. Go to https://vercel.com/
@@ -60,6 +72,7 @@
 ```
 
 ### **🥉 DigitalOcean App Platform**
+
 ```bash
 # Setup steps:
 1. Go to https://cloud.digitalocean.com/
@@ -73,6 +86,7 @@
 ## 🔧 **Quick Setup Commands**
 
 ### **Railway Setup:**
+
 ```bash
 # Install Railway CLI
 npm install -g @railway/cli
@@ -84,6 +98,7 @@ railway up
 ```
 
 ### **Vercel Setup:**
+
 ```bash
 # Install Vercel CLI
 npm install -g vercel
@@ -96,19 +111,20 @@ vercel --prod
 
 ## 📊 **Comparison Table**
 
-| Platform | Ease | Cost | Performance | PHP Support |
-|----------|------|------|-------------|-------------|
-| **Railway** | ⭐⭐⭐⭐⭐ | Free tier | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Vercel** | ⭐⭐⭐⭐ | Free tier | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Heroku** | ⭐⭐⭐ | Paid only | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **DigitalOcean** | ⭐⭐⭐ | $5/month | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **AWS** | ⭐⭐ | Variable | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Platform         | Ease       | Cost      | Performance | PHP Support |
+| ---------------- | ---------- | --------- | ----------- | ----------- |
+| **Railway**      | ⭐⭐⭐⭐⭐ | Free tier | ⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐  |
+| **Vercel**       | ⭐⭐⭐⭐   | Free tier | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐    |
+| **Heroku**       | ⭐⭐⭐     | Paid only | ⭐⭐⭐⭐    | ⭐⭐⭐⭐⭐  |
+| **DigitalOcean** | ⭐⭐⭐     | $5/month  | ⭐⭐⭐⭐    | ⭐⭐⭐⭐    |
+| **AWS**          | ⭐⭐       | Variable  | ⭐⭐⭐⭐⭐  | ⭐⭐⭐⭐⭐  |
 
 ---
 
 ## 🎯 **My Recommendation: Railway**
 
 **Why Railway?**
+
 - ✅ **Auto-detects PHP** - No configuration needed
 - ✅ **Free tier** - Perfect for development
 - ✅ **Simple setup** - Connect GitHub and deploy
@@ -120,16 +136,19 @@ vercel --prod
 ## 🚀 **Quick Railway Setup**
 
 ### **Step 1: Go to Railway**
+
 - Visit: https://railway.app/
 - Sign up with GitHub
 
 ### **Step 2: Deploy**
+
 - Click "New Project"
 - Select "Deploy from GitHub repo"
 - Choose `thiennp/vncompare`
 - Railway auto-detects everything!
 
 ### **Step 3: Configure (if needed)**
+
 - Set root directory to `apps/api`
 - Add environment variables
 - Deploy!
@@ -151,17 +170,20 @@ If you want to switch from Render:
 ## 💡 **Pro Tips**
 
 ### **For Development:**
+
 - **Railway** - Best for quick testing
 - **Vercel** - Best for performance
 
 ### **For Production:**
+
 - **DigitalOcean** - Best value
 - **AWS** - Best scalability
 
 ### **For Learning:**
+
 - **Railway** - Easiest to understand
 - **Heroku** - Best documentation
 
 ---
 
-*Choose the platform that best fits your needs!* 🚀
+_Choose the platform that best fits your needs!_ 🚀

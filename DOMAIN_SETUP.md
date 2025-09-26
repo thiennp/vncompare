@@ -9,10 +9,11 @@ Since you own `vncompare.com` through Name.com, here's how to configure it for d
 ### 1. Vercel Deployment First
 
 1. **Deploy to Vercel**:
+
    ```bash
    # Install Vercel CLI
    npm install -g vercel
-   
+
    # Deploy from the web directory
    cd apps/web
    vercel --prod
@@ -72,7 +73,7 @@ If you prefer to keep Name.com DNS:
    Name: @
    Value: 76.76.19.36
    TTL: 3600
-   
+
    Type: CNAME
    Name: www
    Value: cname.vercel-dns.com
@@ -128,19 +129,21 @@ dig vncompare.com
 ### Domain Not Working
 
 1. **Check DNS Records**:
+
    ```bash
    dig vncompare.com
    dig www.vncompare.com
    ```
 
 2. **Clear DNS Cache**:
+
    ```bash
    # macOS
    sudo dscacheutil -flushcache
-   
+
    # Windows
    ipconfig /flushdns
-   
+
    # Linux
    sudo systemctl restart systemd-resolved
    ```
@@ -158,6 +161,7 @@ dig vncompare.com
 ### Nameserver Issues
 
 1. **Verify Nameservers**:
+
    ```bash
    dig NS vncompare.com
    ```
@@ -172,11 +176,13 @@ dig vncompare.com
 ## 📞 Support Contacts
 
 ### Name.com Support
+
 - **Email**: support@name.com
 - **Phone**: 1-855-996-3973
 - **Live Chat**: Available on name.com
 
 ### Vercel Support
+
 - **Email**: support@vercel.com
 - **Documentation**: [vercel.com/docs](https://vercel.com/docs)
 - **Community**: [github.com/vercel/vercel/discussions](https://github.com/vercel/vercel/discussions)

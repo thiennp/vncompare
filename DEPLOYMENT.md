@@ -30,6 +30,7 @@ This guide will help you deploy VNCompare.com to production using Vercel and con
 ### 2. Vercel Deployment
 
 1. **Connect GitHub Repository**:
+
    ```bash
    # Push your code to GitHub
    git remote add origin https://github.com/your-username/vncompare.git
@@ -72,11 +73,12 @@ This guide will help you deploy VNCompare.com to production using Vercel and con
    - Update nameservers at Name.com to Cloudflare's
 
 2. **Configure DNS Records**:
+
    ```
    Type: A
    Name: @
    Content: 76.76.19.36 (Vercel IP)
-   
+
    Type: CNAME
    Name: www
    Content: vncompare.com
@@ -132,6 +134,7 @@ openssl rand -hex 32
 ## 🗄 Database Setup
 
 1. **Run Migrations**:
+
    ```bash
    cd apps/web
    npx prisma db push
@@ -179,6 +182,7 @@ openssl rand -hex 32
 ### 1. Image Optimization
 
 1. **Cloudinary Setup** (Optional):
+
    ```env
    CLOUDINARY_URL="cloudinary://api_key:api_secret@cloud_name"
    ```
@@ -202,6 +206,7 @@ openssl rand -hex 32
 ### 1. Security Headers
 
 Already configured in `vercel.json`:
+
 - X-Content-Type-Options: nosniff
 - X-Frame-Options: DENY
 - X-XSS-Protection: 1; mode=block
@@ -216,6 +221,7 @@ Already configured in `vercel.json`:
 ### 3. Rate Limiting
 
 Configure in Vercel:
+
 ```json
 {
   "functions": {

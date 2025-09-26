@@ -1,6 +1,7 @@
 # Debug Issue - VNCompare.com
 
 ## 🎯 Context
+
 You are working on VNCompare.com, a paint comparison platform for Vietnam. Before debugging any issue, you MUST:
 
 1. **Read `AI_PROJECT_CONTEXT.md`** to understand the project structure
@@ -12,12 +13,14 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 1. Initial Assessment
 
 #### Identify the Scope
+
 - **Frontend Issue**: Next.js web app or Angular admin/backoffice
 - **Backend Issue**: Symfony API or Node.js gateway
 - **Database Issue**: PostgreSQL with Prisma or Doctrine
 - **Integration Issue**: Between different applications
 
 #### Gather Information
+
 - **Error Messages**: Copy exact error text
 - **Console Logs**: Check browser console and server logs
 - **Network Requests**: Inspect API calls and responses
@@ -26,12 +29,14 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 2. Business Logic Context
 
 #### Paint-Specific Issues
+
 - **Coverage Calculator**: Check m²/liter calculations
 - **Price Calculations**: Verify base price + shipping + taxes
 - **Address Validation**: Ensure Vietnam address system works
 - **Color Matching**: Validate paint color selection
 
 #### Vietnam-Specific Issues
+
 - **Address System**: Provinces, districts, wards hierarchy
 - **Currency Formatting**: VND display and calculations
 - **Phone Validation**: Vietnamese phone number format
@@ -40,6 +45,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 3. Application-Specific Debugging
 
 #### Next.js Web App (`apps/web/`)
+
 ```bash
 # Check development server
 npm run dev
@@ -55,6 +61,7 @@ npm run lint
 ```
 
 **Common Issues:**
+
 - Hydration mismatches
 - API route errors
 - Prisma database connection
@@ -62,6 +69,7 @@ npm run lint
 - Tailwind CSS not applying
 
 #### Angular Admin (`apps/admin/`)
+
 ```bash
 # Check development server
 ng serve
@@ -77,6 +85,7 @@ ng test
 ```
 
 **Common Issues:**
+
 - NgRx state management
 - Angular Material theming
 - Service injection errors
@@ -84,6 +93,7 @@ ng test
 - HTTP interceptor problems
 
 #### Angular Backoffice (`apps/backoffice/`)
+
 ```bash
 # Check development server
 ng serve
@@ -93,12 +103,14 @@ ng build
 ```
 
 **Common Issues:**
+
 - Component lifecycle issues
 - Service dependencies
 - Form handling
 - Data binding problems
 
 #### Symfony API (`apps/api/`)
+
 ```bash
 # Check server status
 symfony server:status
@@ -114,6 +126,7 @@ php bin/phpunit
 ```
 
 **Common Issues:**
+
 - JWT authentication
 - Doctrine ORM queries
 - Validation errors
@@ -123,6 +136,7 @@ php bin/phpunit
 ### 4. Database Debugging
 
 #### Prisma (Web App)
+
 ```bash
 # Check database connection
 npx prisma db pull
@@ -138,6 +152,7 @@ npx prisma studio
 ```
 
 #### Doctrine (API)
+
 ```bash
 # Check schema
 php bin/console doctrine:schema:validate
@@ -152,9 +167,10 @@ php bin/console doctrine:database:create
 ### 5. Common Issue Patterns
 
 #### Coverage Calculator Issues
+
 ```typescript
 // Check the formula implementation
-const paintNeeded = totalArea / coverageRate * numberOfCoats;
+const paintNeeded = (totalArea / coverageRate) * numberOfCoats;
 
 // Verify coverage rate is in m²/liter
 // Check if area is in m²
@@ -162,18 +178,20 @@ const paintNeeded = totalArea / coverageRate * numberOfCoats;
 ```
 
 #### Address Validation Issues
+
 ```typescript
 // Check Vietnam address hierarchy
 interface Address {
-  province: string;    // Tỉnh/Thành phố
-  district: string;    // Quận/Huyện
-  ward: string;        // Phường/Xã
+  province: string; // Tỉnh/Thành phố
+  district: string; // Quận/Huyện
+  ward: string; // Phường/Xã
   street: string;
   houseNumber: string;
 }
 ```
 
 #### Price Calculation Issues
+
 ```typescript
 // Verify total price calculation
 const totalPrice = basePrice + shippingCost + tax + additionalFees;
@@ -181,13 +199,14 @@ const totalPrice = basePrice + shippingCost + tax + additionalFees;
 // Check VND formatting
 const formattedPrice = new Intl.NumberFormat('vi-VN', {
   style: 'currency',
-  currency: 'VND'
+  currency: 'VND',
 }).format(price);
 ```
 
 ### 6. Debugging Tools
 
 #### Browser DevTools
+
 - **Console**: Check for JavaScript errors
 - **Network**: Inspect API requests/responses
 - **Elements**: Check DOM structure and CSS
@@ -195,6 +214,7 @@ const formattedPrice = new Intl.NumberFormat('vi-VN', {
 - **Performance**: Check for performance issues
 
 #### Server Logs
+
 ```bash
 # Symfony logs
 tail -f apps/api/var/log/dev.log
@@ -207,6 +227,7 @@ tail -f apps/api/var/log/dev.log
 ```
 
 #### Database Tools
+
 - **Prisma Studio**: `npx prisma studio`
 - **pgAdmin**: PostgreSQL administration
 - **Database CLI**: `psql` for direct database access
@@ -214,6 +235,7 @@ tail -f apps/api/var/log/dev.log
 ### 7. Testing the Fix
 
 #### Unit Tests
+
 ```bash
 # Next.js
 npm test
@@ -226,12 +248,14 @@ php bin/phpunit
 ```
 
 #### Integration Tests
+
 - Test the complete user flow
 - Verify API endpoints work correctly
 - Check database operations
 - Test authentication flow
 
 #### Manual Testing
+
 - Test in different browsers
 - Test on different screen sizes
 - Test with different user roles
@@ -240,27 +264,32 @@ php bin/phpunit
 ### 8. Common Error Solutions
 
 #### "Hydration failed" (Next.js)
+
 - Check for server/client rendering differences
 - Use `useEffect` for client-only code
 - Ensure consistent data between server and client
 
 #### "Cannot read property of undefined" (JavaScript)
+
 - Add null checks and optional chaining
 - Use TypeScript strict mode
 - Implement proper error boundaries
 
 #### "CORS error" (API)
+
 - Check CORS configuration in Symfony
 - Verify allowed origins
 - Check preflight requests
 
 #### "Database connection failed"
+
 - Check database credentials
 - Verify database server is running
 - Check network connectivity
 - Verify database exists
 
 #### "Authentication failed"
+
 - Check JWT token validity
 - Verify token expiration
 - Check user permissions
@@ -269,18 +298,21 @@ php bin/phpunit
 ### 9. Performance Issues
 
 #### Slow Page Loads
+
 - Check bundle size
 - Implement code splitting
 - Optimize images
 - Use caching strategies
 
 #### Slow API Responses
+
 - Check database queries
 - Add proper indexes
 - Implement caching
 - Optimize N+1 queries
 
 #### Memory Leaks
+
 - Check for event listeners
 - Verify component cleanup
 - Check for circular references
@@ -289,12 +321,14 @@ php bin/phpunit
 ### 10. Documentation
 
 #### Document the Issue
+
 - **Problem**: Clear description of the issue
 - **Root Cause**: What caused the problem
 - **Solution**: How the issue was fixed
 - **Prevention**: How to avoid similar issues
 
 #### Update Tests
+
 - Add tests for the fixed issue
 - Update existing tests if needed
 - Add regression tests

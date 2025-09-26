@@ -1,277 +1,247 @@
-# VNCompare.com - Paint Comparison Platform for Vietnam
+# VNCompare - Unified React Router v7 Application
 
-## 🎨 Overview
+A modern paint comparison platform built with React Router v7, MongoDB, and deployed on Vercel. This application consolidates the previous Next.js web app, Angular backoffice, and Symfony API into a single unified application.
 
-VNCompare.com is Vietnam's premier paint comparison platform, designed to help consumers and businesses find the best paint products, prices, and suppliers across Vietnam. Our platform provides transparent, comprehensive comparisons for all types of paint products.
+## 🚀 Features
 
-## 🌟 Key Features
+- **Unified Application**: Single React Router v7 app with integrated admin panel
+- **MongoDB Integration**: Direct database connection using MongoDB with loaders
+- **Modern UI**: Built with Tailwind CSS and Radix UI components
+- **Authentication**: JWT-based authentication with role-based access control
+- **Admin Panel**: Integrated admin dashboard for managing products, orders, users, and suppliers
+- **Paint Calculator**: Coverage calculator and shipping cost calculator
+- **Responsive Design**: Mobile-first design that works on all devices
 
-### 🏠 Paint Categories
-- **Interior Paints**: Wall paints, ceiling paints, trim paints
-- **Exterior Paints**: House paints, weather-resistant coatings
-- **Specialty Paints**: Anti-mold, anti-bacterial, fire-resistant
-- **Industrial Paints**: Metal coatings, concrete sealers, automotive paints
-- **Decorative Paints**: Textured paints, metallic finishes, chalk paints
-- **Eco-Friendly Paints**: Low-VOC, organic, sustainable options
+## 🏗️ Architecture
 
-### 🔍 Advanced Comparison Tools
-- **Price Comparison**: Real-time price tracking across multiple suppliers
-- **Quality Ratings**: Customer reviews, expert ratings, durability tests
-- **Coverage Calculator**: Calculate paint needed based on room dimensions
-- **Color Matching**: Find similar colors across different brands
-- **Supplier Locator**: Find nearby paint stores and suppliers
-- **Price History**: Track price changes over time
+### Technology Stack
 
-### 💰 Cost Savings Features
-- **Price Alerts**: Get notified when paint prices drop
-- **Bulk Purchase Discounts**: Compare prices for large quantities
-- **Promotion Tracker**: Find ongoing sales and promotions
-- **Cashback Programs**: Earn rewards on paint purchases
-- **Loyalty Points**: Accumulate points for future discounts
+- **Frontend**: React Router v7, TypeScript, Tailwind CSS
+- **Database**: MongoDB with direct connection
+- **Authentication**: JWT tokens
+- **Deployment**: Vercel
+- **UI Components**: Radix UI + custom components
 
-### 🛒 Shopping Experience
-- **One-Click Purchase**: Direct links to suppliers and online stores
-- **Delivery Options**: Compare delivery costs and timeframes
-- **Installation Services**: Find professional painters and contractors
-- **Sample Requests**: Order paint samples before buying
-- **Wishlist**: Save favorite paints for later comparison
-- **Coverage Calculator**: Calculate paint needed based on room dimensions (m²)
-- **Shipping Calculator**: Real-time shipping cost and duration calculation
-- **Total Price Calculation**: Product price + shipping + taxes
-- **Address Management**: Vietnam address validation and autocomplete
+### Key Changes from Previous Architecture
 
-### 📱 User Features
-- **Personalized Recommendations**: AI-powered paint suggestions
-- **Project Planning**: Plan entire room/house painting projects
-- **Cost Estimator**: Calculate total project costs including labor
-- **Photo Upload**: Upload room photos for color visualization
-- **Social Sharing**: Share paint choices and projects
-- **Expert Consultation**: Connect with paint professionals
+- ✅ Removed Symfony API - now using React Router loaders
+- ✅ Removed MySQL - now using MongoDB
+- ✅ Removed Angular backoffice - now integrated into main app
+- ✅ Consolidated into single application
+- ✅ Direct database access through loaders
 
-### 🏢 Business Features
-- **B2B Portal**: Special pricing and features for contractors
-- **Supplier Dashboard**: Tools for paint suppliers to manage listings
-- **Analytics**: Market trends and pricing insights
-- **Bulk Ordering**: Streamlined ordering for large projects
-- **Invoice Management**: Track expenses and generate reports
-- **Provider Backoffice**: Angular-based admin panel for suppliers
-- **Product Management**: Add, edit, and manage paint products
-- **Pricing Management**: Set base prices, discounts, and promotions
-- **Shipping Configuration**: Define shipping zones, costs, and delivery times
-- **Coverage Data Management**: Set paint coverage rates (m²/liter)
-- **Address Management**: Manage delivery addresses and service areas
+## 📁 Project Structure
 
-## 🛠 Tech Stack
-
-### Frontend
-- **Framework**: Next.js 14 (React 18) with App Router
-- **Styling**: Tailwind CSS + Headless UI
-- **State Management**: Zustand for client state, React Query for server state
-- **UI Components**: Radix UI primitives + custom components
-- **Icons**: Lucide React
-- **Charts**: Recharts for data visualization
-- **Maps**: Google Maps API for supplier locations
-
-### Admin Backoffice
-- **Framework**: Angular 17 with TypeScript
-- **Styling**: Angular Material + Tailwind CSS
-- **State Management**: NgRx for state management
-- **UI Components**: Angular Material Design components
-- **Forms**: Reactive Forms with validation
-- **Charts**: Chart.js for analytics and reporting
-- **Maps**: Google Maps API for address management
-
-### Backend
-- **Runtime**: Node.js with TypeScript
-- **Framework**: Next.js API routes + tRPC for type-safe APIs
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: NextAuth.js with multiple providers
-- **File Storage**: AWS S3 for images and documents
-- **Search**: Algolia for fast product search
-- **Caching**: Redis for session and data caching
-
-### DevOps & Infrastructure
-- **Hosting**: Vercel for frontend, Railway for backend
-- **Database**: Supabase (PostgreSQL)
-- **CDN**: Cloudflare for global content delivery
-- **Monitoring**: Sentry for error tracking
-- **Analytics**: Google Analytics 4 + Mixpanel
-- **Email**: Resend for transactional emails
-- **SMS**: Twilio for notifications
-
-### Third-Party Integrations
-- **Payment**: VNPay, Momo, ZaloPay integration
-- **Maps**: Google Maps Platform
-- **Social Login**: Google, Facebook, Zalo
-- **Image Processing**: Cloudinary for image optimization
-- **Chat Support**: Zendesk or Intercom
-- **Reviews**: Custom review system with moderation
-
-## 🏗 Architecture
-
-### Microservices Structure
 ```
-vncompare/
-├── apps/
-│   ├── web/                 # Main Next.js application
-│   ├── admin/              # Admin dashboard
-│   ├── api/                # API gateway
-│   └── mobile/             # React Native app (future)
-├── packages/
-│   ├── ui/                 # Shared UI components
-│   ├── database/           # Database schema and migrations
-│   ├── utils/              # Shared utilities
-│   └── types/              # TypeScript type definitions
-├── services/
-│   ├── price-scraper/      # Price monitoring service
-│   ├── notification/       # Email/SMS service
-│   ├── analytics/          # Data analytics service
-│   └── recommendation/     # AI recommendation engine
-└── infrastructure/
-    ├── docker/             # Docker configurations
-    ├── terraform/          # Infrastructure as code
-    └── monitoring/         # Monitoring and logging
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Base UI components (Button, Card, etc.)
+│   └── Layout.tsx      # Main layout component
+├── contexts/           # React contexts (Auth, Cart)
+├── hooks/              # Custom React hooks
+├── lib/                # Core utilities
+│   ├── auth.ts         # Authentication service
+│   ├── database.ts     # Database service layer
+│   ├── mongodb.ts      # MongoDB connection
+│   └── models.ts       # TypeScript interfaces
+├── pages/              # Page components
+│   ├── admin/          # Admin pages
+│   └── ...             # Public pages
+├── routes.tsx          # React Router v7 routes with loaders
+└── App.tsx             # Main app component
 ```
-
-### Database Schema
-- **Users**: Customer and business accounts
-- **Products**: Paint products with specifications and coverage data (m²/liter)
-- **Suppliers**: Paint stores and manufacturers with service areas
-- **Prices**: Historical and current pricing data
-- **Reviews**: Customer ratings and feedback
-- **Orders**: Purchase tracking and history
-- **Projects**: User painting projects
-- **Analytics**: Usage and performance data
-- **Addresses**: Vietnam address database with provinces, districts, wards
-- **Shipping**: Shipping zones, costs, and delivery timeframes
-- **Coverage**: Paint coverage rates and calculation formulas
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- PostgreSQL 14+
-- Redis 6+
-- Docker (optional)
+
+- Node.js 18+
+- MongoDB (local or Atlas)
+- npm or yarn
 
 ### Installation
+
+1. **Clone and install dependencies**
+
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/vncompare.git
-cd vncompare
-
-# Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env.local
-
-# Run database migrations
-npm run db:migrate
-
-# Start development server
-npm run dev
 ```
 
-### Environment Variables
+2. **Set up environment variables**
+
+   ```bash
+   cp env.example .env.local
+   ```
+
+   Update `.env.local` with your MongoDB connection string:
+
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/vncompare
+   JWT_SECRET=your-super-secret-jwt-key-here
+   NODE_ENV=development
+   ```
+
+3. **Set up MongoDB**
+   - For local development: Install and start MongoDB
+   - For production: Use MongoDB Atlas
+
+4. **Seed the database**
+
+   ```bash
+   npm run db:seed
+   ```
+
+5. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+````
+
+The application will be available at `http://localhost:3000`
+
+### Sample Accounts
+After seeding, you can use these accounts:
+- **Admin**: `admin@vncompare.com` / `admin123`
+- **Customer**: `customer@example.com` / `customer123`
+
+## 🛠️ Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript type checking
+- `npm run db:seed` - Seed database with sample data
+- `npm run db:reset` - Reset database (clear all data)
+
+## 🎯 Key Features
+
+### Public Features
+- **Home Page**: Featured products and suppliers
+- **Product Catalog**: Browse and search products
+- **Product Details**: Detailed product information and reviews
+- **Coverage Calculator**: Calculate paint coverage for rooms
+- **Shipping Calculator**: Calculate shipping costs
+- **User Authentication**: Login/register functionality
+
+### Admin Features (Role-based Access)
+- **Dashboard**: Overview of system statistics
+- **Product Management**: CRUD operations for products
+- **Order Management**: View and manage customer orders
+- **User Management**: Manage customer and supplier accounts
+- **Supplier Management**: Verify and manage suppliers
+- **Review Management**: Moderate product reviews
+
+### User Features
+- **Dashboard**: Personal dashboard with order history
+- **Order Management**: View order history and details
+- **Profile Management**: Update personal information
+- **Address Management**: Manage shipping addresses
+
+## 🗄️ Database Schema
+
+### Collections
+- **users**: User accounts (customers, admins, suppliers)
+- **products**: Paint products with specifications
+- **suppliers**: Supplier information and verification status
+- **orders**: Customer orders with items
+- **orderItems**: Individual items within orders
+- **addresses**: User shipping addresses
+- **reviews**: Product reviews and ratings
+- **provinces/districts/wards**: Vietnam address hierarchy
+- **productCoverage**: Coverage specifications for different surfaces
+- **shippingZones**: Shipping rate configurations
+- **serviceAreas**: Delivery area mappings
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. **Connect your repository to Vercel**
+2. **Set environment variables in Vercel dashboard**:
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `JWT_SECRET`: A secure JWT secret key
+   - `NODE_ENV`: `production`
+
+3. **Deploy**: Vercel will automatically build and deploy
+
+The application will be available at your Vercel domain.
+
+### Environment Variables for Production
 ```env
-# Database
-DATABASE_URL="postgresql://..."
-REDIS_URL="redis://..."
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/vncompare
+JWT_SECRET=your-production-jwt-secret-key
+NODE_ENV=production
+````
 
-# Authentication
-NEXTAUTH_SECRET="your-secret"
-GOOGLE_CLIENT_ID="your-google-client-id"
-FACEBOOK_CLIENT_ID="your-facebook-client-id"
+## 🔧 Configuration
 
-# External Services
-ALGOLIA_APP_ID="your-algolia-app-id"
-ALGOLIA_SEARCH_KEY="your-algolia-search-key"
-CLOUDINARY_URL="your-cloudinary-url"
-SENTRY_DSN="your-sentry-dsn"
+### MongoDB Connection
 
-# Payment Gateways
-VNPAY_TMN_CODE="your-vnpay-code"
-MOMO_PARTNER_CODE="your-momo-code"
-```
+- **Local**: `mongodb://localhost:27017/vncompare`
+- **Atlas**: `mongodb+srv://username:password@cluster.mongodb.net/vncompare`
 
-## 📊 Performance Targets
+### JWT Configuration
 
-- **Page Load Time**: < 2 seconds
-- **Search Results**: < 500ms
-- **Uptime**: 99.9%
-- **Mobile Performance**: Lighthouse score > 90
-- **SEO**: Top 3 results for paint-related keywords in Vietnam
+- Tokens expire after 7 days
+- Secret key should be at least 32 characters
+- Used for authentication and authorization
+
+## 📱 Responsive Design
+
+The application is fully responsive and works on:
+
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (320px - 767px)
 
 ## 🔒 Security Features
 
-- **HTTPS**: SSL/TLS encryption
-- **CSRF Protection**: Cross-site request forgery prevention
-- **XSS Prevention**: Input sanitization and validation
-- **Rate Limiting**: API request throttling
-- **Data Encryption**: Sensitive data encryption at rest
-- **GDPR Compliance**: Data protection and privacy controls
+- JWT-based authentication
+- Password hashing with bcrypt
+- Role-based access control
+- Input validation and sanitization
+- CORS configuration
+- Secure headers
 
-## 📈 Analytics & Monitoring
+## 🎨 UI/UX Features
 
-- **User Behavior**: Track user journeys and conversion funnels
-- **Performance Monitoring**: Real-time performance metrics
-- **Error Tracking**: Comprehensive error logging and alerting
-- **A/B Testing**: Feature testing and optimization
-- **SEO Analytics**: Search performance and keyword tracking
+- Modern, clean design
+- Dark/light mode support (via CSS variables)
+- Smooth animations and transitions
+- Accessible components (ARIA compliant)
+- Mobile-first responsive design
+- Loading states and error handling
 
-## 🌍 Localization
+## 📈 Performance
 
-- **Languages**: Vietnamese (primary), English (secondary)
-- **Currency**: VND (Vietnamese Dong)
-- **Regional Features**: Vietnam-specific payment methods and suppliers
-- **Cultural Adaptation**: Local design patterns and user preferences
-
-## 🎯 Business Model
-
-- **Commission-based**: Revenue from supplier partnerships
-- **Premium Features**: Advanced tools for professional users
-- **Advertising**: Sponsored listings and banner ads
-- **Data Insights**: Market research and analytics for suppliers
-- **Consultation Services**: Expert advice and project planning
-
-## 🔮 Future Roadmap
-
-### Phase 1 (MVP)
-- Basic paint comparison functionality
-- User registration and profiles
-- Price tracking and alerts
-- Mobile-responsive design
-
-### Phase 2 (Enhanced Features)
-- AI-powered recommendations
-- Advanced search and filtering
-- B2B portal for contractors
-- Mobile app development
-
-### Phase 3 (Expansion)
-- Additional product categories (tools, accessories)
-- International expansion (Southeast Asia)
-- Advanced analytics and insights
-- Integration with smart home platforms
+- Code splitting with React Router v7
+- Lazy loading of admin components
+- Optimized images and assets
+- Efficient database queries
+- Client-side caching
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is proprietary software. All rights reserved.
 
-## 📞 Contact
+## 🆘 Support
 
-- **Website**: https://vncompare.com
-- **Email**: contact@vncompare.com
-- **Support**: support@vncompare.com
-- **Business**: business@vncompare.com
+For support and questions:
+
+- Check the documentation
+- Review the code comments
+- Contact the development team
 
 ---
 
-**VNCompare.com** - Making paint shopping in Vietnam easier, smarter, and more affordable! 🎨🇻🇳
-# Contributors updated
-# Force redeploy - Thu Sep 25 22:27:59 CEST 2025
+**Note**: This application replaces the previous multi-app architecture (Next.js + Angular + Symfony) with a unified React Router v7 application for better maintainability and performance.

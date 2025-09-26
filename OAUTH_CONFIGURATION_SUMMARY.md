@@ -3,6 +3,7 @@
 ## ✅ **Completed Tasks**
 
 ### 1. **OAuth Integration Added**
+
 - ✅ Updated `AuthService` with OAuth configuration
 - ✅ Added OAuth client credentials:
   - **Client ID**: `baBSjc9FRYLO09U5b7nSURc3yfxoPrdYdf_CHU7XLT0`
@@ -10,6 +11,7 @@
   - **Secret**: `LWcqi68r3uy7MYrWoJvvW3XNjl_O4CDL3pRXf_G54EA`
 
 ### 2. **Updated Authentication Service**
+
 - ✅ Fixed API URL to use production: `https://api.vncompare.com/api/v1`
 - ✅ Added OAuth configuration interface
 - ✅ Implemented OAuth login initiation
@@ -17,12 +19,14 @@
 - ✅ State parameter generation for security
 
 ### 3. **Enhanced Login Dialog**
+
 - ✅ Added OAuth login button
 - ✅ Updated UI with modern design
 - ✅ Added visual divider between login methods
 - ✅ Maintained traditional email/password login
 
 ### 4. **Deployment Status**
+
 - ✅ Successfully deployed to Netlify
 - ✅ Build completed without errors
 - ✅ Site is live at: `https://vncompare-backoffice.netlify.app`
@@ -30,6 +34,7 @@
 ## 🔧 **Technical Implementation**
 
 ### OAuth Flow
+
 1. **Initiation**: User clicks "Login with OAuth" button
 2. **Redirect**: User is redirected to API OAuth authorization endpoint
 3. **Authorization**: User authenticates with OAuth provider
@@ -38,16 +43,19 @@
 6. **Authentication**: User is logged into backoffice
 
 ### API Endpoints Used
+
 - **Authorization**: `https://api.vncompare.com/api/v1/auth/oauth/authorize`
 - **Token Exchange**: `https://api.vncompare.com/api/v1/auth/oauth/token`
 
 ## 🌐 **Domain Configuration Required**
 
 ### Current Status
+
 - **Netlify URL**: `https://vncompare-backoffice.netlify.app` ✅ Working
 - **Custom Domain**: `admin.vncompare.com` ❌ Not configured
 
 ### Next Steps for Domain Setup
+
 1. **Add Custom Domain in Netlify Dashboard**:
    - Go to: https://app.netlify.com/projects/vncompare-backoffice
    - Navigate to: Domain settings → Custom domains
@@ -64,11 +72,13 @@
 ## 🔒 **Security Considerations**
 
 ### OAuth Security
+
 - ✅ State parameter implemented for CSRF protection
 - ✅ Secure token storage in localStorage
 - ✅ Proper error handling for OAuth failures
 
 ### HTTPS Requirement
+
 - ⚠️ **Important**: OAuth redirect URI should use HTTPS in production
 - Current configuration uses HTTP for testing
 - Update to HTTPS once domain is configured
@@ -76,6 +86,7 @@
 ## 📱 **User Experience**
 
 ### Login Options
+
 1. **OAuth Login** (Primary):
    - Single click authentication
    - No password required
@@ -89,6 +100,7 @@
 ## 🚀 **Deployment Commands**
 
 ### Quick Deploy
+
 ```bash
 cd apps/backoffice
 npm run build
@@ -96,6 +108,7 @@ netlify deploy --prod
 ```
 
 ### Development
+
 ```bash
 cd apps/backoffice
 npm start
@@ -104,10 +117,12 @@ npm start
 ## 🔍 **Testing**
 
 ### Current Test URLs
+
 - **Netlify**: https://vncompare-backoffice.netlify.app
 - **API Health**: https://api.vncompare.com/api/v1/health
 
 ### OAuth Testing
+
 1. Visit the Netlify URL
 2. Click "Login" button
 3. Click "Login with OAuth" button
@@ -116,11 +131,13 @@ npm start
 ## 📋 **Files Modified**
 
 ### Updated Files
+
 - `apps/backoffice/src/app/services/auth.service.ts` - OAuth integration
 - `apps/backoffice/src/app/components/login-dialog/login-dialog.component.ts` - UI updates
 - `apps/backoffice/netlify.toml` - Deployment configuration
 
 ### New Features
+
 - OAuth client configuration
 - OAuth login flow
 - Enhanced login UI

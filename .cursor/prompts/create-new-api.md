@@ -1,6 +1,7 @@
 # Create New API Endpoint - VNCompare.com
 
 ## 🎯 Context
+
 You are working on VNCompare.com, a paint comparison platform for Vietnam. Before creating any new API, you MUST:
 
 1. **Read `AI_PROJECT_CONTEXT.md`** to understand the project structure
@@ -10,6 +11,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ## 📋 API Creation Checklist
 
 ### 1. Project Structure
+
 - **Backend**: Use Symfony 7.x in `apps/api/`
 - **Database**: PostgreSQL with Doctrine ORM
 - **Authentication**: JWT tokens with Lexik JWT Authentication Bundle
@@ -18,23 +20,27 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 2. Required Files to Create/Update
 
 #### Controller
+
 - Create new controller in `apps/api/src/Controller/Api/`
 - Follow naming convention: `{Entity}Controller.php`
 - Extend `BaseApiController.php`
 - Use proper annotations for OpenAPI documentation
 
 #### Entity (if new)
+
 - Create entity in `apps/api/src/Entity/`
 - Follow existing patterns for relationships
 - Include proper validation constraints
 - Add Doctrine annotations
 
 #### Repository
+
 - Create repository in `apps/api/src/Repository/`
 - Extend `ServiceEntityRepository`
 - Add custom query methods if needed
 
 #### Service
+
 - Create service in `apps/api/src/Service/`
 - Handle business logic
 - Inject dependencies properly
@@ -43,6 +49,7 @@ You are working on VNCompare.com, a paint comparison platform for Vietnam. Befor
 ### 3. API Endpoint Structure
 
 #### Standard Endpoints
+
 ```php
 GET    /api/v1/{resource}           // List with pagination and filters
 GET    /api/v1/{resource}/{id}      // Get single item
@@ -52,29 +59,32 @@ DELETE /api/v1/{resource}/{id}      // Delete item
 ```
 
 #### Response Format
+
 ```json
 {
-    "success": true,
-    "message": "Operation completed successfully",
-    "data": {
-        // Response data
-    },
-    "meta": {
-        "timestamp": "2024-01-01T00:00:00Z",
-        "requestId": "req_123456789"
-    }
+  "success": true,
+  "message": "Operation completed successfully",
+  "data": {
+    // Response data
+  },
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "requestId": "req_123456789"
+  }
 }
 ```
 
 ### 4. Business Logic Considerations
 
 #### Vietnam-Specific Features
+
 - **Address Validation**: Use Vietnam administrative divisions (provinces, districts, wards)
 - **Currency**: Always use VND (Vietnamese Dong)
 - **Phone Numbers**: Validate Vietnamese phone format (+84)
 - **Coverage Calculator**: Include paint coverage calculations (m²/liter)
 
 #### Critical Business Rules
+
 - **Coverage Formula**: `Paint Needed = Total Area ÷ Coverage Rate × Number of Coats`
 - **Price Calculation**: `Total Price = Base Price + Shipping + Taxes`
 - **Address Hierarchy**: Province → District → Ward
@@ -82,17 +92,20 @@ DELETE /api/v1/{resource}/{id}      // Delete item
 ### 5. Security & Validation
 
 #### Authentication
+
 - Use JWT tokens for protected endpoints
 - Implement role-based access control (USER, SUPPLIER, ADMIN)
 - Add proper authorization checks
 
 #### Validation
+
 - Use Symfony Validator Component
 - Create custom validators for Vietnamese-specific data
 - Validate all input data
 - Sanitize user inputs
 
 #### Security Headers
+
 ```http
 Authorization: Bearer <jwt_token>
 Content-Type: application/json
@@ -102,12 +115,14 @@ X-API-Version: v1
 ### 6. Database Considerations
 
 #### Entity Relationships
+
 - Follow existing relationship patterns
 - Use proper foreign key constraints
 - Consider cascade operations carefully
 - Add indexes for performance
 
 #### Migrations
+
 - Create migration file in `apps/api/migrations/`
 - Use descriptive migration names
 - Test migrations on development database
@@ -115,12 +130,14 @@ X-API-Version: v1
 ### 7. Testing Requirements
 
 #### Unit Tests
+
 - Test service layer methods
 - Test entity validation
 - Test repository queries
 - Mock external dependencies
 
 #### Integration Tests
+
 - Test API endpoints
 - Test authentication flow
 - Test database operations
@@ -129,6 +146,7 @@ X-API-Version: v1
 ### 8. Documentation
 
 #### OpenAPI Annotations
+
 ```php
 /**
  * @OA\Get(
@@ -141,6 +159,7 @@ X-API-Version: v1
 ```
 
 #### API Documentation
+
 - Add comprehensive endpoint documentation
 - Include request/response examples
 - Document error codes and messages
@@ -149,27 +168,29 @@ X-API-Version: v1
 ### 9. Error Handling
 
 #### Standard Error Response
+
 ```json
 {
-    "success": false,
-    "error": {
-        "code": "VALIDATION_ERROR",
-        "message": "Validation failed",
-        "details": [
-            {
-                "field": "email",
-                "message": "This email is already registered"
-            }
-        ]
-    },
-    "meta": {
-        "timestamp": "2024-01-01T00:00:00Z",
-        "requestId": "req_123456789"
-    }
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "details": [
+      {
+        "field": "email",
+        "message": "This email is already registered"
+      }
+    ]
+  },
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "requestId": "req_123456789"
+  }
 }
 ```
 
 #### Error Codes
+
 - `VALIDATION_ERROR`: Input validation failed
 - `AUTHENTICATION_ERROR`: Authentication required
 - `AUTHORIZATION_ERROR`: Insufficient permissions
@@ -180,11 +201,13 @@ X-API-Version: v1
 ### 10. Performance Considerations
 
 #### Caching
+
 - Implement Redis caching for frequently accessed data
 - Cache product listings and supplier data
 - Use appropriate cache TTL values
 
 #### Database Optimization
+
 - Add proper indexes
 - Use efficient queries
 - Consider pagination for large datasets
@@ -193,6 +216,7 @@ X-API-Version: v1
 ### 11. Example Implementation
 
 #### Controller Example
+
 ```php
 <?php
 
@@ -234,11 +258,13 @@ class ProductController extends BaseApiController
 ### 12. Deployment Considerations
 
 #### Environment Variables
+
 - Add new environment variables if needed
 - Update `.env.example` file
 - Document configuration requirements
 
 #### Database Changes
+
 - Test migrations on staging environment
 - Plan for zero-downtime deployments
 - Backup database before major changes

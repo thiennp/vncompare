@@ -7,6 +7,7 @@ Your domain `vncompare.com` has been successfully added to Vercel. Now you need 
 ## 🔧 **DNS Configuration Options**
 
 ### **Option 1: A Record (Recommended)**
+
 Add this A record in your Name.com DNS settings:
 
 ```
@@ -17,6 +18,7 @@ TTL: 3600 (or default)
 ```
 
 ### **Option 2: Change Nameservers**
+
 Change your domain's nameservers in Name.com to:
 
 ```
@@ -51,6 +53,7 @@ ns2.vercel-dns.com
 ## ✅ **Verification**
 
 After DNS configuration:
+
 - Vercel will automatically verify the domain
 - You'll receive an email confirmation
 - The site will be accessible at https://vncompare.com
@@ -71,6 +74,7 @@ After DNS configuration:
 ## 📞 **Need Help?**
 
 If you encounter any issues with DNS configuration, you can:
+
 1. Contact Name.com support
 2. Use Vercel's domain troubleshooting guide
 3. Check DNS propagation with tools like whatsmydns.net
