@@ -20,12 +20,7 @@ interface OrdersPageData {
 }
 
 export default function OrdersPage() {
-  const {
-    orders,
-    total: _total,
-    page: _page,
-    status: _status,
-  } = useLoaderData() as OrdersPageData;
+  const { orders } = useLoaderData() as OrdersPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

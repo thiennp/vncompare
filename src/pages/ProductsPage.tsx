@@ -20,13 +20,7 @@ interface ProductsPageData {
 }
 
 export default function ProductsPage() {
-  const {
-    products,
-    total,
-    page: _page,
-    category: _category,
-    search: _search,
-  } = useLoaderData() as ProductsPageData;
+  const { products, total } = useLoaderData() as ProductsPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

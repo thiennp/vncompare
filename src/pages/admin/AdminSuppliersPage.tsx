@@ -19,12 +19,7 @@ interface AdminSuppliersPageData {
 }
 
 export default function AdminSuppliersPage() {
-  const {
-    suppliers,
-    total,
-    page: _page,
-    verified: _verified,
-  } = useLoaderData() as AdminSuppliersPageData;
+  const { suppliers, total } = useLoaderData() as AdminSuppliersPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

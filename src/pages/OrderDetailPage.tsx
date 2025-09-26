@@ -16,7 +16,7 @@ interface OrderDetailPageData {
 }
 
 export default function OrderDetailPage() {
-  const { order, user: _user } = useLoaderData() as OrderDetailPageData;
+  const { order } = useLoaderData() as OrderDetailPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

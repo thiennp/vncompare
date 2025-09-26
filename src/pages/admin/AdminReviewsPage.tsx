@@ -19,12 +19,7 @@ interface AdminReviewsPageData {
 }
 
 export default function AdminReviewsPage() {
-  const {
-    reviews,
-    total,
-    page: _page,
-    status: _status,
-  } = useLoaderData() as AdminReviewsPageData;
+  const { reviews, total } = useLoaderData() as AdminReviewsPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

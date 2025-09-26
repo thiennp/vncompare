@@ -19,12 +19,7 @@ interface AdminProductsPageData {
 }
 
 export default function AdminProductsPage() {
-  const {
-    products,
-    total,
-    page: _page,
-    search: _search,
-  } = useLoaderData() as AdminProductsPageData;
+  const { products, total } = useLoaderData() as AdminProductsPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

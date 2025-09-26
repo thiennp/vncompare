@@ -19,12 +19,7 @@ interface AdminUsersPageData {
 }
 
 export default function AdminUsersPage() {
-  const {
-    users,
-    total,
-    page: _page,
-    role: _role,
-  } = useLoaderData() as AdminUsersPageData;
+  const { users, total } = useLoaderData() as AdminUsersPageData;
 
   return (
     <div className="container mx-auto px-4 py-8">
