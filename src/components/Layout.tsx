@@ -63,15 +63,15 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-purple-500/95 to-pink-500/95 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r from-purple-500/60 to-pink-500/60">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <Paintbrush className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-xl">VNCompare</span>
-            <Badge variant="secondary" className="text-xs">
+            <span className="font-bold text-xl text-white">VNCompare</span>
+            <Badge variant="secondary" className="text-xs bg-white/20 text-white border-white/30">
               Sơn
             </Badge>
           </Link>
@@ -82,10 +82,10 @@ export default function Layout() {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-sm font-medium transition-colors hover:text-white ${
                   location.pathname === item.href
-                    ? 'text-primary'
-                    : 'text-muted-foreground'
+                    ? 'text-white'
+                    : 'text-white/80'
                 }`}
               >
                 {item.name}
@@ -205,8 +205,7 @@ export default function Layout() {
               <h3 className="font-semibold mb-4">VNCompare Sơn</h3>
               <p className="text-sm text-muted-foreground">
                 Nền tảng so sánh sơn hàng đầu Việt Nam. Hơn 1 triệu đề xuất,
-                 thương hiệu hàng đầu & thi công tiện lợi tại hơn 1.000
-                 đối tác.
+                thương hiệu hàng đầu & thi công tiện lợi tại hơn 1.000 đối tác.
               </p>
             </div>
             <div>
@@ -292,7 +291,8 @@ export default function Layout() {
           </div>
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
             <p>
-               &copy; 2025 VNCompare Nền tảng so sánh Sơn. Tất cả nội dung thuộc bản quyền của chúng tôi.
+              &copy; 2025 VNCompare Nền tảng so sánh Sơn. Tất cả nội dung thuộc
+              bản quyền của chúng tôi.
             </p>
           </div>
         </div>
