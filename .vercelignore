@@ -1,12 +1,1 @@
 node_modules/
-apps/web/
-apps/backoffice/
-apps/admin/
-.next/
-.vercel/
-*.log
-.env.local
-nodejs-backup/
-apps/web/node_modules/
-apps/backoffice/node_modules/
-apps/admin/node_modules/
