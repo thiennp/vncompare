@@ -63,7 +63,10 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-blue-50 to-purple-50 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r from-blue-50/60 to-purple-50/60" role="banner">
+      <header
+        className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-blue-50 to-purple-50 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r from-blue-50/60 to-purple-50/60"
+        role="banner"
+      >
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">

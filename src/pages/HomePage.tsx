@@ -17,7 +17,6 @@ import {
   Truck,
   Paintbrush,
   Search,
-  Shield,
   ArrowRight,
   Users,
   TrendingUp,
@@ -61,16 +60,26 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section - Accessible & Colorful */}
-      <section className="relative py-20 bg-gradient-to-br from-blue-100 to-indigo-200" role="banner" aria-labelledby="hero-heading">
+      <section
+        className="relative py-20 bg-gradient-to-br from-blue-100 to-indigo-200"
+        role="banner"
+        aria-labelledby="hero-heading"
+      >
         {/* Accessible Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10" aria-hidden="true"></div>
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 pointer-events-none"
+          aria-hidden="true"
+        ></div>
         <div className="container mx-auto px-4">
           <div className="text-center max-w-6xl mx-auto">
             {/* Main Headline */}
             <div className="mb-12">
-              <h1 id="hero-heading" className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h1
+                id="hero-heading"
+                className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
+              >
                 Sơn chất lượng cao tại VNCompare
-            </h1>
+              </h1>
               <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
                 Tìm sơn phù hợp với không gian của bạn và nhận dịch vụ thi công
                 chuyên nghiệp
@@ -78,15 +87,26 @@ export default function HomePage() {
             </div>
 
             {/* Accessible Colorful Savings Badge */}
-            <div className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg text-sm font-semibold mb-8 shadow-lg" role="banner" aria-label="Tiết kiệm đến 50%">
+            <div
+              className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg text-sm font-semibold mb-8 shadow-lg"
+              role="banner"
+              aria-label="Tiết kiệm đến 50%"
+            >
               <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
               Tiết kiệm đến <span className="font-bold text-lg mx-1">50%</span>
             </div>
 
             {/* Accessible Colorful Search Interface */}
-            <Card className="max-w-4xl mx-auto mb-8 bg-white shadow-lg border-2 border-blue-200" role="search" aria-labelledby="search-title">
+            <Card
+              className="max-w-4xl mx-auto mb-8 bg-white shadow-lg border-2 border-blue-200"
+              role="search"
+              aria-labelledby="search-title"
+            >
               <CardHeader>
-                <CardTitle id="search-title" className="text-center text-2xl font-bold text-gray-900">
+                <CardTitle
+                  id="search-title"
+                  className="text-center text-2xl font-bold text-gray-900"
+                >
                   Tìm sơn phù hợp với không gian của bạn
                 </CardTitle>
                 <CardDescription className="text-center text-gray-700">
@@ -109,7 +129,12 @@ export default function HomePage() {
                       className="mt-1 border-2 border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 rounded-lg text-gray-900"
                       aria-describedby="room-size-help"
                     />
-                    <p id="room-size-help" className="text-sm text-gray-600 mt-1">Nhập diện tích phòng để tìm sơn phù hợp</p>
+                    <p
+                      id="room-size-help"
+                      className="text-sm text-gray-600 mt-1"
+                    >
+                      Nhập diện tích phòng để tìm sơn phù hợp
+                    </p>
                   </div>
                   <div className="flex-1">
                     <Label
@@ -124,7 +149,12 @@ export default function HomePage() {
                       className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
                       aria-describedby="paint-type-help"
                     />
-                    <p id="paint-type-help" className="text-sm text-gray-600 mt-1">Chọn loại sơn phù hợp với nhu cầu</p>
+                    <p
+                      id="paint-type-help"
+                      className="text-sm text-gray-600 mt-1"
+                    >
+                      Chọn loại sơn phù hợp với nhu cầu
+                    </p>
                   </div>
                   <div className="flex items-end">
                     <Button
@@ -154,8 +184,8 @@ export default function HomePage() {
             <div className="text-center">
               <p className="text-sm text-gray-700 mb-6">
                 Đăng ký ngay để hưởng tất cả ưu đãi từ VNCompare!
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/register">
                   <Button
                     size="lg"
@@ -164,101 +194,38 @@ export default function HomePage() {
                   >
                     <Users className="mr-2 h-5 w-5" aria-hidden="true" />
                     Đăng ký ngay
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
                 <Link to="/products">
-                <Button
-                  variant="outline"
-                  size="lg"
+                  <Button
+                    variant="outline"
+                    size="lg"
                     className="w-full sm:w-auto border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold transition-all duration-200 focus:ring-4 focus:ring-orange-200"
                     aria-label="Xem tất cả sản phẩm sơn"
-                >
+                  >
                     <Package className="mr-2 h-5 w-5" aria-hidden="true" />
                     Xem tất cả sản phẩm
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3-Step Process - Accessible & Colorful */}
-      <section className="py-16 bg-gradient-to-br from-purple-50 to-pink-50" role="region" aria-labelledby="process-heading">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 id="process-heading" className="text-3xl font-bold text-gray-900 mb-4">
-              Trong 3 bước để có sơn mới
-            </h2>
-            <p className="text-lg text-gray-700">
-              Quy trình đơn giản để biến không gian của bạn
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Step 1 */}
-            <div className="text-center" role="article" aria-labelledby="step-1-title">
-              <div className="relative mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Search className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                  1
-                </div>
-              </div>
-              <h3 id="step-1-title" className="text-xl font-semibold mb-3 text-gray-900">
-                Tìm sơn phù hợp nhanh chóng
-              </h3>
-              <p className="text-gray-700">
-                Nhập kích thước phòng của bạn để xem chỉ những kết quả phù hợp.
-              </p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="text-center" role="article" aria-labelledby="step-2-title">
-              <div className="relative mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Shield className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                  2
-                </div>
-              </div>
-              <h3 id="step-2-title" className="text-xl font-semibold mb-3 text-gray-900">
-                Thanh toán an toàn & Dịch vụ từ VNCompare
-              </h3>
-              <p className="text-gray-700">
-                Thanh toán trước an toàn và giao hàng đúng hẹn được đảm bảo bởi
-                các đối tác cao cấp của chúng tôi.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="text-center" role="article" aria-labelledby="step-3-title">
-              <div className="relative mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Truck className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                  3
-                </div>
-              </div>
-              <h3 id="step-3-title" className="text-xl font-semibold mb-3 text-gray-900">
-                Đặt thi công với giá tốt nhất
-              </h3>
-              <p className="text-gray-700">
-                Đặt thi công sơn vào thời điểm linh hoạt tại một xưởng gần bạn.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Brand Highlights - Accessible & Colorful */}
-      <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50" role="region" aria-labelledby="brands-heading">
+      <section
+        className="py-16 bg-gradient-to-r from-blue-50 to-purple-50"
+        role="region"
+        aria-labelledby="brands-heading"
+      >
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 id="brands-heading" className="text-3xl font-bold text-gray-900 mb-4">
+            <h2
+              id="brands-heading"
+              className="text-3xl font-bold text-gray-900 mb-4"
+            >
               Thương hiệu phổ biến
             </h2>
             <p className="text-lg text-gray-700">
@@ -276,19 +243,25 @@ export default function HomePage() {
                 aria-label={`Xem sản phẩm từ ${supplier.name}`}
               >
                 <CardContent className="p-6">
-                  <div className={`w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md ${
-                    index % 3 === 0 ? 'bg-gradient-to-br from-blue-400 to-blue-500' :
-                    index % 3 === 1 ? 'bg-gradient-to-br from-purple-400 to-purple-500' :
-                    'bg-gradient-to-br from-pink-400 to-pink-500'
-                  }`}>
+                  <div
+                    className={`w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md ${
+                      index % 3 === 0
+                        ? 'bg-gradient-to-br from-blue-400 to-blue-500'
+                        : index % 3 === 1
+                          ? 'bg-gradient-to-br from-purple-400 to-purple-500'
+                          : 'bg-gradient-to-br from-pink-400 to-pink-500'
+                    }`}
+                  >
                     <Paintbrush className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="font-semibold text-sm text-gray-900">{supplier.name}</h3>
+                  <h3 className="font-semibold text-sm text-gray-900">
+                    {supplier.name}
+                  </h3>
                   <p className="text-xs text-gray-600 mt-1">Hersteller</p>
                 </CardContent>
               </Card>
             ))}
-        </div>
+          </div>
 
           <div className="text-center">
             <Button
