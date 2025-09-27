@@ -69,6 +69,14 @@ export class DatabaseService {
     return result;
   }
 
+  async deleteUser(id: string): Promise<boolean> {
+    const db = await this.ensureDb();
+    const result = await db
+      .collection('users')
+      .deleteOne({ _id: new ObjectId(id) });
+    return result.deletedCount > 0;
+  }
+
   // Product operations
   async getProducts(
     filters: Record<string, unknown> = {},

@@ -67,10 +67,10 @@ const SelectTrigger = ({
   className = '',
   isOpen,
   setIsOpen,
-  ...props
+  selectedValue,
+  onSelect,
+  ...domProps
 }: SelectTriggerProps & any) => {
-  // Filter out non-DOM props to avoid React warnings
-  const { selectedValue, onSelect, ...domProps } = props;
 
   return (
     <button
@@ -92,12 +92,12 @@ const SelectContent = ({
   children,
   className = '',
   isOpen,
-  ...props
+  setIsOpen,
+  selectedValue,
+  onSelect,
+  ...domProps
 }: SelectContentProps & any) => {
   if (!isOpen) return null;
-
-  // Filter out non-DOM props to avoid React warnings
-  const { setIsOpen, selectedValue, onSelect, ...domProps } = props;
 
   return (
     <div
@@ -141,10 +141,11 @@ const SelectValue = ({
   placeholder,
   className = '',
   selectedValue,
-  ...props
+  isOpen,
+  setIsOpen,
+  onSelect,
+  ...domProps
 }: SelectValueProps & any) => {
-  // Filter out non-DOM props to avoid React warnings
-  const { isOpen, setIsOpen, onSelect, ...domProps } = props;
 
   return (
     <span className={cn('block truncate', className)} {...domProps}>

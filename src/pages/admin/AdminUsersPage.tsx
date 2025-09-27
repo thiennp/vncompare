@@ -65,16 +65,14 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   // Form states
-  const [createForm, setCreateForm] = useState<CreateUser>(
-    {
-      email: '',
-      password: '',
-      name: '',
-      phone: '',
-      role: 'customer',
-      isActive: true,
-    }
-  );
+  const [createForm, setCreateForm] = useState<CreateUser>({
+    email: '',
+    password: '',
+    name: '',
+    phone: '',
+    role: 'customer',
+    isActive: true,
+  });
 
   const [editForm, setEditForm] = useState<Partial<User>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -382,7 +380,7 @@ export default function AdminUsersPage() {
             <div>
               <Label htmlFor="create-role">Vai trò</Label>
               <Select
-                value={createForm.role}
+                value={createForm.role || 'customer'}
                 onValueChange={value =>
                   setCreateForm({ ...createForm, role: value as any })
                 }

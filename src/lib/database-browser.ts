@@ -215,6 +215,16 @@ export class DatabaseService {
     return users[index];
   }
 
+  async deleteUser(id: string): Promise<boolean> {
+    const users = this.getUsersCollection();
+    const index = users.findIndex(user => user._id === id);
+    if (index === -1) return false;
+
+    users.splice(index, 1);
+    saveCollection(this.collections.users, users);
+    return true;
+  }
+
   async getUsers(
     filters: Record<string, unknown> = {},
     page: number = 1,

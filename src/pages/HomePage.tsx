@@ -133,7 +133,7 @@ export default function HomePage() {
                   Tìm sơn phù hợp với không gian của bạn
                 </CardTitle>
                 <CardDescription className="text-center text-gray-700">
-                  Nhập kích thước phòng, loại sơn và địa chỉ để tìm sản phẩm phù
+                  Nhập kích thước không gian, loại sơn và địa chỉ để tìm sản phẩm phù
                   hợp
                 </CardDescription>
               </CardHeader>
@@ -147,7 +147,7 @@ export default function HomePage() {
                         htmlFor="room-size"
                         className="text-gray-800 font-semibold text-base"
                       >
-                        Diện tích phòng (m²)
+                        Diện tích cần sơn (m²)
                       </Label>
                       <Input
                         id="room-size"
@@ -159,7 +159,7 @@ export default function HomePage() {
                         id="room-size-help"
                         className="text-sm text-gray-600 mt-1"
                       >
-                        Nhập diện tích phòng để tìm sơn phù hợp
+                        Nhập diện tích cần sơn để tìm sản phẩm phù hợp
                       </p>
                     </div>
                     <div className="flex-1">

@@ -86,7 +86,7 @@ export default function CoverageCalculatorPage() {
           Máy tính độ phủ sơn
         </h1>
         <p className="text-lg text-gray-600">
-          Tính toán lượng sơn cần thiết dựa trên kích thước phòng và loại sơn
+          Tính toán lượng sơn cần thiết dựa trên diện tích cần sơn và loại sơn
         </p>
       </div>
 
@@ -95,10 +95,10 @@ export default function CoverageCalculatorPage() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Calculator className="mr-2 h-5 w-5" />
-              Thông tin phòng
+              Thông tin diện tích
             </CardTitle>
             <CardDescription>
-              Nhập kích thước phòng để tính toán độ phủ sơn
+              Nhập diện tích cần sơn để tính toán độ phủ sơn
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

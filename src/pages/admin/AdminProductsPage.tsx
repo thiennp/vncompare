@@ -47,12 +47,12 @@ const PRODUCT_CATEGORIES = [
   'Sealer',
 ] as const;
 
-const PRODUCT_UNITS = ['liter', 'gallon', 'can', 'bucket', 'tube'] as const;
+const PRODUCT_UNITS = ['lít', 'galông', 'lon', 'xô', 'tuýp'] as const;
 
 export default function AdminProductsPage() {
   const { products, total } = useLoaderData() as AdminProductsPageData;
   const revalidator = useRevalidator();
-  const [, ] = useTransition();
+  const [,] = useTransition();
 
   // State for modals and forms
   const [showCreateModal, setShowCreateModal] = useState(false);
