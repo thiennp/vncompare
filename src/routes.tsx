@@ -7,6 +7,7 @@ import ErrorPage from './features/error/pages/ErrorPage';
 import ProductsPage from './features/products/pages/ProductsPage';
 import ProductDetailPage from './features/products/pages/ProductDetailPage';
 import CoverageCalculatorPage from './features/products/pages/CoverageCalculatorPage';
+import { coverageCalculatorLoader } from './features/products/pages/loaders/coverageCalculatorLoader';
 import LoginPage from './features/auth/pages/LoginPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
 import ProfilePage from './features/auth/pages/ProfilePage';
@@ -76,6 +77,7 @@ const routes = [
           {
             path: 'coverage-calculator',
             element: <CoverageCalculatorPage />,
+            loader: coverageCalculatorLoader,
           },
           {
             path: 'login',

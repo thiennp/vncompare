@@ -19,7 +19,8 @@ interface CoverageCalculatorPageData {
 }
 
 export default function CoverageCalculatorPage() {
-  const { products } = useLoaderData() as CoverageCalculatorPageData;
+  const loaderData = useLoaderData() as CoverageCalculatorPageData | undefined;
+  const { products = [] } = loaderData || {};
   const [formData, setFormData] = useState({
     length: '',
     width: '',
