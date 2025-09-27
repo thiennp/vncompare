@@ -4,7 +4,7 @@ import type { LoaderFunctionArgs } from 'react-router-dom';
 export async function productDetailLoader({ params }: LoaderFunctionArgs) {
   console.log('ProductDetailLoader called with params:', params);
   try {
-    const response = await fetch(`/api/products/${params.id}`);
+    const response = await fetch(`/api/product-detail/${params.id}`);
     console.log('API response status:', response.status);
 
     if (!response.ok) {
@@ -18,6 +18,8 @@ export async function productDetailLoader({ params }: LoaderFunctionArgs) {
     console.error('Error loading product detail:', error);
     return {
       product: null,
+      reviews: [],
+      totalReviews: 0,
     };
   }
 }

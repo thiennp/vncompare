@@ -1,7 +1,8 @@
 import type { Plugin } from 'vite';
 import { getHomePageData } from './src/api/home';
 import { getDashboardData } from './src/api/dashboard';
-import { getProductsData, getProductDetailData } from './src/api/products';
+import { getProductsData } from './src/api/products';
+import { getProductDetailData } from './src/api/product-detail';
 import { getOrdersData, getOrderDetailData } from './src/api/orders';
 import {
   getAdminDashboardData,
@@ -50,8 +51,8 @@ export function apiPlugin(): Plugin {
         }
       });
 
-      // Product Detail API (specific route)
-      server.middlewares.use('/api/products/', async (req, res, next) => {
+      // Product Detail API (separate endpoint)
+      server.middlewares.use('/api/product-detail/', async (req, res, next) => {
         if (req.method === 'GET') {
           try {
             const productId = req.url?.split('/').pop();
@@ -74,7 +75,7 @@ export function apiPlugin(): Plugin {
         }
       });
 
-      // Products API (list)
+      // Products API (list only)
       server.middlewares.use('/api/products', async (req, res, next) => {
         if (req.method === 'GET') {
           try {
