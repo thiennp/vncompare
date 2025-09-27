@@ -46,6 +46,11 @@ const Select = ({
     setIsOpen(false);
   };
 
+  // Sync internal state with external value prop
+  React.useEffect(() => {
+    setSelectedValue(value);
+  }, [value]);
+
   // Close dropdown when clicking outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -99,14 +104,21 @@ const SelectTrigger = ({
         'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         e.stopPropagation();
         setIsOpen(!isOpen);
       }}
       {...domProps}
     >
-      {children}
+      {React.Children.map(children, child => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            selectedValue,
+          } as any);
+        }
+        return child;
+      })}
       <ChevronDown className="h-4 w-4 opacity-50" />
     </button>
   );
@@ -129,14 +141,14 @@ const SelectContent = ({
         'absolute top-full left-0 right-0 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 text-gray-900 shadow-lg mt-1',
         className
       )}
-      style={{ 
-        backgroundColor: 'white', 
+      style={{
+        backgroundColor: 'white',
         border: '1px solid #e5e7eb',
         position: 'absolute',
         top: '100%',
         left: '0',
         right: '0',
-        zIndex: 50
+        zIndex: 50,
       }}
       {...domProps}
     >
@@ -165,7 +177,7 @@ const SelectItem = ({
         'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-2 text-sm outline-none hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className
       )}
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         e.stopPropagation();
         if (typeof onSelect === 'function') {
