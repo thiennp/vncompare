@@ -15,10 +15,7 @@ function isValidCategory(category: string): category is Product['category'] {
 
 export async function getProductDetailData(productId: string) {
   try {
-    console.log('Looking for product with ID:', productId);
-    console.log('Database service:', db);
     const product = await db.getProductById(productId);
-    console.log('Found product:', product ? 'Yes' : 'No');
 
     if (!product) {
       return {
