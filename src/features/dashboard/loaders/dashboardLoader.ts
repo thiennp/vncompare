@@ -1,37 +1,27 @@
 // Dashboard page loader
 export async function dashboardLoader() {
-  // Get token from cookies
-  const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('auth_token='))
-    ?.split('=')[1];
-
-  if (!token) {
-    throw new Response('Unauthorized', { status: 401 });
-  }
-
   try {
-    // For client-side, we'll use a simple token check
-    const response = await fetch('/api/verify', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success && result.user) {
-        return {
-          user: result.user,
-          recentOrders: [],
-          addresses: [],
-        };
-      }
+    const response = await fetch('/api/dashboard');
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    throw new Response('Unauthorized', { status: 401 });
+
+    const data = await response.json();
+    return data;
   } catch (error) {
-    throw new Response('Unauthorized', { status: 401 });
+    console.error('Error loading dashboard data:', error);
+    return {
+      stats: {
+        totalProducts: 0,
+        totalOrders: 0,
+        totalUsers: 0,
+        totalRevenue: 0,
+        activeProducts: 0,
+        verifiedSuppliers: 0,
+      },
+      recentOrders: [],
+      addresses: [],
+    };
   }
 }

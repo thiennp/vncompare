@@ -1,31 +1,20 @@
+import type { LoaderFunctionArgs } from 'react-router-dom';
+
 // Order detail page loader
-export async function orderDetailLoader() {
-  // Get token from cookies
-  const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('auth_token='))
-    ?.split('=')[1];
-
-  if (!token) {
-    throw new Response('Unauthorized', { status: 401 });
-  }
-
+export async function orderDetailLoader({ params }: LoaderFunctionArgs) {
   try {
-    const response = await fetch('/api/verify', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
+    const response = await fetch(`/api/orders/${params.id}`);
+
     if (!response.ok) {
-      throw new Response('Unauthorized', { status: 401 });
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error loading order detail:', error);
     return {
       order: null,
     };
-  } catch (error) {
-    throw new Response('Unauthorized', { status: 401 });
   }
 }

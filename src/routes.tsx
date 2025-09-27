@@ -21,6 +21,9 @@ import AdminUsersPage from './features/admin/pages/AdminUsersPage';
 import AdminSuppliersPage from './features/admin/pages/AdminSuppliersPage';
 import AdminReviewsPage from './features/admin/pages/AdminReviewsPage';
 
+// Skeleton Components
+import { HomePageSkeleton } from './features/home/components/HomePageSkeleton';
+
 // Loaders
 import { homeLoader } from './features/home/loaders/homeLoader';
 import { dashboardLoader } from './features/dashboard/loaders/dashboardLoader';
@@ -53,6 +56,7 @@ const routes = [
             index: true,
             element: <HomePage />,
             loader: homeLoader,
+            hydrateFallbackElement: <HomePageSkeleton />,
           },
           {
             path: 'dashboard',
