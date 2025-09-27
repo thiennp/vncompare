@@ -25,9 +25,13 @@ async function verifyAuth() {
 
   try {
     const authService = new AuthService();
-    const user = await authService.getCurrentUser();
-    console.log('✅ Auth check - User found:', user?.email);
-    return user;
+    const result = await authService.getCurrentUser();
+    if (result.success && result.user) {
+      console.log('✅ Auth check - User found:', result.user.email);
+      return result.user;
+    }
+    console.log('❌ Auth check - No user found');
+    return null;
   } catch (error) {
     console.log('❌ Auth check - Error:', error);
     return null;
@@ -70,7 +74,7 @@ export const routes = [
       {
         path: 'products',
         element: <ProductsPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const category = url.searchParams.get('category') || '';
@@ -99,7 +103,7 @@ export const routes = [
       {
         path: 'products/:id',
         element: <ProductDetailPage />,
-        loader: async ({ params }) => {
+        loader: async ({ params }: { params: { id: string } }) => {
           const product = await db.getProductById(params.id!);
           if (!product) {
             throw new Response('Product not found', { status: 404 });
@@ -121,7 +125,7 @@ export const routes = [
       {
         path: 'products/:id/coverage',
         element: <CoverageCalculatorPage />,
-        loader: async ({ params }) => {
+        loader: async ({ params }: { params: { id: string } }) => {
           const product = await db.getProductById(params.id!);
           if (!product) {
             throw new Response('Product not found', { status: 404 });
@@ -153,7 +157,7 @@ export const routes = [
       {
         path: 'orders',
         element: <OrdersPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const user = await verifyAuth();
           if (!user) {
             throw new Response('Unauthorized', { status: 401 });
@@ -178,7 +182,7 @@ export const routes = [
       {
         path: 'orders/:id',
         element: <OrderDetailPage />,
-        loader: async ({ params }) => {
+        loader: async ({ params }: { params: { id: string } }) => {
           const user = await verifyAuth();
           if (!user) {
             throw new Response('Unauthorized', { status: 401 });
@@ -239,7 +243,7 @@ export const routes = [
       {
         path: 'products',
         element: <AdminProductsPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const category = url.searchParams.get('category') || '';
@@ -267,7 +271,7 @@ export const routes = [
       {
         path: 'orders',
         element: <AdminOrdersPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const status = url.searchParams.get('status') || '';
@@ -287,7 +291,7 @@ export const routes = [
       {
         path: 'users',
         element: <AdminUsersPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const role = url.searchParams.get('role') || '';
@@ -307,7 +311,7 @@ export const routes = [
       {
         path: 'suppliers',
         element: <AdminSuppliersPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const isVerified = url.searchParams.get('isVerified') || '';
@@ -327,7 +331,7 @@ export const routes = [
       {
         path: 'reviews',
         element: <AdminReviewsPage />,
-        loader: async ({ request }) => {
+        loader: async ({ request }: { request: Request }) => {
           const url = new URL(request.url);
           const page = parseInt(url.searchParams.get('page') || '1');
           const status = url.searchParams.get('status') || '';
