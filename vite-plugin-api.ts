@@ -50,16 +50,18 @@ export function apiPlugin(): Plugin {
         }
       });
 
-      // Products API
-      server.middlewares.use('/api/products', async (req, res, next) => {
+      // Product Detail API (specific route)
+      server.middlewares.use('/api/products/', async (req, res, next) => {
         if (req.method === 'GET') {
           try {
-            const url = new URL(req.url!, `http://${req.headers.host}`);
-            const search = url.searchParams.get('search') || '';
-            const category = url.searchParams.get('category') || '';
-            const page = parseInt(url.searchParams.get('page') || '1');
+            const productId = req.url?.split('/').pop();
+            if (!productId) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: 'Product ID required' }));
+              return;
+            }
 
-            const data = await getProductsData(search, category, page);
+            const data = await getProductDetailData(productId);
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(data));
           } catch (error) {
@@ -72,18 +74,16 @@ export function apiPlugin(): Plugin {
         }
       });
 
-      // Product Detail API
-      server.middlewares.use('/api/products/:id', async (req, res, next) => {
+      // Products API (list)
+      server.middlewares.use('/api/products', async (req, res, next) => {
         if (req.method === 'GET') {
           try {
-            const productId = req.url?.split('/').pop();
-            if (!productId) {
-              res.statusCode = 400;
-              res.end(JSON.stringify({ error: 'Product ID required' }));
-              return;
-            }
+            const url = new URL(req.url!, `http://${req.headers.host}`);
+            const search = url.searchParams.get('search') || '';
+            const category = url.searchParams.get('category') || '';
+            const page = parseInt(url.searchParams.get('page') || '1');
 
-            const data = await getProductDetailData(productId);
+            const data = await getProductsData(search, category, page);
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(data));
           } catch (error) {
