@@ -60,7 +60,7 @@ const routes = [
             hydrateFallbackElement: <HomePageSkeleton />,
           },
           {
-            path: '/dashboard',
+            path: 'dashboard',
             element: <DashboardPage />,
             loader: dashboardLoader,
           },

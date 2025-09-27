@@ -51,6 +51,7 @@ export function apiPlugin(): Plugin {
                 res.setHeader(key, value);
               });
 
+              // Return the raw data (fetcher will parse it as JSON)
               res.end(data);
             } else {
               res.setHeader('Content-Type', 'application/json');
