@@ -90,7 +90,7 @@ export default function ProductDetailPage() {
               {product.coverageRate && (
                 <div className="flex justify-between">
                   <span className="text-gray-600">Độ phủ:</span>
-                  <span>{product.coverageRate} m²/liter</span>
+                  <span>{product.coverageRate} m²/lít</span>
                 </div>
               )}
             </CardContent>

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import {
@@ -47,6 +48,7 @@ const paintTypes = [
 
 export default function HomePage() {
   const rawData = useLoaderData();
+  const [selectedPaintType, setSelectedPaintType] = React.useState<string>('');
 
   // Handle case where suppliers might be undefined
   const data = {
@@ -100,7 +102,7 @@ export default function HomePage() {
                 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
               >
                 Sơn chất lượng cao tại VNCompare
-            </h1>
+              </h1>
               <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
                 Tìm sơn phù hợp với không gian của bạn và nhận dịch vụ thi công
                 chuyên nghiệp
@@ -167,8 +169,11 @@ export default function HomePage() {
                       >
                         Loại sơn
                       </Label>
-                      <Select>
-                        <SelectTrigger 
+                      <Select
+                        value={selectedPaintType}
+                        onValueChange={setSelectedPaintType}
+                      >
+                        <SelectTrigger
                           id="paint-type"
                           className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
                           aria-describedby="paint-type-help"
@@ -176,8 +181,11 @@ export default function HomePage() {
                           <SelectValue placeholder="Chọn loại sơn..." />
                         </SelectTrigger>
                         <SelectContent>
-                          {paintTypes.map((paintType) => (
-                            <SelectItem key={paintType.value} value={paintType.value}>
+                          {paintTypes.map(paintType => (
+                            <SelectItem
+                              key={paintType.value}
+                              value={paintType.value}
+                            >
                               {paintType.label}
                             </SelectItem>
                           ))}
@@ -243,8 +251,8 @@ export default function HomePage() {
             <div className="text-center">
               <p className="text-sm text-gray-700 mb-6">
                 Đăng ký ngay để hưởng tất cả ưu đãi từ VNCompare!
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/register">
                   <Button
                     size="lg"
@@ -253,19 +261,19 @@ export default function HomePage() {
                   >
                     <Users className="mr-2 h-5 w-5" aria-hidden="true" />
                     Đăng ký ngay
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
                 <Link to="/products">
-                <Button
-                  variant="outline"
-                  size="lg"
+                  <Button
+                    variant="outline"
+                    size="lg"
                     className="w-full sm:w-auto border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold transition-all duration-200 focus:ring-4 focus:ring-orange-200"
                     aria-label="Xem tất cả sản phẩm sơn"
-                >
+                  >
                     <Package className="mr-2 h-5 w-5" aria-hidden="true" />
                     Xem tất cả sản phẩm
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -319,7 +327,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             ))}
-        </div>
+          </div>
 
           <div className="text-center">
             <Button

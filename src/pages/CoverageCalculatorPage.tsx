@@ -165,7 +165,7 @@ export default function CoverageCalculatorPage() {
                     value={product._id?.toString()}
                   >
                     {product.name} - {product.brand} ({product.coverageRate}{' '}
-                    m²/liter)
+                    m²/lít)
                   </option>
                 ))}
               </select>

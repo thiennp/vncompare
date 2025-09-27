@@ -47,7 +47,7 @@ export interface Product {
   description?: string;
   basePrice?: number;
   originalPrice?: number;
-  coverageRate?: number; // m²/liter
+  coverageRate?: number; // m²/lít
   unit?: string;
   isActive: boolean;
   createdAt: string;
