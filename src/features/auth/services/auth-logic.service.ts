@@ -9,7 +9,7 @@ export interface AuthState {
 
 export interface AuthActions {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (userData: any) => Promise<{ success: boolean; error?: string }>;
+  register: (userData: Record<string, unknown>) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   getCurrentUser: () => Promise<{ success: boolean; user?: User; error?: string }>;
 }

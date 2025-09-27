@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useNavigation } from '../hooks/useNavigation';
 import { useAuthLogic } from '../../auth/hooks/useAuthLogic';
@@ -44,7 +44,6 @@ export default function Layout() {
       {/* Header */}
       <Header
         isAuthenticated={isAuthenticated}
-        isAdminRoute={isAdminRoute}
         isAuthRoute={isAuthRoute}
         displayName={displayName}
         initials={initials}

@@ -35,7 +35,7 @@ export default function Sidebar({ navigation }: SidebarProps) {
                     : 'text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon />
                 <span className="font-medium">{item.name}</span>
               </Link>
             );

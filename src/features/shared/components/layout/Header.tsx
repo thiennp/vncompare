@@ -3,11 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { ShoppingCart, User, LogOut, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, Paintbrush } from 'lucide-react';
 
 interface HeaderProps {
   isAuthenticated: boolean;
-  isAdminRoute: boolean;
   isAuthRoute: boolean;
   displayName: string;
   initials: string;
@@ -31,7 +30,6 @@ interface HeaderProps {
 
 export default function Header({
   isAuthenticated,
-  isAdminRoute,
   isAuthRoute,
   displayName,
   initials,
@@ -69,7 +67,7 @@ export default function Header({
                     to={item.href}
                     className="flex items-center space-x-2 text-gray-700 hover:text-paint-orange transition-colors"
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon />
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -115,7 +113,7 @@ export default function Header({
                         onClick={item.action === 'logout' ? onLogout : undefined}
                         className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        <item.icon className="w-4 h-4" />
+                        <item.icon />
                         <span>{item.name}</span>
                       </Link>
                     ))}

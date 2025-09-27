@@ -1,4 +1,4 @@
-import { createBrowserRouter, createMemoryRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { db } from './features/shared';
 import { AuthService } from './features/auth/services/auth.client';
 import { Layout, HomePage, DashboardPage, ErrorPage } from './features/shared';

@@ -1,6 +1,6 @@
 import { createBrowserRouter, createMemoryRouter } from 'react-router-dom';
 import { api as db } from './features/shared/services/api.client';
-import { AuthService } from './features/auth/services/AuthService';
+import { authService } from './features/auth/services/authService';
 import Layout from './features/shared/components/Layout';
 import HomePage from './features/shared/pages/HomePage';
 import DashboardPage from './features/shared/pages/DashboardPage';
@@ -39,7 +39,6 @@ async function verifyAuth() {
   }
 
   try {
-    const authService = new AuthService();
     const result = await authService.getCurrentUser();
     if (result.success && result.user) {
       console.log('✅ Auth check - User found:', result.user.email);

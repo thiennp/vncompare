@@ -12,5 +12,5 @@ export interface AdminNavigationItem {
   name: string;
   href: string;
   icon: React.ComponentType;
-  shortName?: string;
+  shortName: string;
 }
