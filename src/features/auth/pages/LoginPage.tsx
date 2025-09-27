@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useFetcher } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { Button } from '../../shared/components/ui/button';
 import {
@@ -19,6 +20,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
+  const fetcher = useFetcher();
   const { login } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,32 +28,29 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
-    try {
-      const formData = new FormData();
-      formData.append('email', email);
-      formData.append('password', password);
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
 
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        body: formData,
-      });
+    fetcher.submit(formData, {
+      method: 'POST',
+      action: '/api/login',
+    });
+  };
 
-      const data = await response.json();
-
-      if (data.success) {
+  // Handle fetcher response
+  React.useEffect(() => {
+    if (fetcher.data) {
+      if (fetcher.data.success) {
         // Update Zustand store with user and token
-        login(data.user, data.token);
+        login(fetcher.data.user, fetcher.data.token);
         navigate('/dashboard');
       } else {
-        setError(data.error || 'Đăng nhập thất bại');
+        setError(fetcher.data.error || 'Đăng nhập thất bại');
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError('Đăng nhập thất bại');
-    } finally {
       setIsLoading(false);
     }
-  };
+  }, [fetcher.data, navigate, login]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
