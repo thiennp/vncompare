@@ -1,13 +1,11 @@
 // Custom hook for navigation logic
 import { useLocation } from 'react-router-dom';
-import { 
-  isAdminRoute, 
-  isAuthRoute, 
-  getPublicNavigation, 
-  getAdminNavigation, 
-  getUserMenuItems,
-  getActiveNavigationItem
-} from '../services/navigation.service';
+import { isAdminRoute } from '../services/isAdminRoute';
+import { isAuthRoute } from '../services/isAuthRoute';
+import { getPublicNavigation } from '../services/getPublicNavigation';
+import { getAdminNavigation } from '../services/getAdminNavigation';
+import { getUserMenuItems } from '../services/getUserMenuItems';
+import { getActiveNavigationItem } from '../services/getActiveNavigationItem';
 
 export function useNavigation() {
   const location = useLocation();

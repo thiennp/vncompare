@@ -1,14 +1,12 @@
 // Custom hook for cart logic
 import { useCart } from '../CartContext';
-import { 
-  calculateTotalItems, 
-  calculateTotalPrice, 
-  calculateShippingCost, 
-  calculateFinalTotal,
-  isProductInCart,
-  getItemByProductId,
-  validateCartForCheckout
-} from '../services/cart-logic.service';
+import { calculateTotalItems } from '../services/calculateTotalItems';
+import { calculateTotalPrice } from '../services/calculateTotalPrice';
+import { calculateShippingCost } from '../services/calculateShippingCost';
+import { calculateFinalTotal } from '../services/calculateFinalTotal';
+import { isProductInCart } from '../services/isProductInCart';
+import { getItemByProductId } from '../services/getItemByProductId';
+import { validateCartForCheckout } from '../services/validateCartForCheckout';
 
 export function useCartLogic() {
   const { items, addItem, removeItem, updateQuantity, clearCart } = useCart();

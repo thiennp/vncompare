@@ -1,6 +1,6 @@
 import { RouterProvider } from 'react-router-dom';
 import { createClientRouter } from './routes.config';
-import { Toaster } from './features/shared';
+import { Toaster } from './features/shared/components/ui/toaster';
 import { AuthProvider } from './features/auth/AuthContext';
 import { CartProvider } from './features/cart/CartContext';
 

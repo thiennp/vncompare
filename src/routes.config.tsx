@@ -1,11 +1,26 @@
 import { createBrowserRouter, createMemoryRouter } from 'react-router-dom';
-import { db } from './features/shared';
-import { AuthService } from './features/auth/services/auth.client';
-import { Layout, HomePage, DashboardPage, ErrorPage } from './features/shared';
-import { ProductsPage, ProductDetailPage, CoverageCalculatorPage } from './features/products';
-import { LoginPage, RegisterPage, ProfilePage } from './features/auth';
-import { OrdersPage, OrderDetailPage, ShippingCalculatorPage } from './features/orders';
-import { AdminLayout, AdminDashboardPage, AdminProductsPage, AdminOrdersPage, AdminUsersPage, AdminSuppliersPage, AdminReviewsPage } from './features/admin';
+import { api as db } from './features/shared/services/api.client';
+import { AuthService } from './features/auth/services/AuthService';
+import Layout from './features/shared/components/Layout';
+import HomePage from './features/shared/pages/HomePage';
+import DashboardPage from './features/shared/pages/DashboardPage';
+import ErrorPage from './features/shared/pages/ErrorPage';
+import ProductsPage from './features/products/pages/ProductsPage';
+import ProductDetailPage from './features/products/pages/ProductDetailPage';
+import CoverageCalculatorPage from './features/products/pages/CoverageCalculatorPage';
+import LoginPage from './features/auth/pages/LoginPage';
+import RegisterPage from './features/auth/pages/RegisterPage';
+import ProfilePage from './features/auth/pages/ProfilePage';
+import OrdersPage from './features/orders/pages/OrdersPage';
+import OrderDetailPage from './features/orders/pages/OrderDetailPage';
+import ShippingCalculatorPage from './features/orders/pages/ShippingCalculatorPage';
+import AdminLayout from './features/admin/components/AdminLayout';
+import AdminDashboardPage from './features/admin/pages/AdminDashboardPage';
+import AdminProductsPage from './features/admin/pages/AdminProductsPage';
+import AdminOrdersPage from './features/admin/pages/AdminOrdersPage';
+import AdminUsersPage from './features/admin/pages/AdminUsersPage';
+import AdminSuppliersPage from './features/admin/pages/AdminSuppliersPage';
+import AdminReviewsPage from './features/admin/pages/AdminReviewsPage';
 
 // Helper function to verify authentication - using cookies
 async function verifyAuth() {
