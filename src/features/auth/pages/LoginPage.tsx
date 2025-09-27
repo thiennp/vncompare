@@ -34,7 +34,7 @@ export default function LoginPage() {
 
     fetcher.submit(formData, {
       method: 'POST',
-      action: '/api/login',
+      action: '/login',
     });
   };
 
