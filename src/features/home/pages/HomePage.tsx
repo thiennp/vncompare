@@ -110,14 +110,15 @@ export default function HomePage() {
             </div>
 
             {/* Accessible Colorful Savings Badge */}
-            <div
-              className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg text-sm font-semibold mb-8 shadow-lg"
-              role="banner"
-              aria-label="Tiết kiệm đến 50%"
+            <Link
+              to="/products?offer=special"
+              className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg text-sm font-semibold mb-8 shadow-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 cursor-pointer"
+              role="button"
+              aria-label="Xem sản phẩm tiết kiệm đến 50%"
             >
               <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
               Tiết kiệm đến <span className="font-bold text-lg mx-1">50%</span>
-            </div>
+            </Link>
 
             {/* Accessible Colorful Search Interface */}
             <Card
