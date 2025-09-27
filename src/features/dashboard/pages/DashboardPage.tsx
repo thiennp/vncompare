@@ -1,6 +1,5 @@
 import { useLoaderData } from 'react-router-dom';
-import { Order, Address } from '../../shared/services/models';
-import { useAuthStore } from '../../auth/stores/authStore';
+import { User, Order, Address } from '../../shared/services/models';
 import {
   Card,
   CardContent,
@@ -14,38 +13,14 @@ import { Package, ShoppingCart, MapPin, User as UserIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface DashboardPageData {
-  stats: {
-    totalUsers: number;
-    totalProducts: number;
-    totalOrders: number;
-    totalSuppliers: number;
-    totalRevenue: number;
-    pendingOrders: number;
-    pendingReviews: number;
-  };
+  user: User;
   recentOrders: Order[];
   addresses: Address[];
 }
 
 export default function DashboardPage() {
-  const { stats, recentOrders, addresses } =
+  const { user, recentOrders, addresses } =
     useLoaderData() as DashboardPageData;
-  const { user } = useAuthStore();
-
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Vui lòng đăng nhập
-          </h1>
-          <p className="text-gray-600">
-            Bạn cần đăng nhập để truy cập trang này.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -63,8 +38,8 @@ export default function DashboardPage() {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalOrders}</div>
-            <p className="text-xs text-muted-foreground">Tổng số đơn hàng</p>
+            <div className="text-2xl font-bold">{recentOrders.length}</div>
+            <p className="text-xs text-muted-foreground">Đơn hàng gần đây</p>
           </CardContent>
         </Card>
 

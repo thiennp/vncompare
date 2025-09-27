@@ -12,11 +12,60 @@ import {
   getAdminSuppliersData,
   getAdminReviewsData,
 } from './src/api/admin';
+import { loginLoader } from './src/features/auth/loaders/loginLoader';
 
 export function apiPlugin(): Plugin {
   return {
     name: 'api-plugin',
     configureServer(server) {
+      // Login API
+      server.middlewares.use('/api/login', async (req, res, next) => {
+        if (req.method === 'POST') {
+          try {
+            // Convert Node.js request to Web API Request
+            let body = '';
+            req.on('data', chunk => {
+              body += chunk.toString();
+            });
+
+            await new Promise(resolve => {
+              req.on('end', resolve);
+            });
+
+            const url = `http://${req.headers.host}${req.url}`;
+            const webRequest = new Request(url, {
+              method: req.method,
+              headers: req.headers as Record<string, string>,
+              body: body,
+            });
+
+            const response = await loginLoader({ request: webRequest });
+
+            // If response is a Response object, extract data
+            if (response instanceof Response) {
+              const data = await response.text();
+              res.statusCode = response.status;
+
+              // Copy headers from the response
+              response.headers.forEach((value, key) => {
+                res.setHeader(key, value);
+              });
+
+              res.end(data);
+            } else {
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify(response));
+            }
+          } catch (error) {
+            console.error('Login API Error:', error);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+          }
+        } else {
+          next();
+        }
+      });
+
       // Home API
       server.middlewares.use('/api/home', async (req, res, next) => {
         if (req.method === 'GET') {
