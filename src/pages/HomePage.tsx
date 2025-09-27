@@ -79,7 +79,7 @@ export default function HomePage() {
                 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
               >
                 Sơn chất lượng cao tại VNCompare
-              </h1>
+            </h1>
               <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
                 Tìm sơn phù hợp với không gian của bạn và nhận dịch vụ thi công
                 chuyên nghiệp
@@ -110,61 +110,88 @@ export default function HomePage() {
                   Tìm sơn phù hợp với không gian của bạn
                 </CardTitle>
                 <CardDescription className="text-center text-gray-700">
-                  Nhập kích thước phòng hoặc thông số sơn bạn cần
+                  Nhập kích thước phòng, loại sơn và địa chỉ để tìm sản phẩm phù hợp
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Search Input */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <Label
-                      htmlFor="room-size"
-                      className="text-gray-800 font-semibold text-base"
-                    >
-                      Diện tích phòng (m²)
-                    </Label>
-                    <Input
-                      id="room-size"
-                      placeholder="Ví dụ: 25 m²"
-                      className="mt-1 border-2 border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 rounded-lg text-gray-900"
-                      aria-describedby="room-size-help"
-                    />
-                    <p
-                      id="room-size-help"
-                      className="text-sm text-gray-600 mt-1"
-                    >
-                      Nhập diện tích phòng để tìm sơn phù hợp
-                    </p>
+                <div className="space-y-4">
+                  {/* First row: Room size and Paint type */}
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <Label
+                        htmlFor="room-size"
+                        className="text-gray-800 font-semibold text-base"
+                      >
+                        Diện tích phòng (m²)
+                      </Label>
+                      <Input
+                        id="room-size"
+                        placeholder="Ví dụ: 25 m²"
+                        className="mt-1 border-2 border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 rounded-lg text-gray-900"
+                        aria-describedby="room-size-help"
+                      />
+                      <p
+                        id="room-size-help"
+                        className="text-sm text-gray-600 mt-1"
+                      >
+                        Nhập diện tích phòng để tìm sơn phù hợp
+                      </p>
+                    </div>
+                    <div className="flex-1">
+                      <Label
+                        htmlFor="paint-type"
+                        className="text-gray-800 font-semibold text-base"
+                      >
+                        Loại sơn
+                      </Label>
+                      <Input
+                        id="paint-type"
+                        placeholder="Ví dụ: Sơn nội thất"
+                        className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
+                        aria-describedby="paint-type-help"
+                      />
+                      <p
+                        id="paint-type-help"
+                        className="text-sm text-gray-600 mt-1"
+                      >
+                        Chọn loại sơn phù hợp với nhu cầu
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <Label
-                      htmlFor="paint-type"
-                      className="text-gray-800 font-semibold text-base"
-                    >
-                      Loại sơn
-                    </Label>
-                    <Input
-                      id="paint-type"
-                      placeholder="Ví dụ: Sơn nội thất"
-                      className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
-                      aria-describedby="paint-type-help"
-                    />
-                    <p
-                      id="paint-type-help"
-                      className="text-sm text-gray-600 mt-1"
-                    >
-                      Chọn loại sơn phù hợp với nhu cầu
-                    </p>
-                  </div>
-                  <div className="flex items-end">
-                    <Button
-                      size="lg"
-                      className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200"
-                      aria-label="Tìm kiếm sơn phù hợp"
-                    >
-                      <Search className="mr-2 h-5 w-5" aria-hidden="true" />
-                      Tìm sơn
-                    </Button>
+
+                  {/* Second row: Address and Search button */}
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                      <Label
+                        htmlFor="address"
+                        className="text-gray-800 font-semibold text-base"
+                      >
+                        Địa chỉ
+                      </Label>
+                      <Input
+                        id="address"
+                        placeholder="Ví dụ: Quận 1, TP.HCM"
+                        className="mt-1 border-2 border-green-300 focus:border-green-600 focus:ring-2 focus:ring-green-200 rounded-lg text-gray-900"
+                        aria-describedby="address-help"
+                      />
+                      <p
+                        id="address-help"
+                        className="text-sm text-gray-600 mt-1"
+                      >
+                        Nhập địa chỉ để tìm nhà cung cấp gần nhất
+                      </p>
+                    </div>
+                    <div className="flex items-end">
+                      <Button
+                        size="lg"
+                        className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200"
+                        aria-label="Tìm kiếm sơn phù hợp"
+                      >
+                        <Search className="mr-2 h-5 w-5" aria-hidden="true" />
+                        Tìm sơn
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -184,8 +211,8 @@ export default function HomePage() {
             <div className="text-center">
               <p className="text-sm text-gray-700 mb-6">
                 Đăng ký ngay để hưởng tất cả ưu đãi từ VNCompare!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/register">
                   <Button
                     size="lg"
@@ -194,19 +221,19 @@ export default function HomePage() {
                   >
                     <Users className="mr-2 h-5 w-5" aria-hidden="true" />
                     Đăng ký ngay
-                  </Button>
-                </Link>
+                </Button>
+              </Link>
                 <Link to="/products">
-                  <Button
-                    variant="outline"
-                    size="lg"
+                <Button
+                  variant="outline"
+                  size="lg"
                     className="w-full sm:w-auto border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold transition-all duration-200 focus:ring-4 focus:ring-orange-200"
                     aria-label="Xem tất cả sản phẩm sơn"
-                  >
+                >
                     <Package className="mr-2 h-5 w-5" aria-hidden="true" />
                     Xem tất cả sản phẩm
-                  </Button>
-                </Link>
+                </Button>
+              </Link>
               </div>
             </div>
           </div>
@@ -260,7 +287,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+        </div>
 
           <div className="text-center">
             <Button
