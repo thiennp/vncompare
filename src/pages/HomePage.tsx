@@ -54,6 +54,7 @@ export default function HomePage() {
   const data = {
     featuredProducts: rawData?.featuredProducts || [],
     suppliers: rawData?.suppliers || [],
+    reviews: rawData?.reviews || [],
   };
 
   // Validate data with generated Guardz type guards
@@ -78,13 +79,13 @@ export default function HomePage() {
     );
   }
 
-  const { featuredProducts, suppliers } = data;
+  const { featuredProducts, suppliers, reviews } = data;
 
   return (
     <div className="min-h-screen">
       {/* Hero Section - Accessible & Colorful */}
       <section
-        className="relative py-20 bg-gradient-to-br from-blue-100 to-indigo-200"
+        className="relative py-24 bg-gradient-to-br from-blue-100 to-indigo-200"
         role="banner"
         aria-labelledby="hero-heading"
       >
@@ -93,7 +94,7 @@ export default function HomePage() {
           className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 pointer-events-none"
           aria-hidden="true"
         ></div>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6">
           <div className="text-center max-w-6xl mx-auto">
             {/* Main Headline */}
             <div className="mb-12">
@@ -101,11 +102,10 @@ export default function HomePage() {
                 id="hero-heading"
                 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
               >
-                Sơn chất lượng cao tại VNCompare
+                Sơn chất lượng cao
               </h1>
               <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
-                Tìm sơn phù hợp với không gian của bạn và nhận dịch vụ thi công
-                chuyên nghiệp
+                Tìm sơn phù hợp với không gian của bạn
               </p>
             </div>
 
@@ -130,12 +130,8 @@ export default function HomePage() {
                   id="search-title"
                   className="text-center text-2xl font-bold text-gray-900"
                 >
-                  Tìm sơn phù hợp với không gian của bạn
+                  Tìm sơn phù hợp
                 </CardTitle>
-                <CardDescription className="text-center text-gray-700">
-                  Nhập kích thước không gian, loại sơn và địa chỉ để tìm sản
-                  phẩm phù hợp
-                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Search Input */}
@@ -155,12 +151,6 @@ export default function HomePage() {
                         className="mt-1 border-2 border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 rounded-lg text-gray-900"
                         aria-describedby="room-size-help"
                       />
-                      <p
-                        id="room-size-help"
-                        className="text-sm text-gray-600 mt-1"
-                      >
-                        Nhập diện tích cần sơn để tìm sản phẩm phù hợp
-                      </p>
                     </div>
                     <div className="flex-1">
                       <Label
@@ -172,6 +162,7 @@ export default function HomePage() {
                       <Select
                         value={selectedPaintType}
                         onValueChange={setSelectedPaintType}
+                        options={paintTypes}
                       >
                         <SelectTrigger
                           id="paint-type"
@@ -191,12 +182,6 @@ export default function HomePage() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <p
-                        id="paint-type-help"
-                        className="text-sm text-gray-600 mt-1"
-                      >
-                        Chọn loại sơn phù hợp với nhu cầu
-                      </p>
                     </div>
                   </div>
 
@@ -215,12 +200,6 @@ export default function HomePage() {
                         className="mt-1 border-2 border-green-300 focus:border-green-600 focus:ring-2 focus:ring-green-200 rounded-lg text-gray-900"
                         aria-describedby="address-help"
                       />
-                      <p
-                        id="address-help"
-                        className="text-sm text-gray-600 mt-1"
-                      >
-                        Nhập địa chỉ để tìm nhà cung cấp gần nhất
-                      </p>
                     </div>
                     <div className="flex items-center pt-6">
                       <Button
@@ -234,44 +213,31 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-
-                {/* Advanced Search Options */}
-                <div className="text-center">
-                  <Button
-                    variant="link"
-                    className="text-sm text-gray-600 hover:text-gray-800"
-                  >
-                    Tùy chọn tìm kiếm nâng cao
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 
             {/* Call to Action */}
             <div className="text-center">
-              <p className="text-sm text-gray-700 mb-6">
-                Đăng ký ngay để hưởng tất cả ưu đãi từ VNCompare!
-              </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/register">
-                  <Button
-                    size="lg"
-                    className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-green-200"
-                    aria-label="Đăng ký tài khoản mới"
-                  >
-                    <Users className="mr-2 h-5 w-5" aria-hidden="true" />
-                    Đăng ký ngay
-                  </Button>
-                </Link>
                 <Link to="/products">
                   <Button
-                    variant="outline"
                     size="lg"
-                    className="w-full sm:w-auto border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold transition-all duration-200 focus:ring-4 focus:ring-orange-200"
+                    className="w-full sm:w-auto bg-gradient-to-r from-paint-orange to-paint-pink hover:from-paint-orange/90 hover:to-paint-pink/90 text-white font-semibold shadow-lg transition-all duration-200"
                     aria-label="Xem tất cả sản phẩm sơn"
                   >
                     <Package className="mr-2 h-5 w-5" aria-hidden="true" />
-                    Xem tất cả sản phẩm
+                    Xem sản phẩm
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto border-2 border-paint-orange text-paint-orange hover:bg-paint-orange/5 font-semibold transition-all duration-200"
+                    aria-label="Đăng ký tài khoản mới"
+                  >
+                    <Users className="mr-2 h-5 w-5" aria-hidden="true" />
+                    Đăng ký
                   </Button>
                 </Link>
               </div>
@@ -282,11 +248,11 @@ export default function HomePage() {
 
       {/* Brand Highlights - Accessible & Colorful */}
       <section
-        className="py-16 bg-gradient-to-r from-blue-50 to-purple-50"
+        className="py-20 bg-gradient-to-r from-blue-50 to-purple-50"
         role="region"
         aria-labelledby="brands-heading"
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2
               id="brands-heading"
@@ -294,9 +260,6 @@ export default function HomePage() {
             >
               Thương hiệu phổ biến
             </h2>
-            <p className="text-lg text-gray-700">
-              Thương hiệu cao cấp cho chất lượng và độ bền cao nhất
-            </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-8">
@@ -343,106 +306,59 @@ export default function HomePage() {
       </section>
 
       {/* Customer Reviews - Clean & Focused */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Đánh giá khách hàng VNCompare Sơn
-            </h2>
-            <div className="flex items-center justify-center mb-8">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 text-yellow-400 fill-current"
-                  />
-                ))}
-              </div>
-              <span className="ml-2 text-lg font-semibold text-gray-700">
-                4.8/5
-              </span>
+      {reviews.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Đánh giá khách hàng
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {reviews.map((review, index) => (
+                <Card
+                  key={review._id || index}
+                  className="hover:shadow-lg transition-shadow"
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-5 w-5 ${
+                              i < review.rating
+                                ? 'text-yellow-400 fill-current'
+                                : 'text-gray-300'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="ml-2 text-sm text-gray-500">
+                        {new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                      </span>
+                    </div>
+                    <p className="text-gray-700 mb-4 text-lg">
+                      {review.comment}
+                    </p>
+                    <p className="text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                      {review.title}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Review 1 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-400 fill-current"
-                      />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-gray-500">26.09.2025</span>
-                </div>
-                <p className="text-gray-700 mb-4 text-lg">
-                  Chất lượng tuyệt vời. Đặc tính lăn êm. Độ bám dính tốt
-                </p>
-                <p className="text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Ralf W.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Review 2 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-400 fill-current"
-                      />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-gray-500">26.09.2025</span>
-                </div>
-                <p className="text-gray-700 mb-4 text-lg">
-                  Sơn tuyệt vời, êm khi sử dụng, độ bám dính tốt!!
-                </p>
-                <p className="text-sm font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                  Silvia G.
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Review 3 */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 text-yellow-400 fill-current"
-                      />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-gray-500">26.09.2025</span>
-                </div>
-                <p className="text-gray-700 mb-4 text-lg">
-                  Cho đến nay mọi thứ đều tốt, đơn hàng diễn ra suôn sẻ
-                </p>
-                <p className="text-sm font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                  Tilo M.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Features Section - Clean & Focused */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Lợi ích khi mua tại VNCompare
+              Tại sao chọn VNCompare?
             </h2>
           </div>
 
@@ -499,15 +415,12 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Sản phẩm nổi bật
             </h2>
-            <p className="text-lg text-gray-600">
-              Khám phá những sản phẩm sơn chất lượng cao được yêu thích nhất
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -563,8 +476,8 @@ export default function HomePage() {
       </section>
 
       {/* Trusted Suppliers */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Nhà cung cấp tin cậy

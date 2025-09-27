@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { authService } from './lib/auth';
 import { db } from './lib/database-browser';
 import Layout from './components/Layout';
+import AdminLayout from './components/AdminLayout';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
@@ -71,14 +72,17 @@ export const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
         loader: async () => {
-          const [productsResult, suppliersResult] = await Promise.all([
-            db.getProducts({ isActive: true }, 1, 8),
-            db.getSuppliers({ isVerified: true }, 1, 6),
-          ]);
+          const [productsResult, suppliersResult, reviewsResult] =
+            await Promise.all([
+              db.getProducts({ isActive: true }, 1, 8),
+              db.getSuppliers({ isVerified: true }, 1, 6),
+              db.getReviews(undefined, { status: 'approved' }, 1, 3),
+            ]);
 
           return {
             featuredProducts: productsResult.products,
             suppliers: suppliersResult.suppliers,
+            reviews: reviewsResult.reviews,
           };
         },
       },
@@ -248,6 +252,7 @@ export const router = createBrowserRouter([
       // Admin routes
       {
         path: 'admin',
+        element: <AdminLayout />,
         children: [
           {
             index: true,

@@ -28,34 +28,89 @@ export default function Layout() {
   const isLoginPage =
     location.pathname === '/login' || location.pathname === '/register';
 
-  const navigation = [
-    { name: 'Trang chủ', href: '/', icon: null },
+  const navigation: Array<{
+    name: string;
+    href: string;
+    icon: any;
+    shortName: string;
+  }> = [
+    {
+      name: 'Máy tính độ phủ',
+      href: '/coverage-calculator',
+      icon: Calculator,
+      shortName: 'Tính độ phủ',
+    },
+    {
+      name: 'Tính phí vận chuyển',
+      href: '/shipping-calculator',
+      icon: Truck,
+      shortName: 'Tính phí ship',
+    },
+  ];
+
+  const categories = [
     {
       name: 'Sơn nội thất',
       href: '/products?category=interior',
       icon: Package,
+      description: 'Sơn cho nội thất',
     },
     {
       name: 'Sơn ngoại thất',
       href: '/products?category=exterior',
       icon: Package,
+      description: 'Sơn cho ngoại thất',
     },
     {
       name: 'Sơn chuyên dụng',
       href: '/products?category=specialty',
       icon: Package,
+      description: 'Sơn chuyên dụng',
     },
-    { name: 'Máy tính độ phủ', href: '/coverage-calculator', icon: Calculator },
-    { name: 'Tính phí vận chuyển', href: '/shipping-calculator', icon: Truck },
   ];
 
-  const adminNavigation = [
-    { name: 'Dashboard', href: '/admin', icon: BarChart3 },
-    { name: 'Sản phẩm', href: '/admin/products', icon: Package },
-    { name: 'Đơn hàng', href: '/admin/orders', icon: null },
-    { name: 'Người dùng', href: '/admin/users', icon: User },
-    { name: 'Nhà cung cấp', href: '/admin/suppliers', icon: null },
-    { name: 'Đánh giá', href: '/admin/reviews', icon: null },
+  const adminNavigation: Array<{
+    name: string;
+    href: string;
+    icon: any;
+    shortName?: string;
+  }> = [
+    {
+      name: 'Dashboard',
+      href: '/admin',
+      icon: BarChart3,
+      shortName: 'Dashboard',
+    },
+    {
+      name: 'Sản phẩm',
+      href: '/admin/products',
+      icon: Package,
+      shortName: 'Sản phẩm',
+    },
+    {
+      name: 'Đơn hàng',
+      href: '/admin/orders',
+      icon: null,
+      shortName: 'Đơn hàng',
+    },
+    {
+      name: 'Người dùng',
+      href: '/admin/users',
+      icon: User,
+      shortName: 'Người dùng',
+    },
+    {
+      name: 'Nhà cung cấp',
+      href: '/admin/suppliers',
+      icon: null,
+      shortName: 'Nhà cung cấp',
+    },
+    {
+      name: 'Đánh giá',
+      href: '/admin/reviews',
+      icon: null,
+      shortName: 'Đánh giá',
+    },
   ];
 
   const currentNavigation = isAdminRoute ? adminNavigation : navigation;
@@ -64,52 +119,68 @@ export default function Layout() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header
-        className="sticky top-0 z-50 w-full border-b bg-gradient-to-r from-blue-50 to-purple-50 backdrop-blur supports-[backdrop-filter]:bg-gradient-to-r from-blue-50/60 to-purple-50/60"
+        className="sticky top-0 z-50 w-full border-b border-paint-orange/20 bg-gradient-to-r from-paint-orange/10 via-paint-teal/10 to-paint-purple/10 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80"
         role="banner"
       >
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container flex h-20 items-center justify-between px-6">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-md">
-              <Paintbrush className="h-4 w-4 text-white" />
+          <Link
+            to="/"
+            className="flex items-center space-x-3 flex-shrink-0 group"
+          >
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-paint-orange via-paint-pink to-paint-purple flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <Paintbrush className="h-5 w-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-gray-900">VNCompare</span>
-            <Badge
-              variant="secondary"
-              className="text-xs bg-gradient-to-r from-blue-100 to-purple-100 text-gray-700 border border-blue-200"
-            >
-              Sơn
-            </Badge>
+            <div className="flex flex-col">
+              <span className="font-semibold text-2xl text-gray-900 tracking-tight">
+                VNCompare
+              </span>
+              <span className="text-xs text-gray-500 font-medium tracking-wide uppercase">
+                Sơn
+              </span>
+            </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {currentNavigation.map(item => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-blue-600 focus:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-2 rounded px-2 py-1 ${
-                  location.pathname === item.href
-                    ? 'text-blue-600 bg-blue-50'
-                    : 'text-gray-700'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+          {/* Desktop Navigation - Apple Style */}
+          <nav className="hidden lg:flex items-center space-x-2 flex-1 justify-center max-w-2xl">
+            {currentNavigation.map(item => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`group flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-paint-orange/20 focus:ring-offset-2 rounded-xl px-4 py-2.5 whitespace-nowrap ${
+                    location.pathname === item.href
+                      ? 'text-paint-orange bg-paint-orange/10 shadow-sm'
+                      : 'text-gray-700 hover:text-paint-orange hover:bg-paint-orange/5'
+                  }`}
+                  title={item.name}
+                >
+                  {Icon && <Icon className="h-4 w-4 flex-shrink-0" />}
+                  <span className="hidden xl:inline">{item.name}</span>
+                  <span className="xl:hidden">
+                    {item.shortName || item.name}
+                  </span>
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right side actions */}
-          <div className="flex items-center space-x-4">
+          {/* Right side actions - Apple Style */}
+          <div className="flex items-center space-x-3">
             {/* Cart */}
             {!isLoginPage && (
-              <Link to="/cart" className="relative">
-                <Button variant="ghost" size="sm" className="relative">
-                  <ShoppingCart className="h-4 w-4" />
+              <Link to="/cart" className="relative group">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="relative h-10 w-10 rounded-full hover:bg-gray-100 transition-all duration-200"
+                >
+                  <ShoppingCart className="h-5 w-5" />
                   {getTotalItems() > 0 && (
                     <Badge
                       variant="destructive"
-                      className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs font-semibold"
                     >
                       {getTotalItems()}
                     </Badge>
@@ -123,80 +194,187 @@ export default function Layout() {
               <div className="flex items-center space-x-2">
                 {user?.role === 'admin' && !isAdminRoute && (
                   <Link to="/admin">
-                    <Button variant="outline" size="sm">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-9 px-4 rounded-full border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                    >
                       <Settings className="h-4 w-4 mr-2" />
                       Admin
                     </Button>
                   </Link>
                 )}
 
-                <Link to="/dashboard">
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    {user?.name || user?.email}
-                  </Button>
-                </Link>
+                <div className="flex items-center space-x-2">
+                  <Link to="/dashboard">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-9 px-3 rounded-full hover:bg-gray-100 transition-all duration-200"
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">
+                        {user?.name || user?.email}
+                      </span>
+                    </Button>
+                  </Link>
 
-                <Button variant="ghost" size="sm" onClick={logout}>
-                  <LogOut className="h-4 w-4" />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={logout}
+                    className="h-9 w-9 rounded-full hover:bg-gray-100 transition-all duration-200"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             ) : (
               !isLoginPage && (
                 <div className="flex items-center space-x-2">
                   <Link to="/login">
-                    <Button variant="ghost" size="sm">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-9 px-4 rounded-full hover:bg-gray-100 transition-all duration-200"
+                    >
                       Đăng nhập
                     </Button>
                   </Link>
                   <Link to="/register">
-                    <Button size="sm">Đăng ký</Button>
+                    <Button
+                      size="sm"
+                      className="h-9 px-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-200 hover:scale-105"
+                    >
+                      Đăng ký
+                    </Button>
                   </Link>
                 </div>
               )
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - Apple Style */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="lg:hidden h-10 w-10 rounded-full hover:bg-gray-100 transition-all duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               ) : (
-                <Menu className="h-4 w-4" />
+                <Menu className="h-5 w-5" />
               )}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Apple Style */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t bg-background">
-            <div className="container py-4">
-              <nav className="flex flex-col space-y-2">
-                {currentNavigation.map(item => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      location.pathname === item.href
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:text-primary hover:bg-muted'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.icon && <item.icon className="h-4 w-4" />}
-                    <span>{item.name}</span>
-                  </Link>
-                ))}
+          <div className="lg:hidden border-t border-gray-200/60 bg-white/95 backdrop-blur-xl">
+            <div className="container py-6">
+              <nav className="space-y-6">
+                {/* Tools Section */}
+                <div>
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
+                    Công cụ
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {currentNavigation.map(item => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={item.name}
+                          to={item.href}
+                          className={`group flex items-center gap-3 text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:ring-offset-2 rounded-2xl px-4 py-3 ${
+                            location.pathname === item.href
+                              ? 'text-blue-600 bg-blue-50 shadow-sm'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {Icon && <Icon className="h-5 w-5 flex-shrink-0" />}
+                          <span className="truncate font-semibold">
+                            {item.name}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Categories Section */}
+                <div>
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
+                    Danh mục sơn
+                  </h3>
+                  <div className="space-y-2">
+                    {categories.map(category => {
+                      const Icon = category.icon;
+                      const isActive =
+                        location.pathname === category.href ||
+                        (location.pathname === '/products' &&
+                          location.search.includes(
+                            category.href.split('?')[1]
+                          ));
+
+                      return (
+                        <Link
+                          key={category.name}
+                          to={category.href}
+                          className={`group flex items-center gap-3 text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:ring-offset-2 rounded-2xl px-4 py-3 ${
+                            isActive
+                              ? 'text-blue-600 bg-blue-50 shadow-sm'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {Icon && <Icon className="h-5 w-5 flex-shrink-0" />}
+                          <span className="truncate font-semibold">
+                            {category.name}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
               </nav>
             </div>
           </div>
         )}
       </header>
+
+      {/* Category Navigation - Simple */}
+      {!isAdminRoute && !isLoginPage && (
+        <div className="bg-white/95 backdrop-blur-sm border-b border-gray-100">
+          <div className="container py-4">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {categories.map(category => {
+                const Icon = category.icon;
+                const isActive =
+                  location.pathname === category.href ||
+                  (location.pathname === '/products' &&
+                    location.search.includes(category.href.split('?')[1]));
+
+                return (
+                  <Link
+                    key={category.name}
+                    to={category.href}
+                    className={`group flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                      isActive
+                        ? 'bg-paint-orange text-white shadow-sm'
+                        : 'text-gray-600 hover:text-paint-orange hover:bg-paint-orange/5'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{category.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main content */}
       <main className="flex-1">

@@ -203,6 +203,7 @@ export interface PaginatedResponse<T = unknown> {
 export interface HomePageData {
   featuredProducts: Product[];
   suppliers: Supplier[];
+  reviews: Review[];
 }
 
 export interface DashboardStats {

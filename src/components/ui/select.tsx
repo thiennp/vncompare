@@ -2,14 +2,21 @@ import * as React from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 interface SelectProps {
   value: string;
   onValueChange: (value: string) => void;
   children: React.ReactNode;
   className?: string;
+  options?: SelectOption[];
 }
 
-interface SelectTriggerProps {
+interface SelectTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   className?: string;
 }
@@ -30,26 +37,29 @@ interface SelectValueProps {
   className?: string;
 }
 
+// Create a context for select state
+const SelectContext = React.createContext<{
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  selectedValue: string;
+  onSelect: (value: string) => void;
+  options?: SelectOption[];
+} | null>(null);
+
 const Select = ({
   value,
   onValueChange,
   children,
   className = '',
+  options = [],
 }: SelectProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(value);
   const selectRef = React.useRef<HTMLDivElement>(null);
 
   const handleSelect = (newValue: string) => {
-    setSelectedValue(newValue);
     onValueChange(newValue);
     setIsOpen(false);
   };
-
-  // Sync internal state with external value prop
-  React.useEffect(() => {
-    setSelectedValue(value);
-  }, [value]);
 
   // Close dropdown when clicking outside
   React.useEffect(() => {
@@ -72,36 +82,37 @@ const Select = ({
   }, [isOpen]);
 
   return (
-    <div ref={selectRef} className={`relative ${className}`}>
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
-            isOpen,
-            setIsOpen,
-            selectedValue,
-            onSelect: handleSelect,
-          } as any);
-        }
-        return child;
-      })}
-    </div>
+    <SelectContext.Provider
+      value={{
+        isOpen,
+        setIsOpen,
+        selectedValue: value,
+        onSelect: handleSelect,
+        options,
+      }}
+    >
+      <div ref={selectRef} className={`relative ${className}`}>
+        {children}
+      </div>
+    </SelectContext.Provider>
   );
 };
 
 const SelectTrigger = ({
   children,
   className = '',
-  isOpen,
-  setIsOpen,
-  selectedValue,
-  onSelect,
   ...domProps
-}: SelectTriggerProps & any) => {
+}: SelectTriggerProps) => {
+  const context = React.useContext(SelectContext);
+  if (!context) throw new Error('SelectTrigger must be used within Select');
+
+  const { isOpen, setIsOpen } = context;
+
   return (
     <button
       type="button"
       className={cn(
-        'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+        'flex h-11 w-full items-center justify-between rounded-xl border border-paint-orange/30 bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-paint-orange/60 focus:outline-none focus:ring-2 focus:ring-paint-orange/20 focus:ring-offset-2 focus:border-paint-orange hover:border-paint-orange/60 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
       onClick={e => {
@@ -111,14 +122,7 @@ const SelectTrigger = ({
       }}
       {...domProps}
     >
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
-            selectedValue,
-          } as any);
-        }
-        return child;
-      })}
+      {children}
       <ChevronDown className="h-4 w-4 opacity-50" />
     </button>
   );
@@ -127,18 +131,19 @@ const SelectTrigger = ({
 const SelectContent = ({
   children,
   className = '',
-  isOpen,
-  setIsOpen,
-  selectedValue,
-  onSelect,
   ...domProps
-}: SelectContentProps & any) => {
+}: SelectContentProps) => {
+  const context = React.useContext(SelectContext);
+  if (!context) throw new Error('SelectContent must be used within Select');
+
+  const { isOpen } = context;
+
   if (!isOpen) return null;
 
   return (
     <div
       className={cn(
-        'absolute top-full left-0 right-0 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 text-gray-900 shadow-lg mt-1',
+        'absolute top-full left-0 right-0 z-50 min-w-[8rem] overflow-hidden rounded-xl border border-paint-orange/20 bg-white/95 backdrop-blur-sm p-2 text-gray-900 shadow-xl mt-2',
         className
       )}
       style={{
@@ -152,14 +157,7 @@ const SelectContent = ({
       }}
       {...domProps}
     >
-      {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
-            onSelect,
-          } as any);
-        }
-        return child;
-      })}
+      {children}
     </div>
   );
 };
@@ -168,21 +166,23 @@ const SelectItem = ({
   value,
   children,
   className = '',
-  onSelect,
   ...props
-}: SelectItemProps & any) => {
+}: SelectItemProps) => {
+  const context = React.useContext(SelectContext);
+  if (!context) throw new Error('SelectItem must be used within Select');
+
+  const { onSelect } = context;
+
   return (
     <div
       className={cn(
-        'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-2 text-sm outline-none hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex w-full cursor-pointer select-none items-center rounded-lg py-2.5 px-3 text-sm outline-none hover:bg-paint-orange/10 hover:text-paint-orange focus:bg-paint-orange/10 focus:text-paint-orange transition-colors duration-200 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className
       )}
       onClick={e => {
         e.preventDefault();
         e.stopPropagation();
-        if (typeof onSelect === 'function') {
-          onSelect(value);
-        }
+        onSelect(value);
       }}
       {...props}
     >
@@ -194,15 +194,22 @@ const SelectItem = ({
 const SelectValue = ({
   placeholder,
   className = '',
-  selectedValue,
-  isOpen,
-  setIsOpen,
-  onSelect,
   ...domProps
-}: SelectValueProps & any) => {
+}: SelectValueProps) => {
+  const context = React.useContext(SelectContext);
+  if (!context) throw new Error('SelectValue must be used within Select');
+
+  const { selectedValue, options } = context;
+
+  // Find the label for the selected value
+  const selectedOption = options?.find(
+    option => option.value === selectedValue
+  );
+  const displayValue = selectedOption ? selectedOption.label : selectedValue;
+
   return (
     <span className={cn('block truncate', className)} {...domProps}>
-      {selectedValue || placeholder}
+      {displayValue || placeholder}
     </span>
   );
 };

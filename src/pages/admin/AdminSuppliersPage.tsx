@@ -155,7 +155,7 @@ export default function AdminSuppliersPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>

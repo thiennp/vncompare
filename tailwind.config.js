@@ -24,41 +24,54 @@ export default {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: '#FF6B35', // Vibrant orange
+          foreground: '#FFFFFF',
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: '#4ECDC4', // Turquoise
+          foreground: '#FFFFFF',
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: '#FF4757', // Vibrant red
+          foreground: '#FFFFFF',
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: '#F8F9FA',
+          foreground: '#6C757D',
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: '#A8E6CF', // Mint green
+          foreground: '#2D3436',
         },
         popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
+          DEFAULT: '#FFFFFF',
+          foreground: '#2D3436',
         },
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: '#FFFFFF',
+          foreground: '#2D3436',
         },
-        // Paint colors
-        'paint-red': '#FF3B30',
-        'paint-blue': '#007AFF',
-        'paint-green': '#34C759',
-        'paint-yellow': '#FFCC00',
-        'paint-purple': '#AF52DE',
-        'paint-pink': '#FF2D92',
-        'paint-orange': '#FF9500',
+        // Vibrant Paint Colors
+        'paint-red': '#FF4757',
+        'paint-blue': '#3742FA',
+        'paint-green': '#2ED573',
+        'paint-yellow': '#FFA502',
+        'paint-purple': '#9C88FF',
+        'paint-pink': '#FF6B9D',
+        'paint-orange': '#FF6B35',
+        'paint-teal': '#4ECDC4',
+        'paint-lime': '#A8E6CF',
+        'paint-coral': '#FF7675',
+        'paint-indigo': '#6C5CE7',
+        'paint-cyan': '#00CEC9',
+        'paint-amber': '#FDCB6E',
+        'paint-rose': '#E84393',
+        'paint-violet': '#A29BFE',
+        'paint-emerald': '#00B894',
+        'paint-sky': '#74B9FF',
+        'paint-slate': '#636E72',
+        'paint-stone': '#DDD6FE',
+        'paint-zinc': '#F1F2F6',
       },
       borderRadius: {
         lg: 'var(--radius)',
