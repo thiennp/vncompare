@@ -377,6 +377,16 @@ export class DatabaseService {
     return suppliers[index];
   }
 
+  async deleteSupplier(id: string): Promise<boolean> {
+    const suppliers = this.getSuppliersCollection();
+    const index = suppliers.findIndex(supplier => supplier._id === id);
+    if (index === -1) return false;
+
+    suppliers.splice(index, 1);
+    saveCollection(this.collections.suppliers, suppliers);
+    return true;
+  }
+
   // Order operations
   async createOrder(
     orderData: Omit<Order, '_id' | 'createdAt'>

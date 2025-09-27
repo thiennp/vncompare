@@ -233,6 +233,13 @@ export class DatabaseService {
     return result;
   }
 
+  async deleteSupplier(id: string): Promise<boolean> {
+    const result = await this.db
+      .collection('suppliers')
+      .deleteOne({ _id: new ObjectId(id) });
+    return result.deletedCount > 0;
+  }
+
   // Review operations
   async getReviews(
     productId?: string,

@@ -79,7 +79,7 @@ export default function HomePage() {
                 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
               >
                 Sơn chất lượng cao tại VNCompare
-            </h1>
+              </h1>
               <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
                 Tìm sơn phù hợp với không gian của bạn và nhận dịch vụ thi công
                 chuyên nghiệp
@@ -110,7 +110,8 @@ export default function HomePage() {
                   Tìm sơn phù hợp với không gian của bạn
                 </CardTitle>
                 <CardDescription className="text-center text-gray-700">
-                  Nhập kích thước phòng, loại sơn và địa chỉ để tìm sản phẩm phù hợp
+                  Nhập kích thước phòng, loại sơn và địa chỉ để tìm sản phẩm phù
+                  hợp
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -161,7 +162,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Second row: Address and Search button */}
-                  <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex flex-col md:flex-row gap-4 items-start">
                     <div className="flex-1">
                       <Label
                         htmlFor="address"
@@ -182,7 +183,7 @@ export default function HomePage() {
                         Nhập địa chỉ để tìm nhà cung cấp gần nhất
                       </p>
                     </div>
-                    <div className="flex items-end">
+                    <div className="flex items-center pt-6">
                       <Button
                         size="lg"
                         className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200"
@@ -211,8 +212,8 @@ export default function HomePage() {
             <div className="text-center">
               <p className="text-sm text-gray-700 mb-6">
                 Đăng ký ngay để hưởng tất cả ưu đãi từ VNCompare!
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/register">
                   <Button
                     size="lg"
@@ -221,19 +222,19 @@ export default function HomePage() {
                   >
                     <Users className="mr-2 h-5 w-5" aria-hidden="true" />
                     Đăng ký ngay
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
                 <Link to="/products">
-                <Button
-                  variant="outline"
-                  size="lg"
+                  <Button
+                    variant="outline"
+                    size="lg"
                     className="w-full sm:w-auto border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold transition-all duration-200 focus:ring-4 focus:ring-orange-200"
                     aria-label="Xem tất cả sản phẩm sơn"
-                >
+                  >
                     <Package className="mr-2 h-5 w-5" aria-hidden="true" />
                     Xem tất cả sản phẩm
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -287,7 +288,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             ))}
-        </div>
+          </div>
 
           <div className="text-center">
             <Button
