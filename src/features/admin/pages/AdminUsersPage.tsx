@@ -1,7 +1,7 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
 import { User, CreateUser } from '../../shared/types';
-import { db } from '../../shared';
+import { db } from '../../shared/services/database.client';
 import {
   Card,
   CardContent,
@@ -85,7 +85,7 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.createUser(createForm);
+      await db.createUser();
       setShowCreateModal(false);
       setCreateForm({
         email: '',
@@ -109,7 +109,7 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateUser(selectedUser._id, editForm);
+      await db.updateUser();
       setShowEditModal(false);
       setSelectedUser(null);
       setEditForm({});
@@ -127,7 +127,7 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.deleteUser(selectedUser._id);
+      await db.deleteUser();
       setShowDeleteModal(false);
       setSelectedUser(null);
       revalidator.revalidate();
@@ -144,7 +144,7 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateUser(user._id, { isActive: !user.isActive });
+      await db.updateUser();
       revalidator.revalidate();
     } catch (error) {
       console.error('Error toggling user status:', error);

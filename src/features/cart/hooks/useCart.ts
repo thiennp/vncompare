@@ -1,7 +1,6 @@
-// Custom hook for cart logic
-import { useCart } from './useCart';
+import { useCartStore } from '../stores/cartStore';
 
-export function useCartLogic() {
+export function useCart() {
   const {
     items,
     totalItems,
@@ -15,20 +14,20 @@ export function useCartLogic() {
     isProductInCart,
     getItemByProductId,
     validateForCheckout,
-  } = useCart();
-  
+  } = useCartStore();
+
   return {
     items,
     totalItems,
     totalPrice,
     shippingCost,
     finalTotal,
-    isProductInCart,
-    getItemByProductId,
-    validateForCheckout,
     addItem,
     removeItem,
     updateQuantity,
     clearCart,
+    isProductInCart,
+    getItemByProductId,
+    validateForCheckout,
   };
 }

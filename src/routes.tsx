@@ -1,380 +1,150 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { db } from './features/shared';
-import { AuthService } from './features/auth/services/auth.client';
-import { Layout, HomePage, DashboardPage, ErrorPage } from './features/shared';
-import { ProductsPage, ProductDetailPage, CoverageCalculatorPage } from './features/products';
-import { LoginPage, RegisterPage, ProfilePage } from './features/auth';
-import { OrdersPage, OrderDetailPage, ShippingCalculatorPage } from './features/orders';
-import { AdminLayout, AdminDashboardPage, AdminProductsPage, AdminOrdersPage, AdminUsersPage, AdminSuppliersPage, AdminReviewsPage } from './features/admin';
+import Root from './Root';
+import Layout from './features/shared/components/Layout';
+import HomePage from './features/home/pages/HomePage';
+import DashboardPage from './features/dashboard/pages/DashboardPage';
+import ErrorPage from './features/error/pages/ErrorPage';
+import ProductsPage from './features/products/pages/ProductsPage';
+import ProductDetailPage from './features/products/pages/ProductDetailPage';
+import CoverageCalculatorPage from './features/products/pages/CoverageCalculatorPage';
+import LoginPage from './features/auth/pages/LoginPage';
+import RegisterPage from './features/auth/pages/RegisterPage';
+import ProfilePage from './features/auth/pages/ProfilePage';
+import OrdersPage from './features/orders/pages/OrdersPage';
+import OrderDetailPage from './features/orders/pages/OrderDetailPage';
+import ShippingCalculatorPage from './features/orders/pages/ShippingCalculatorPage';
+import AdminLayout from './features/admin/components/AdminLayout';
+import AdminDashboardPage from './features/admin/pages/AdminDashboardPage';
+import AdminProductsPage from './features/admin/pages/AdminProductsPage';
+import AdminOrdersPage from './features/admin/pages/AdminOrdersPage';
+import AdminUsersPage from './features/admin/pages/AdminUsersPage';
+import AdminSuppliersPage from './features/admin/pages/AdminSuppliersPage';
+import AdminReviewsPage from './features/admin/pages/AdminReviewsPage';
 
-// Helper function to verify authentication - using cookies
-async function verifyAuth() {
-  // Get token from cookies
-  const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('auth_token='))
-    ?.split('=')[1];
+// Loaders
+import { homeLoader } from './features/home/loaders/homeLoader';
+import { dashboardLoader } from './features/dashboard/loaders/dashboardLoader';
+import { productsLoader } from './features/products/pages/loaders/productsLoader';
+import { productDetailLoader } from './features/products/pages/loaders/productDetailLoader';
+import { profileLoader } from './features/auth/loaders/profileLoader';
+import { ordersLoader } from './features/orders/pages/loaders/ordersLoader';
+import { orderDetailLoader } from './features/orders/pages/loaders/orderDetailLoader';
+import { shippingCalculatorLoader } from './features/orders/pages/loaders/shippingCalculatorLoader';
+import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashboardLoader';
+import { adminProductsLoader } from './features/admin/pages/loaders/adminProductsLoader';
+import { adminOrdersLoader } from './features/admin/pages/loaders/adminOrdersLoader';
+import { adminUsersLoader } from './features/admin/pages/loaders/adminUsersLoader';
+import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppliersLoader';
+import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
+import { verifyAdmin } from './features/auth/loaders/verifyAuthLoader';
 
-  console.log('🔍 Auth check - Token exists:', !!token);
-  console.log('🔍 Auth check - All cookies:', document.cookie);
-
-  if (!token) {
-    console.log('❌ No auth token found');
-    throw new Response('Unauthorized', { status: 401 });
-  }
-
-  const authService = new AuthService();
-  const result = await authService.verifyToken(token);
-  console.log('🔍 Token verification result:', result.success);
-
-  if (!result.success || !result.user) {
-    console.log('❌ Token verification failed');
-    // Remove invalid token cookie
-    document.cookie =
-      'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    throw new Response('Unauthorized', { status: 401 });
-  }
-
-  console.log('✅ Authentication successful for user:', result.user.email);
-  return result.user;
-}
-
-// Helper function to verify admin role
-async function verifyAdmin() {
-  const user = await verifyAuth();
-  if (user.role !== 'admin') {
-    throw new Response('Forbidden', { status: 403 });
-  }
-  return user;
-}
-
-export const router = createBrowserRouter([
+// Routes configuration for client-side
+const routes = [
   {
     path: '/',
-    element: <Layout />,
+    element: <Root />,
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
-        element: <HomePage />,
-        loader: async () => {
-          const [productsResult, suppliersResult, reviewsResult] =
-            await Promise.all([
-              db.getProducts({ isActive: true }, 1, 8),
-              db.getSuppliers({ isVerified: true }, 1, 6),
-              db.getReviews({}, { status: 'approved' }, 1, 3),
-            ]);
-
-          return {
-            featuredProducts: productsResult.products,
-            suppliers: suppliersResult.suppliers,
-            reviews: reviewsResult.reviews,
-          };
-        },
-      },
-      {
-        path: 'products',
-        element: <ProductsPage />,
-        loader: async ({ request }) => {
-          const url = new URL(request.url);
-          const page = parseInt(url.searchParams.get('page') || '1');
-          const category = url.searchParams.get('category') || '';
-          const search = url.searchParams.get('search') || '';
-
-          const filters: Record<string, unknown> = { isActive: true };
-          if (category) filters.category = category;
-          if (search) {
-            filters.$or = [
-              { name: { $regex: search, $options: 'i' } },
-              { brand: { $regex: search, $options: 'i' } },
-              { description: { $regex: search, $options: 'i' } },
-            ];
-          }
-
-          const productsResult = await db.getProducts(filters, page, 20);
-          return {
-            products: productsResult.products,
-            total: productsResult.total,
-            page,
-            category,
-            search,
-          };
-        },
-      },
-      {
-        path: 'products/:id',
-        element: <ProductDetailPage />,
-        loader: async ({ params }) => {
-          const product = await db.getProductById(params.id!);
-          if (!product) {
-            throw new Response('Product not found', { status: 404 });
-          }
-
-          const reviewsResult = await db.getReviews(
-            { productId: params.id! },
-            { status: 'approved' },
-            1,
-            10
-          );
-
-          return {
-            product,
-            reviews: reviewsResult.reviews,
-            totalReviews: reviewsResult.total,
-          };
-        },
-      },
-      {
-        path: 'login',
-        element: <LoginPage />,
-      },
-      {
-        path: 'register',
-        element: <RegisterPage />,
-      },
-      {
-        path: 'dashboard',
-        element: <DashboardPage />,
-        loader: async () => {
-          const user = await verifyAuth();
-          const [ordersResult, addresses] = await Promise.all([
-            db.getOrders({ userId: user._id!.toString() }, 1, 10),
-            db.getAddresses({ userId: user._id!.toString() }),
-          ]);
-
-          return {
-            user,
-            recentOrders: ordersResult.orders,
-            addresses,
-          };
-        },
-      },
-      {
-        path: 'orders',
-        element: <OrdersPage />,
-        loader: async ({ request }) => {
-          const user = await verifyAuth();
-          const url = new URL(request.url);
-          const page = parseInt(url.searchParams.get('page') || '1');
-          const status = url.searchParams.get('status') || '';
-
-          const filters: Record<string, unknown> = {};
-          if (status) filters.status = status;
-
-          const ordersResult = await db.getOrders(
-            { userId: user._id!.toString(), ...filters },
-            page,
-            20
-          );
-
-          return {
-            orders: ordersResult.orders,
-            total: ordersResult.total,
-            page,
-            status,
-          };
-        },
-      },
-      {
-        path: 'orders/:id',
-        element: <OrderDetailPage />,
-        loader: async ({ params }) => {
-          const user = await verifyAuth();
-          const order = await db.getOrderById(params.id!);
-
-          if (!order) {
-            throw new Response('Order not found', { status: 404 });
-          }
-
-          // Check if user owns this order or is admin
-          if (
-            order.userId.toString() !== user._id!.toString() &&
-            user.role !== 'admin'
-          ) {
-            throw new Response('Forbidden', { status: 403 });
-          }
-
-          return { order, user };
-        },
-      },
-      {
-        path: 'profile',
-        element: <ProfilePage />,
-        loader: async () => {
-          const user = await verifyAuth();
-          const addresses = await db.getAddresses({ userId: user._id!.toString() });
-
-          return { user, addresses };
-        },
-      },
-      {
-        path: 'coverage-calculator',
-        element: <CoverageCalculatorPage />,
-        loader: async () => {
-          const productsResult = await db.getProducts(
-            { isActive: true },
-            1,
-            100
-          );
-          return { products: productsResult.products };
-        },
-      },
-      {
-        path: 'shipping-calculator',
-        element: <ShippingCalculatorPage />,
-        loader: async () => {
-          const [suppliersResult, provinces] = await Promise.all([
-            db.getSuppliers({ isVerified: true }, 1, 100),
-            db.getProvinces(),
-          ]);
-
-          return {
-            suppliers: suppliersResult.suppliers,
-            provinces,
-          };
-        },
-      },
-      // Admin routes
-      {
-        path: 'admin',
-        element: <AdminLayout />,
+        path: '/',
+        element: <Layout />,
         children: [
           {
             index: true,
-            element: <AdminDashboardPage />,
-            loader: async () => {
-              const _user = await verifyAdmin();
-              const stats = await db.getDashboardStats();
-
-              return { user: _user, stats };
-            },
+            element: <HomePage />,
+            loader: homeLoader,
+          },
+          {
+            path: 'dashboard',
+            element: <DashboardPage />,
+            loader: dashboardLoader,
           },
           {
             path: 'products',
-            element: <AdminProductsPage />,
-            loader: async ({ request }) => {
-              await verifyAdmin();
-              const url = new URL(request.url);
-              const page = parseInt(url.searchParams.get('page') || '1');
-              const search = url.searchParams.get('search') || '';
-
-              const filters: Record<string, unknown> = {};
-              if (search) {
-                filters.$or = [
-                  { name: { $regex: search, $options: 'i' } },
-                  { brand: { $regex: search, $options: 'i' } },
-                ];
-              }
-
-              const productsResult = await db.getProducts(filters, page, 20);
-
-              return {
-                products: productsResult.products,
-                total: productsResult.total,
-                page,
-                search,
-              };
-            },
+            element: <ProductsPage />,
+            loader: productsLoader,
+          },
+          {
+            path: 'products/:id',
+            element: <ProductDetailPage />,
+            loader: productDetailLoader,
+          },
+          {
+            path: 'coverage-calculator',
+            element: <CoverageCalculatorPage />,
+          },
+          {
+            path: 'login',
+            element: <LoginPage />,
+          },
+          {
+            path: 'register',
+            element: <RegisterPage />,
+          },
+          {
+            path: 'profile',
+            element: <ProfilePage />,
+            loader: profileLoader,
           },
           {
             path: 'orders',
-            element: <AdminOrdersPage />,
-            loader: async ({ request }) => {
-              await verifyAdmin();
-              const url = new URL(request.url);
-              const page = parseInt(url.searchParams.get('page') || '1');
-              const status = url.searchParams.get('status') || '';
-
-              const filters: Record<string, unknown> = {};
-              if (status) filters.status = status;
-
-              const ordersResult = await db.getOrders(
-                filters,
-                page,
-                20
-              );
-
-              return {
-                orders: ordersResult.orders,
-                total: ordersResult.total,
-                page,
-                status,
-              };
-            },
+            element: <OrdersPage />,
+            loader: ordersLoader,
           },
           {
-            path: 'users',
-            element: <AdminUsersPage />,
-            loader: async ({ request }) => {
-              await verifyAdmin();
-              const url = new URL(request.url);
-              const page = parseInt(url.searchParams.get('page') || '1');
-              const role = url.searchParams.get('role') || '';
-
-              const filters: Record<string, unknown> = {};
-              if (role) filters.role = role;
-
-              const usersResult = await db.getUsers(filters, page, 20);
-
-              return {
-                users: usersResult.users,
-                total: usersResult.total,
-                page,
-                role,
-              };
-            },
+            path: 'orders/:id',
+            element: <OrderDetailPage />,
+            loader: orderDetailLoader,
           },
           {
-            path: 'suppliers',
-            element: <AdminSuppliersPage />,
-            loader: async ({ request }) => {
-              await verifyAdmin();
-              const url = new URL(request.url);
-              const page = parseInt(url.searchParams.get('page') || '1');
-              const verified = url.searchParams.get('verified');
-
-              const filters: Record<string, unknown> = {};
-              if (verified !== null) filters.isVerified = verified === 'true';
-
-              const suppliersResult = await db.getSuppliers(filters, page, 20);
-
-              return {
-                suppliers: suppliersResult.suppliers,
-                total: suppliersResult.total,
-                page,
-                verified,
-              };
-            },
-          },
-          {
-            path: 'reviews',
-            element: <AdminReviewsPage />,
-            loader: async ({ request }) => {
-              await verifyAdmin();
-              const url = new URL(request.url);
-              const page = parseInt(url.searchParams.get('page') || '1');
-              const status = url.searchParams.get('status') || '';
-
-              const filters: Record<string, unknown> = {};
-              if (status) filters.status = status;
-
-              const reviewsResult = await db.getReviews(
-                {},
-                filters,
-                page,
-                20
-              );
-
-              return {
-                reviews: reviewsResult.reviews,
-                total: reviewsResult.total,
-                page,
-                status,
-              };
-            },
+            path: 'shipping-calculator',
+            element: <ShippingCalculatorPage />,
+            loader: shippingCalculatorLoader,
           },
         ],
       },
     ],
   },
-]);
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    errorElement: <ErrorPage />,
+    loader: verifyAdmin,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboardPage />,
+        loader: adminDashboardLoader,
+      },
+      {
+        path: 'products',
+        element: <AdminProductsPage />,
+        loader: adminProductsLoader,
+      },
+      {
+        path: 'orders',
+        element: <AdminOrdersPage />,
+        loader: adminOrdersLoader,
+      },
+      {
+        path: 'users',
+        element: <AdminUsersPage />,
+        loader: adminUsersLoader,
+      },
+      {
+        path: 'suppliers',
+        element: <AdminSuppliersPage />,
+        loader: adminSuppliersLoader,
+      },
+      {
+        path: 'reviews',
+        element: <AdminReviewsPage />,
+        loader: adminReviewsLoader,
+      },
+    ],
+  },
+];
+
+export function createClientRouter() {
+  return createBrowserRouter(routes);
+}

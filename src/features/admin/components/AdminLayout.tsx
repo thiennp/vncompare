@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../../auth/AuthContext';
+import { useAuth } from '../../auth/hooks/useAuth';
 import { Button } from '../../shared/components/ui/button';
 import { Avatar, AvatarFallback } from '../../shared/components/ui/avatar';
 import { Separator } from '../../shared/components/ui/separator';

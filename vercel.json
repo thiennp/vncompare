@@ -1,17 +1,13 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
+  "functions": {
+    "api/auth/register.ts": {
+      "runtime": "nodejs18.x"
     },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+    "api/auth/login.ts": {
+      "runtime": "nodejs18.x"
     }
-  ]
+  },
+  "env": {
+    "MONGODB_URI": "@mongodb_uri"
+  }
 }

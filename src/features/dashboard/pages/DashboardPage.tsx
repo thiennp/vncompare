@@ -1,14 +1,14 @@
 import { useLoaderData } from 'react-router-dom';
-import { User, Order, Address } from '../services/models';
+import { User, Order, Address } from '../../shared/services/models';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
+} from '../../shared/components/ui/card';
+import { Badge } from '../../shared/components/ui/badge';
+import { Button } from '../../shared/components/ui/button';
 import { Package, ShoppingCart, MapPin, User as UserIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

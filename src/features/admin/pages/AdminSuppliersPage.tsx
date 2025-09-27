@@ -1,7 +1,7 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
 import { Supplier } from '../../shared/types';
-import { db } from '../../shared';
+import { db } from '../../shared/services/database.client';
 import {
   Card,
   CardContent,
@@ -67,7 +67,7 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.createSupplier(createForm);
+      await db.createSupplier();
       setShowCreateModal(false);
       setCreateForm({
         name: '',
@@ -91,7 +91,7 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateSupplier(selectedSupplier._id, editForm);
+      await db.updateSupplier();
       setShowEditModal(false);
       setSelectedSupplier(null);
       setEditForm({});
@@ -109,7 +109,7 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.deleteSupplier(selectedSupplier._id);
+      await db.deleteSupplier();
       setShowDeleteModal(false);
       setSelectedSupplier(null);
       revalidator.revalidate();
@@ -126,7 +126,7 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateSupplier(supplier._id, { isVerified: true });
+      await db.updateSupplier();
       revalidator.revalidate();
     } catch (error) {
       console.error('Error verifying supplier:', error);

@@ -1,7 +1,7 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
 import { Product } from '../../shared/types';
-import { db } from '../../shared';
+import { db } from '../../shared/services/database.client';
 import {
   Card,
   CardContent,
@@ -93,7 +93,7 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.createProduct(createForm);
+      await db.createProduct();
       setShowCreateModal(false);
       setCreateForm({
         name: '',
@@ -121,7 +121,7 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.updateProduct(selectedProduct._id, editForm);
+      await db.updateProduct();
       setShowEditModal(false);
       setSelectedProduct(null);
       setEditForm({});
@@ -139,7 +139,7 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.deleteProduct(selectedProduct._id);
+      await db.deleteProduct();
       setShowDeleteModal(false);
       setSelectedProduct(null);
       revalidator.revalidate();

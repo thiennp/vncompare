@@ -1,23 +1,23 @@
 import React from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { Button } from '../components/ui/button';
+import { Button } from '../../shared/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
+} from '../../shared/components/ui/card';
+import { Badge } from '../../shared/components/ui/badge';
+import { Input } from '../../shared/components/ui/input';
+import { Label } from '../../shared/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../components/ui/select';
+} from '../../shared/components/ui/select';
 import { Link } from 'react-router-dom';
 import {
   Package,
@@ -29,8 +29,8 @@ import {
   Users,
   TrendingUp,
 } from 'lucide-react';
-import { Product, Supplier } from '../types';
-import { isHomePageData } from '../types/isHomePageData.guardz';
+import { Product, Supplier } from '../../shared/types';
+import { isHomePageData } from '../../shared/types/isHomePageData.guardz';
 
 // Paint type options
 const paintTypes = [

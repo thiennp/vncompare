@@ -1,5 +1,5 @@
 // Custom hook for authentication logic
-import { useAuth } from '../AuthContext';
+import { useAuth } from './useAuth';
 import { 
   isAdmin, 
   isSupplier, 

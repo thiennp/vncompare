@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
+import { useFetcher } from 'react-router-dom';
 import { Button } from '../../shared/components/ui/button';
 import {
   Card,
@@ -23,8 +23,8 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { register } = useAuth();
   const navigate = useNavigate();
+  const fetcher = useFetcher();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -44,21 +44,29 @@ export default function RegisterPage() {
       return;
     }
 
-    const result = await register({
-      email: formData.email,
-      password: formData.password,
-      name: formData.name,
-      phone: formData.phone,
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append('email', formData.email);
+    formDataToSubmit.append('password', formData.password);
+    formDataToSubmit.append('name', formData.name);
+    formDataToSubmit.append('phone', formData.phone);
+
+    fetcher.submit(formDataToSubmit, {
+      method: 'POST',
+      action: '/api/register',
     });
-
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      setError(result.message || 'Đăng ký thất bại');
-    }
-
-    setIsLoading(false);
   };
+
+  // Handle fetcher response
+  React.useEffect(() => {
+    if (fetcher.data) {
+      if (fetcher.data.success) {
+        navigate('/login');
+      } else {
+        setError(fetcher.data.error || 'Đăng ký thất bại');
+      }
+      setIsLoading(false);
+    }
+  }, [fetcher.data, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
