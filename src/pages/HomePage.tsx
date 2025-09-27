@@ -10,6 +10,13 @@ import {
 import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { Link } from 'react-router-dom';
 import {
   Package,
@@ -23,6 +30,20 @@ import {
 } from 'lucide-react';
 import { Product, Supplier } from '../types';
 import { isHomePageData } from '../types/isHomePageData.guardz';
+
+// Paint type options
+const paintTypes = [
+  { value: 'interior', label: 'Sơn nội thất' },
+  { value: 'exterior', label: 'Sơn ngoại thất' },
+  { value: 'primer', label: 'Sơn lót' },
+  { value: 'wood', label: 'Sơn gỗ' },
+  { value: 'metal', label: 'Sơn kim loại' },
+  { value: 'concrete', label: 'Sơn bê tông' },
+  { value: 'specialty', label: 'Sơn chuyên dụng' },
+  { value: 'waterproof', label: 'Sơn chống thấm' },
+  { value: 'heat-resistant', label: 'Sơn chịu nhiệt' },
+  { value: 'anti-bacterial', label: 'Sơn kháng khuẩn' },
+];
 
 export default function HomePage() {
   const rawData = useLoaderData();
@@ -79,7 +100,7 @@ export default function HomePage() {
                 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
               >
                 Sơn chất lượng cao tại VNCompare
-              </h1>
+            </h1>
               <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
                 Tìm sơn phù hợp với không gian của bạn và nhận dịch vụ thi công
                 chuyên nghiệp
@@ -146,12 +167,22 @@ export default function HomePage() {
                       >
                         Loại sơn
                       </Label>
-                      <Input
-                        id="paint-type"
-                        placeholder="Ví dụ: Sơn nội thất"
-                        className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
-                        aria-describedby="paint-type-help"
-                      />
+                      <Select>
+                        <SelectTrigger 
+                          id="paint-type"
+                          className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
+                          aria-describedby="paint-type-help"
+                        >
+                          <SelectValue placeholder="Chọn loại sơn..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {paintTypes.map((paintType) => (
+                            <SelectItem key={paintType.value} value={paintType.value}>
+                              {paintType.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <p
                         id="paint-type-help"
                         className="text-sm text-gray-600 mt-1"
@@ -212,8 +243,8 @@ export default function HomePage() {
             <div className="text-center">
               <p className="text-sm text-gray-700 mb-6">
                 Đăng ký ngay để hưởng tất cả ưu đãi từ VNCompare!
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/register">
                   <Button
                     size="lg"
@@ -222,19 +253,19 @@ export default function HomePage() {
                   >
                     <Users className="mr-2 h-5 w-5" aria-hidden="true" />
                     Đăng ký ngay
-                  </Button>
-                </Link>
+                </Button>
+              </Link>
                 <Link to="/products">
-                  <Button
-                    variant="outline"
-                    size="lg"
+                <Button
+                  variant="outline"
+                  size="lg"
                     className="w-full sm:w-auto border-2 border-orange-400 text-orange-700 hover:bg-orange-50 font-semibold transition-all duration-200 focus:ring-4 focus:ring-orange-200"
                     aria-label="Xem tất cả sản phẩm sơn"
-                  >
+                >
                     <Package className="mr-2 h-5 w-5" aria-hidden="true" />
                     Xem tất cả sản phẩm
-                  </Button>
-                </Link>
+                </Button>
+              </Link>
               </div>
             </div>
           </div>
@@ -288,7 +319,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+        </div>
 
           <div className="text-center">
             <Button

@@ -45,7 +45,9 @@ export default function AdminSuppliersPage() {
   );
 
   // Form states
-  const [createForm, setCreateForm] = useState<Omit<Supplier, '_id' | 'createdAt' | 'updatedAt'>>({
+  const [createForm, setCreateForm] = useState<
+    Omit<Supplier, '_id' | 'createdAt' | 'updatedAt'>
+  >({
     name: '',
     email: '',
     phone: '',
