@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { getDatabase } from './mongodb';
+import { getDatabase } from './mongodb.server';
 import {
   User,
   Product,
@@ -408,7 +408,7 @@ export class DatabaseService {
 const createDatabase = async () => {
   const dbService = new DatabaseService();
   // Wait for initialization to complete
-  await (dbService as any).initPromise;
+  await (dbService as DatabaseService & { initPromise: Promise<void> }).initPromise;
   return dbService;
 };
 

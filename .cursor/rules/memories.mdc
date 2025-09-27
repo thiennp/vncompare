@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+- Always fix linting issue
+- Don't use localStorage for auth
+- Don't save user info in cookie or localStorage
+- Always fix typescript issue
+- Never use "any"
+- Use guardz for type-guard

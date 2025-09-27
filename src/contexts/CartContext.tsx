@@ -40,22 +40,6 @@ interface CartProviderProps {
 export function CartProvider({ children }: CartProviderProps) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  useEffect(() => {
-    // Load cart from localStorage on mount
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Failed to load cart from localStorage:', error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save cart to localStorage whenever items change
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
 
   const addItem = (product: Product, quantity: number = 1) => {
     setItems(prevItems => {

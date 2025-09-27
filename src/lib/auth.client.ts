@@ -1,4 +1,4 @@
-import { db } from './database-browser';
+import { db } from './database.client';
 import { User, RegisterRequest } from '../types';
 import { isLoginRequest, isRegisterRequest } from '../types/guards';
 
@@ -74,7 +74,7 @@ function verifyJWT(token: string): Record<string, unknown> {
 
 // Simple password hashing for browser (not secure for production)
 function hashPassword(password: string): string {
-  // Simple hash for demo purposes - in production, use proper server-side hashing
+  // Use the same hashing method as the seeding script
   return btoa(password + JWT_SECRET);
 }
 

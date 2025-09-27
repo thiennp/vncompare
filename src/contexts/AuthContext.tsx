@@ -6,7 +6,7 @@ import {
   ReactNode,
 } from 'react';
 import { User } from '../lib/models';
-import { authService } from '../lib/auth';
+import { AuthService } from '../lib/auth.client';
 import Cookies from 'js-cookie';
 
 interface AuthContextType {
@@ -30,7 +30,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function useAuth() {
-  // eslint-disable-line react-refresh/only-export-components
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -60,7 +59,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const verifyToken = async (tokenToVerify: string) => {
     try {
-      const result = await authService.verifyToken(tokenToVerify);
+        const authService = new AuthService();
+        const result = await authService.verifyToken(tokenToVerify);
       if (result.success && result.user) {
         setUser(result.user);
         setToken(tokenToVerify);
@@ -83,7 +83,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string) => {
     try {
       console.log('🔐 Attempting login for:', email);
-      const result = await authService.login(email, password);
+        const authService = new AuthService();
+        const result = await authService.login(email, password);
       console.log('🔐 Login result:', result.success);
 
       if (result.success && result.user && result.token) {
@@ -114,7 +115,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     phone?: string;
   }) => {
     try {
-      const result = await authService.register(userData);
+        const authService = new AuthService();
+        const result = await authService.register(userData);
       if (result.success && result.user && result.token) {
         setUser(result.user);
         setToken(result.token);
@@ -135,9 +137,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const logout = () => {
+      // Clear any stored authentication data
     setUser(null);
     setToken(null);
-    Cookies.remove('auth_token');
   };
 
   const value: AuthContextType = {

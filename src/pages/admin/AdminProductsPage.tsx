@@ -1,7 +1,7 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
 import { Product } from '../../types';
-import { db } from '../../lib/database-browser';
+import { db } from '../../lib/database.client';
 import {
   Card,
   CardContent,

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { authService } from './lib/auth';
-import { db } from './lib/database-browser';
+import { AuthService } from './lib/auth.client';
+import { db } from './lib/database.client';
 import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
 import HomePage from './pages/HomePage';
@@ -38,6 +38,7 @@ async function verifyAuth() {
     throw new Response('Unauthorized', { status: 401 });
   }
 
+  const authService = new AuthService();
   const result = await authService.verifyToken(token);
   console.log('🔍 Token verification result:', result.success);
 
@@ -76,7 +77,7 @@ export const router = createBrowserRouter([
             await Promise.all([
               db.getProducts({ isActive: true }, 1, 8),
               db.getSuppliers({ isVerified: true }, 1, 6),
-              db.getReviews(undefined, { status: 'approved' }, 1, 3),
+              db.getReviews({}, { status: 'approved' }, 1, 3),
             ]);
 
           return {
@@ -125,7 +126,7 @@ export const router = createBrowserRouter([
           }
 
           const reviewsResult = await db.getReviews(
-            params.id!,
+            { productId: params.id! },
             { status: 'approved' },
             1,
             10
@@ -375,7 +376,7 @@ export const router = createBrowserRouter([
               if (status) filters.status = status;
 
               const reviewsResult = await db.getReviews(
-                undefined,
+                {},
                 filters,
                 page,
                 20
