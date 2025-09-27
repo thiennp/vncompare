@@ -44,15 +44,9 @@ export default function LoginPage() {
 
   // Handle fetcher response
   React.useEffect(() => {
-    console.log('Fetcher state:', fetcher.state);
-    console.log('Fetcher data:', fetcher.data);
-    console.log('Fetcher formData:', fetcher.formData);
-
     if (fetcher.data) {
-      console.log('Processing fetcher data:', fetcher.data);
       if (fetcher.data.success) {
-        console.log('Login successful, redirecting to dashboard');
-        // Update Zustand store with user and token
+        // Update Zustand store with user (token is stored in cookie by server)
         login(fetcher.data.user, fetcher.data.token);
         navigate('/dashboard');
       } else {

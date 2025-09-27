@@ -20,7 +20,7 @@ interface AuthActions {
 
 type AuthStore = AuthState & AuthActions;
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>(set => ({
   // State
   user: null,
   token: null,
@@ -28,20 +28,21 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isAuthenticated: false,
 
   // Actions
-  setUser: (user) => set({ user }),
-  setToken: (token) => set({ token }),
-  setLoading: (isLoading) => set({ isLoading }),
-  
+  setUser: user => set({ user }),
+  setToken: token => set({ token }),
+  setLoading: isLoading => set({ isLoading }),
+
   login: (user, token) => {
     set({ user, token, isAuthenticated: true, isLoading: false });
-    Cookies.set('auth_token', token, { expires: 7 }); // 7 days
+    // Don't set cookie here - server already sets it
+    // Cookies.set('auth_token', token, { expires: 7 }); // 7 days
   },
-  
+
   logout: () => {
     set({ user: null, token: null, isAuthenticated: false, isLoading: false });
     Cookies.remove('auth_token');
   },
-  
+
   clearAuth: () => {
     set({ user: null, token: null, isAuthenticated: false, isLoading: false });
     Cookies.remove('auth_token');
