@@ -19,6 +19,7 @@ export interface CreateUser {
   name?: string;
   phone?: string;
   role?: 'customer' | 'admin' | 'supplier';
+  isActive?: boolean;
 }
 
 export interface LoginRequest {

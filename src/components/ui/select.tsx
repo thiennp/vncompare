@@ -69,6 +69,9 @@ const SelectTrigger = ({
   setIsOpen,
   ...props
 }: SelectTriggerProps & any) => {
+  // Filter out non-DOM props to avoid React warnings
+  const { selectedValue, onSelect, ...domProps } = props;
+
   return (
     <button
       type="button"
@@ -77,7 +80,7 @@ const SelectTrigger = ({
         className
       )}
       onClick={() => setIsOpen(!isOpen)}
-      {...props}
+      {...domProps}
     >
       {children}
       <ChevronDown className="h-4 w-4 opacity-50" />
@@ -93,13 +96,16 @@ const SelectContent = ({
 }: SelectContentProps & any) => {
   if (!isOpen) return null;
 
+  // Filter out non-DOM props to avoid React warnings
+  const { setIsOpen, selectedValue, onSelect, ...domProps } = props;
+
   return (
     <div
       className={cn(
         'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
         className
       )}
-      {...props}
+      {...domProps}
     >
       {children}
     </div>
@@ -119,7 +125,11 @@ const SelectItem = ({
         'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className
       )}
-      onClick={() => onSelect(value)}
+      onClick={() => {
+        if (typeof onSelect === 'function') {
+          onSelect(value);
+        }
+      }}
       {...props}
     >
       {children}
@@ -133,8 +143,11 @@ const SelectValue = ({
   selectedValue,
   ...props
 }: SelectValueProps & any) => {
+  // Filter out non-DOM props to avoid React warnings
+  const { isOpen, setIsOpen, onSelect, ...domProps } = props;
+
   return (
-    <span className={cn('block truncate', className)} {...props}>
+    <span className={cn('block truncate', className)} {...domProps}>
       {selectedValue || placeholder}
     </span>
   );
