@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite",
     "dev:api": "node api-server.js",
-    "dev:all": "concurrently \"npm run dev:api\" \"npm run dev\"",
+    "dev:ssr": "node server.js",
+    "dev:all": "concurrently \"npm run dev:api\" \"npm run dev:ssr\"",
     "build": "tsc && vite build",
+    "build:ssr": "tsc && vite build --ssr src/entry-server.tsx",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit",

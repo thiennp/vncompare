@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const { MongoClient } = require('mongodb');
+import express from 'express';
+import cors from 'cors';
+import { MongoClient } from 'mongodb';
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -337,4 +337,4 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer().catch(console.error);

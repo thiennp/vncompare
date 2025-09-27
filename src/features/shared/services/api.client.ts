@@ -27,7 +27,7 @@ class ApiService {
   }
 
   // Products
-  async getProducts(filters: Record<string, unknown> = {}, page = 1, limit = 20) {
+  async getProducts(filters: Record<string, unknown> = {}, page = 1, limit = 20): Promise<{ products: unknown[]; total: number }> {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('limit', limit.toString());
@@ -41,32 +41,32 @@ class ApiService {
     return this.request(`/products?${params.toString()}`);
   }
 
-  async getProductById(id: string) {
+  async getProductById(id: string): Promise<unknown> {
     return this.request(`/products/${id}`);
   }
 
-  async createProduct(productData: Record<string, unknown>) {
+  async createProduct(productData: Record<string, unknown>): Promise<unknown> {
     return this.request('/admin/products', {
       method: 'POST',
       body: JSON.stringify(productData),
     });
   }
 
-  async updateProduct(id: string, productData: Record<string, unknown>) {
+  async updateProduct(id: string, productData: Record<string, unknown>): Promise<unknown> {
     return this.request(`/admin/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(productData),
     });
   }
 
-  async deleteProduct(id: string) {
+  async deleteProduct(id: string): Promise<unknown> {
     return this.request(`/admin/products/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Suppliers
-  async getSuppliers(filters: Record<string, unknown> = {}, page = 1, limit = 20) {
+  async getSuppliers(filters: Record<string, unknown> = {}, page = 1, limit = 20): Promise<{ suppliers: unknown[]; total: number }> {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('limit', limit.toString());
@@ -80,28 +80,28 @@ class ApiService {
     return this.request(`/suppliers?${params.toString()}`);
   }
 
-  async createSupplier(supplierData: Record<string, unknown>) {
+  async createSupplier(supplierData: Record<string, unknown>): Promise<unknown> {
     return this.request('/admin/suppliers', {
       method: 'POST',
       body: JSON.stringify(supplierData),
     });
   }
 
-  async updateSupplier(id: string, supplierData: Record<string, unknown>) {
+  async updateSupplier(id: string, supplierData: Record<string, unknown>): Promise<unknown> {
     return this.request(`/admin/suppliers/${id}`, {
       method: 'PUT',
       body: JSON.stringify(supplierData),
     });
   }
 
-  async deleteSupplier(id: string) {
+  async deleteSupplier(id: string): Promise<unknown> {
     return this.request(`/admin/suppliers/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Reviews
-  async getReviews(filters: Record<string, unknown> = {}, additionalFilters: Record<string, unknown> = {}, page = 1, limit = 20) {
+  async getReviews(filters: Record<string, unknown> = {}, additionalFilters: Record<string, unknown> = {}, page = 1, limit = 20): Promise<{ reviews: unknown[]; total: number }> {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('limit', limit.toString());
@@ -117,7 +117,7 @@ class ApiService {
   }
 
   // Users
-  async getUsers(filters: Record<string, unknown> = {}, page = 1, limit = 20) {
+  async getUsers(filters: Record<string, unknown> = {}, page = 1, limit = 20): Promise<{ users: unknown[]; total: number }> {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('limit', limit.toString());
@@ -131,21 +131,21 @@ class ApiService {
     return this.request(`/users?${params.toString()}`);
   }
 
-  async createUser(userData: Record<string, unknown>) {
+  async createUser(userData: Record<string, unknown>): Promise<unknown> {
     return this.request('/admin/users', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
   }
 
-  async updateUser(id: string, userData: Record<string, unknown>) {
+  async updateUser(id: string, userData: Record<string, unknown>): Promise<unknown> {
     return this.request(`/admin/users/${id}`, {
       method: 'PUT',
       body: JSON.stringify(userData),
     });
   }
 
-  async deleteUser(id: string) {
+  async deleteUser(id: string): Promise<unknown> {
     return this.request(`/admin/users/${id}`, {
       method: 'DELETE',
     });

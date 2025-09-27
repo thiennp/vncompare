@@ -21,8 +21,23 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      input: {
+        main: './index.html',
+        client: './src/entry-client.tsx',
+        server: './src/entry-server.tsx',
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          return chunkInfo.name === 'server' ? 'server/[name].js' : 'client/[name].js';
+        },
+      },
+    },
   },
   optimizeDeps: {
     include: ['mongodb'],
+  },
+  ssr: {
+    noExternal: ['react-router-dom'],
   },
 });
