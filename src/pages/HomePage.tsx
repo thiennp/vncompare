@@ -133,8 +133,8 @@ export default function HomePage() {
                   Tìm sơn phù hợp với không gian của bạn
                 </CardTitle>
                 <CardDescription className="text-center text-gray-700">
-                  Nhập kích thước không gian, loại sơn và địa chỉ để tìm sản phẩm phù
-                  hợp
+                  Nhập kích thước không gian, loại sơn và địa chỉ để tìm sản
+                  phẩm phù hợp
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
