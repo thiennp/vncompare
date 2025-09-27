@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useFetcher } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 
@@ -6,7 +6,7 @@ export function useAuth() {
   const { user, token, isLoading, isAuthenticated, setUser, setToken, setLoading, clearAuth } = useAuthStore();
   const fetcher = useFetcher();
 
-  const verifyToken = async (tokenToVerify: string) => {
+  const verifyToken = useCallback(async (tokenToVerify: string) => {
     try {
       const formData = new FormData();
       formData.append('token', tokenToVerify);
@@ -19,7 +19,7 @@ export function useAuth() {
       console.error('Token verification failed:', error);
       clearAuth();
     }
-  };
+  }, [fetcher, clearAuth]);
 
   // Initialize auth state on mount
   useEffect(() => {
