@@ -8,7 +8,7 @@ async function createUser(userData: RegisterRequest): Promise<User | null> {
   try {
     const db = await getDatabase();
     const result = await db.collection('users').insertOne(userData);
-    return { 
+    return {
       ...userData, 
       _id: result.insertedId.toString(),
       createdAt: new Date().toISOString(),

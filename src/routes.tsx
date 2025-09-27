@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, createMemoryRouter } from 'react-router-dom';
 import Root from './Root';
 import Layout from './features/shared/components/Layout';
 import HomePage from './features/home/pages/HomePage';
@@ -38,7 +38,7 @@ import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppli
 import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
 import { verifyAdmin } from './features/auth/loaders/verifyAuthLoader';
 
-// Routes configuration for client-side
+// Routes configuration for SSR
 const routes = [
   {
     path: '/',
@@ -145,6 +145,14 @@ const routes = [
   },
 ];
 
+// Client-side router
 export function createClientRouter() {
   return createBrowserRouter(routes);
+}
+
+// Server-side router
+export function createSSRRouter(url: string) {
+  return createMemoryRouter(routes, {
+    initialEntries: [url],
+  });
 }
