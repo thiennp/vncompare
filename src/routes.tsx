@@ -1,26 +1,11 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { AuthService } from './lib/auth.client';
-import { db } from './lib/database.client';
-import Layout from './components/Layout';
-import AdminLayout from './components/AdminLayout';
-import HomePage from './pages/HomePage';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import OrdersPage from './pages/OrdersPage';
-import OrderDetailPage from './pages/OrderDetailPage';
-import ProfilePage from './pages/ProfilePage';
-import CoverageCalculatorPage from './pages/CoverageCalculatorPage';
-import ShippingCalculatorPage from './pages/ShippingCalculatorPage';
-import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import AdminProductsPage from './pages/admin/AdminProductsPage';
-import AdminOrdersPage from './pages/admin/AdminOrdersPage';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
-import AdminSuppliersPage from './pages/admin/AdminSuppliersPage';
-import AdminReviewsPage from './pages/admin/AdminReviewsPage';
-import ErrorPage from './pages/ErrorPage';
+import { db } from './features/shared';
+import { AuthService } from './features/auth/services/auth.client';
+import { Layout, HomePage, DashboardPage, ErrorPage } from './features/shared';
+import { ProductsPage, ProductDetailPage, CoverageCalculatorPage } from './features/products';
+import { LoginPage, RegisterPage, ProfilePage } from './features/auth';
+import { OrdersPage, OrderDetailPage, ShippingCalculatorPage } from './features/orders';
+import { AdminLayout, AdminDashboardPage, AdminProductsPage, AdminOrdersPage, AdminUsersPage, AdminSuppliersPage, AdminReviewsPage } from './features/admin';
 
 // Helper function to verify authentication - using cookies
 async function verifyAuth() {
@@ -153,8 +138,8 @@ export const router = createBrowserRouter([
         loader: async () => {
           const user = await verifyAuth();
           const [ordersResult, addresses] = await Promise.all([
-            db.getOrders(user._id!.toString(), {}, 1, 10),
-            db.getAddresses(user._id!.toString()),
+            db.getOrders({ userId: user._id!.toString() }, 1, 10),
+            db.getAddresses({ userId: user._id!.toString() }),
           ]);
 
           return {
@@ -177,8 +162,7 @@ export const router = createBrowserRouter([
           if (status) filters.status = status;
 
           const ordersResult = await db.getOrders(
-            user._id!.toString(),
-            filters,
+            { userId: user._id!.toString(), ...filters },
             page,
             20
           );
@@ -218,7 +202,7 @@ export const router = createBrowserRouter([
         element: <ProfilePage />,
         loader: async () => {
           const user = await verifyAuth();
-          const addresses = await db.getAddresses(user._id!.toString());
+          const addresses = await db.getAddresses({ userId: user._id!.toString() });
 
           return { user, addresses };
         },
@@ -305,7 +289,6 @@ export const router = createBrowserRouter([
               if (status) filters.status = status;
 
               const ordersResult = await db.getOrders(
-                undefined,
                 filters,
                 page,
                 20

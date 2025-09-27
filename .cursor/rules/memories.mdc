@@ -8,3 +8,4 @@ alwaysApply: true
 - Always fix typescript issue
 - Never use "any"
 - Use guardz for type-guard
+- Always run prettier after updating/creating a file

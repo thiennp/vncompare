@@ -1,8 +1,8 @@
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
-import { AuthProvider } from './contexts/AuthContext';
-import { CartProvider } from './contexts/CartContext';
-import { Toaster } from './components/ui/toaster';
+import { Toaster } from './features/shared';
+import { AuthProvider } from './features/auth/AuthContext';
+import { CartProvider } from './features/cart/CartContext';
 
 function App() {
   return (

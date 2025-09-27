@@ -1,1 +1,12 @@
-./scripts/pre-commit.sh
+#!/bin/sh
+# Pre-commit hook for vncompare project
+echo "Running pre-commit checks..."
+
+# Run linting
+echo "Checking TypeScript..."
+npx tsc --noEmit
+
+echo "Checking ESLint..."
+npx eslint src/ --ext .ts,.tsx
+
+echo "Pre-commit checks completed successfully!"
