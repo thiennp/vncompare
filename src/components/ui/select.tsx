@@ -38,6 +38,7 @@ const Select = ({
 }: SelectProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(value);
+  const selectRef = React.useRef<HTMLDivElement>(null);
 
   const handleSelect = (newValue: string) => {
     setSelectedValue(newValue);
@@ -45,8 +46,25 @@ const Select = ({
     setIsOpen(false);
   };
 
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className={`relative ${className}`}>
+    <div ref={selectRef} className={`relative ${className}`}>
       {React.Children.map(children, child => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
@@ -71,7 +89,6 @@ const SelectTrigger = ({
   onSelect,
   ...domProps
 }: SelectTriggerProps & any) => {
-
   return (
     <button
       type="button"
@@ -102,7 +119,7 @@ const SelectContent = ({
   return (
     <div
       className={cn(
-        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+        'absolute top-full left-0 right-0 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md mt-1',
         className
       )}
       {...domProps}
@@ -122,7 +139,7 @@ const SelectItem = ({
   return (
     <div
       className={cn(
-        'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className
       )}
       onClick={() => {
@@ -146,7 +163,6 @@ const SelectValue = ({
   onSelect,
   ...domProps
 }: SelectValueProps & any) => {
-
   return (
     <span className={cn('block truncate', className)} {...domProps}>
       {selectedValue || placeholder}
