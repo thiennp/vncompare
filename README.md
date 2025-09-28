@@ -33,22 +33,27 @@ A modern paint comparison platform built with React Router v7, MongoDB, and depl
 ## 📁 Project Structure
 
 ```
-src/
-├── components/          # Reusable UI components
-│   ├── ui/             # Base UI components (Button, Card, etc.)
-│   └── Layout.tsx      # Main layout component
-├── contexts/           # React contexts (Auth, Cart)
-├── hooks/              # Custom React hooks
-├── lib/                # Core utilities
-│   ├── auth.ts         # Authentication service
-│   ├── database.ts     # Database service layer
-│   ├── mongodb.ts      # MongoDB connection
-│   └── models.ts       # TypeScript interfaces
-├── pages/              # Page components
-│   ├── admin/          # Admin pages
-│   └── ...             # Public pages
-├── routes.tsx          # React Router v7 routes with loaders
-└── App.tsx             # Main app component
+app/
+├── features/           # Feature-based organization
+│   ├── shared/         # Shared components and utilities
+│   │   ├── components/ # Reusable UI components
+│   │   │   ├── ui/     # Base UI components (Button, Card, etc.)
+│   │   │   └── Layout.tsx # Main layout component
+│   │   ├── services/   # Core utilities and services
+│   │   │   ├── database.server.ts # Database service layer
+│   │   │   ├── mongodb.server.ts  # MongoDB connection
+│   │   │   └── models.ts          # TypeScript interfaces
+│   │   └── types/      # TypeScript type definitions
+│   ├── auth/           # Authentication feature
+│   ├── admin/          # Admin feature
+│   ├── home/           # Home page feature
+│   ├── products/       # Products feature
+│   ├── orders/         # Orders feature
+│   └── cart/           # Shopping cart feature
+├── routes/             # Route components
+├── api/                # API endpoints
+├── root.tsx            # Root component
+└── routes.ts           # React Router v7 routes configuration
 ```
 
 ## 🚀 Getting Started

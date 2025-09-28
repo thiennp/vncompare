@@ -7,6 +7,6 @@ echo "Checking TypeScript..."
 npx tsc --noEmit
 
 echo "Checking ESLint..."
-npx eslint src/ --ext .ts,.tsx
+npx eslint app/ --ext .ts,.tsx
 
 echo "Pre-commit checks completed successfully!"

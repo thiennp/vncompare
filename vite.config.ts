@@ -1,14 +1,14 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { reactRouter } from '@react-router/dev/vite';
 import path from 'path';
 import { fileURLToPath } from 'node:url';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [reactRouter()],
   resolve: {
     alias: {
-      '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './src'),
+      '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './app'),
     },
   },
   define: {
@@ -17,18 +17,5 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
-  },
-  build: {
-    outDir: 'dist',
-    sourcemap: true,
-    rollupOptions: {
-      input: {
-        main: './index.html',
-        server: './src/entry-server.tsx',
-      },
-    },
-  },
-  ssr: {
-    noExternal: ['react-router-dom'],
   },
 });
