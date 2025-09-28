@@ -100,8 +100,8 @@ type RouteFiles = {
     id: "features/home/pages/HomePage";
     page: "/";
   };
-  "./routes/dashboard.tsx": {
-    id: "routes/dashboard";
+  "./features/dashboard/pages/DashboardPage.tsx": {
+    id: "features/dashboard/pages/DashboardPage";
     page: "/dashboard";
   };
   "./routes/products.tsx": {
@@ -164,8 +164,8 @@ type RouteFiles = {
     id: "routes/admin.reviews";
     page: "/admin/reviews";
   };
-  "./api/verify.server.ts": {
-    id: "api/verify.server";
+  "./features/auth/services/verify.server.ts": {
+    id: "features/auth/services/verify.server";
     page: "/api/verify";
   };
   "./api/logout.server.ts": {

@@ -1,19 +1,25 @@
-// JWT creation function
-import { base64UrlEncode } from './base64UrlEncode';
+// JWT creation function using jose library
+import { SignJWT } from 'jose';
 
-// Browser-compatible JWT secret (in production, this should come from a secure source)
-const JWT_SECRET = 'your-super-secret-jwt-key-for-development-only';
+// JWT secret (in production, this should come from environment variables)
+const JWT_SECRET = new TextEncoder().encode(
+  'your-super-secret-jwt-key-for-development-only'
+);
 
-export function createJWT(payload: Record<string, unknown>): string {
-  const header = { alg: 'HS256', typ: 'JWT' };
-  const encodedHeader = base64UrlEncode(JSON.stringify(header));
-  const encodedPayload = base64UrlEncode(JSON.stringify(payload));
+export async function createJWT(
+  payload: Record<string, unknown>
+): Promise<string> {
+  try {
+    const jwt = await new SignJWT(payload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('7d')
+      .sign(JWT_SECRET);
 
-  // Simple HMAC-SHA256 implementation for browser
-  const signature = btoa(
-    encodedHeader + '.' + encodedPayload + '.' + JWT_SECRET
-  );
-
-  console.log('🔐 Creating JWT signature:', signature);
-  return `${encodedHeader}.${encodedPayload}.${signature}`;
+    console.log('🔐 JWT created successfully');
+    return jwt;
+  } catch (error) {
+    console.error('❌ Error creating JWT:', error);
+    throw new Error('Failed to create JWT token');
+  }
 }

@@ -1,4 +1,5 @@
 import { db } from '../../shared/services/database.server';
+import { redirect } from 'react-router';
 
 // Dashboard page loader
 export async function dashboardLoader() {
@@ -9,18 +10,6 @@ export async function dashboardLoader() {
     const { users } = await db.getUsers({}, 1, 1000);
     const { suppliers } = await db.getSuppliers({}, 1, 1000);
 
-    const stats = {
-      totalProducts: products.length,
-      totalOrders: orders.length,
-      totalUsers: users.length,
-      totalRevenue: orders.reduce(
-        (sum, order) => sum + (order.totalAmount || 0),
-        0
-      ),
-      activeProducts: products.filter(p => p.isActive).length,
-      verifiedSuppliers: suppliers.filter(s => s.isVerified).length,
-    };
-
     // Get recent orders (last 5)
     const recentOrders = orders
       .sort(
@@ -29,35 +18,20 @@ export async function dashboardLoader() {
       )
       .slice(0, 5);
 
-    // Get user addresses (mock data for now)
-    const addresses = [
-      {
-        _id: '1',
-        name: 'Nhà riêng',
-        address: '123 Đường ABC, Quận 1, TP.HCM',
-        phone: '0123456789',
-        isDefault: true,
-      },
-    ];
-
     return {
-      stats,
+      users,
+      products,
       recentOrders,
-      addresses,
+      suppliers,
     };
   } catch (error) {
+    // If it's a redirect, re-throw it
+    if (error instanceof Response) {
+      throw error;
+    }
+
     console.error('Error loading dashboard data:', error);
-    return {
-      stats: {
-        totalProducts: 0,
-        totalOrders: 0,
-        totalUsers: 0,
-        totalRevenue: 0,
-        activeProducts: 0,
-        verifiedSuppliers: 0,
-      },
-      recentOrders: [],
-      addresses: [],
-    };
+    // If there's an error, redirect to login as well
+    throw redirect('/login');
   }
 }

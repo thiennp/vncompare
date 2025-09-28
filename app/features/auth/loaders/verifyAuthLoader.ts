@@ -30,7 +30,7 @@ export async function verifyAuth(request?: Request) {
 
   try {
     // Verify JWT token directly
-    const decoded = verifyJWT(token);
+    const decoded = await verifyJWT(token);
     if (decoded && decoded.userId) {
       console.log('✅ Auth check - User found:', decoded.email);
       return {

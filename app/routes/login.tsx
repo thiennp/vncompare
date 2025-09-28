@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Link,
-  useFetcher,
-  type ActionFunctionArgs,
-} from 'react-router-dom';
+import { Link, useFetcher, type ActionFunctionArgs } from 'react-router-dom';
 import { redirect } from 'react-router-dom';
 import { MongoClient } from 'mongodb';
 import { comparePassword } from '../features/auth/services/comparePassword';
@@ -53,7 +49,7 @@ export async function action({
     }
 
     // Create JWT token
-    const token = createJWT({
+    const token = await createJWT({
       userId: user._id,
       email: user.email,
       role: user.role,

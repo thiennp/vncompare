@@ -1,35 +1,23 @@
-// JWT verification function
-import { base64UrlDecode } from './base64UrlDecode';
+// JWT verification function using jose library
+import { jwtVerify } from 'jose';
 
-// Browser-compatible JWT secret (in production, this should come from a secure source)
-const JWT_SECRET = 'your-super-secret-jwt-key-for-development-only';
+// JWT secret (in production, this should come from environment variables)
+const JWT_SECRET = new TextEncoder().encode(
+  'your-super-secret-jwt-key-for-development-only'
+);
 
-export function verifyJWT(token: string): Record<string, unknown> {
+export async function verifyJWT(
+  token: string
+): Promise<Record<string, unknown>> {
   try {
-    const parts = token.split('.');
-    if (parts.length !== 3) throw new Error('Invalid token');
+    console.log('🔍 Verifying JWT token');
 
-    const [header, payload, signature] = parts;
-
-    console.log('🔍 Verifying JWT parts:');
-    console.log('  Header:', header);
-    console.log('  Payload:', payload);
-    console.log('  Signature:', signature);
-
-    // Create the expected signature the same way as createJWT
-    const expectedSignature = btoa(header + '.' + payload + '.' + JWT_SECRET);
-    console.log('🔍 Expected signature:', expectedSignature);
-
-    if (signature !== expectedSignature) {
-      console.log('❌ Signature mismatch');
-      throw new Error('Invalid signature');
-    }
+    const { payload } = await jwtVerify(token, JWT_SECRET);
 
     console.log('✅ JWT signature verified');
-    const decodedPayload = JSON.parse(base64UrlDecode(payload));
-    console.log('📄 Decoded payload:', decodedPayload);
+    console.log('📄 Decoded payload:', payload);
 
-    return decodedPayload;
+    return payload as Record<string, unknown>;
   } catch (error) {
     console.error('❌ JWT verification failed:', error);
     throw new Error('Token không hợp lệ');

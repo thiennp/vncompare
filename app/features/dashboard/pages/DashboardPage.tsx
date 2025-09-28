@@ -1,4 +1,4 @@
-import { useLoaderData } from 'react-router-dom';
+
 import { User, Order, Address } from '../../shared/services/models';
 import {
   Card,
@@ -11,22 +11,24 @@ import { Badge } from '../../shared/components/ui/badge';
 import { Button } from '../../shared/components/ui/button';
 import { Package, ShoppingCart, MapPin, User as UserIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { dashboardLoader } from '../loaders/dashboardLoader';
 
 interface DashboardPageData {
-  user: User;
+  user?: User;
   recentOrders: Order[];
-  addresses: Address[];
+  addresses?: Address[];
 }
 
-export default function DashboardPage() {
-  const { user, recentOrders, addresses } =
-    useLoaderData() as DashboardPageData;
+// eslint-disable-next-line react-refresh/only-export-components
+export const loader = dashboardLoader;
 
+export default function DashboardPage({ loaderData }: { loaderData: DashboardPageData }) {
+  const { user, recentOrders, addresses } = loaderData;
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Chào mừng, {user.name || user.email}!
+          Chào mừng, {user?.name || user?.email}!
         </h1>
         <p className="text-lg text-gray-600">Đây là trang tổng quan của bạn</p>
       </div>
@@ -49,7 +51,7 @@ export default function DashboardPage() {
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{addresses.length}</div>
+            <div className="text-2xl font-bold">{addresses?.length}</div>
             <p className="text-xs text-muted-foreground">Địa chỉ đã lưu</p>
           </CardContent>
         </Card>
@@ -61,7 +63,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {new Date(user.createdAt).toLocaleDateString('vi-VN')}
+              {new Date(user?.createdAt || '').toLocaleDateString('vi-VN')}
             </div>
             <p className="text-xs text-muted-foreground">Ngày đăng ký</p>
           </CardContent>
@@ -74,9 +76,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <Badge variant="secondary" className="text-sm">
-              {user.role === 'customer'
+              {user?.role === 'customer'
                 ? 'Khách hàng'
-                : user.role === 'admin'
+                : user?.role === 'admin'
                   ? 'Quản trị viên'
                   : 'Nhà cung cấp'}
             </Badge>
