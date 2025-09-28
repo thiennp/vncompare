@@ -1,5 +1,7 @@
-// Password hashing function
+// Password hashing function using MD5
+import CryptoJS from 'crypto-js';
+
 export function hashPassword(password: string): string {
-  // Simple hash for browser compatibility (in production, use proper hashing)
-  return btoa(password + 'salt');
+  // Use MD5 for password hashing
+  return CryptoJS.MD5(password + 'salt').toString();
 }

@@ -9,7 +9,7 @@ import ProductDetailPage from './features/products/pages/ProductDetailPage';
 import CoverageCalculatorPage from './features/products/pages/CoverageCalculatorPage';
 import { coverageCalculatorLoader } from './features/products/pages/loaders/coverageCalculatorLoader';
 import LoginPage from './features/auth/pages/LoginPage';
-import { loginAction } from './features/auth/loaders/loginAction';
+import { loginLoader } from './features/auth/loaders/loginLoader';
 import RegisterPage from './features/auth/pages/RegisterPage';
 import ProfilePage from './features/auth/pages/ProfilePage';
 import OrdersPage from './features/orders/pages/OrdersPage';
@@ -83,7 +83,7 @@ const routes = [
           {
             path: 'login',
             element: <LoginPage />,
-            action: loginAction,
+            loader: loginLoader,
           },
           {
             path: 'register',

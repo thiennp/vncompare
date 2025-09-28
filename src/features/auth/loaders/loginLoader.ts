@@ -1,20 +1,14 @@
-import type { ActionFunctionArgs } from 'react-router-dom';
+import type { LoaderFunctionArgs } from 'react-router-dom';
 import { MongoClient } from 'mongodb';
 import { comparePassword } from '../services/comparePassword';
 import { createJWT } from '../services/createJWT';
 
 const MONGODB_URI = 'mongodb://localhost:27017/vncompare';
 
-export async function loginAction({ request }: ActionFunctionArgs) {
-  if (request.method !== 'POST') {
-    throw new Response('Method not allowed', { status: 405 });
-  }
-
-  const formData = await request.formData();
-  const { email, password } = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  };
+export async function loginLoader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const email = url.searchParams.get('email');
+  const password = url.searchParams.get('password');
 
   if (!email || !password) {
     return { success: false, error: 'Email và mật khẩu là bắt buộc' };

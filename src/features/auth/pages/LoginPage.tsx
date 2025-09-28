@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useFetcher } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLoaderData } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { Button } from '../../shared/components/ui/button';
 import {
@@ -20,37 +19,40 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const fetcher = useFetcher();
   const { login } = useAuthStore();
+  const loaderData = useLoaderData() as {
+    success: boolean;
+    user?: any;
+    token?: string;
+    error?: string;
+  } | null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
-
-    fetcher.submit(formData, {
-      method: 'POST',
-      action: '/login',
+    // Navigate to login route with query parameters
+    const params = new URLSearchParams({
+      email,
+      password,
     });
+    navigate(`/login?${params.toString()}`);
   };
 
-  // Handle fetcher response
-  React.useEffect(() => {
-    if (fetcher.data) {
-      if (fetcher.data.success) {
+  // Handle loader data response
+  useEffect(() => {
+    if (loaderData) {
+      if (loaderData.success && loaderData.user && loaderData.token) {
         // Update Zustand store with user and token
-        login(fetcher.data.user, fetcher.data.token);
+        login(loaderData.user, loaderData.token);
         navigate('/dashboard');
       } else {
-        setError(fetcher.data.error || 'Đăng nhập thất bại');
+        setError(loaderData.error || 'Đăng nhập thất bại');
       }
       setIsLoading(false);
     }
-  }, [fetcher.data, navigate, login]);
+  }, [loaderData, navigate, login]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
