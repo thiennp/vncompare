@@ -1,24 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React from 'react';
-import { Button } from '../../shared/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../../shared/components/ui/card';
-import { Badge } from '../../shared/components/ui/badge';
-import { Input } from '../../shared/components/ui/input';
-import { Label } from '../../shared/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../shared/components/ui/select';
-import { Link } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import {
   Package,
   Star,
@@ -29,37 +10,18 @@ import {
   Users,
   TrendingUp,
 } from 'lucide-react';
-import { Product, Supplier, Review } from '../../shared/types';
-// import { isHomePageData } from '../../shared/types/isHomePageData.guardz';
+import { Product, Supplier } from '../../shared/types';
 import { homeLoader } from '../loaders/homeLoader';
 import { HomePageSkeleton } from '../components/HomePageSkeleton';
+import styles from './HomePage.module.css';
 
-// Paint type options
-const paintTypes = [
-  { value: 'interior', label: 'Sơn nội thất' },
-  { value: 'exterior', label: 'Sơn ngoại thất' },
-  { value: 'primer', label: 'Sơn lót' },
-  { value: 'wood', label: 'Sơn gỗ' },
-  { value: 'metal', label: 'Sơn kim loại' },
-  { value: 'concrete', label: 'Sơn bê tông' },
-  { value: 'specialty', label: 'Sơn chuyên dụng' },
-  { value: 'waterproof', label: 'Sơn chống thấm' },
-  { value: 'heat-resistant', label: 'Sơn chịu nhiệt' },
-  { value: 'anti-bacterial', label: 'Sơn kháng khuẩn' },
-];
-
-type HomePageProps = {
-  loaderData: {
+export default function HomePage() {
+  const loaderData = useLoaderData() as {
     featuredProducts: Product[];
     suppliers: Supplier[];
-    reviews: Review[];
+    reviews: unknown[];
   };
-};
 
-export default function HomePage({ loaderData }: HomePageProps) {
-  const [selectedPaintType, setSelectedPaintType] = React.useState<string>('');
-
-  // Handle case where suppliers might be undefined
   const data = {
     featuredProducts: loaderData?.featuredProducts || [],
     suppliers: loaderData?.suppliers || [],
@@ -91,444 +53,251 @@ export default function HomePage({ loaderData }: HomePageProps) {
   }
   */
 
-  const { featuredProducts, suppliers, reviews } = data;
-
   return (
-    <div className="min-h-screen">
-      {/* Hero Section - Accessible & Colorful */}
-      <section
-        className="relative py-24 bg-gradient-to-br from-blue-100 to-indigo-200"
-        role="banner"
-        aria-labelledby="hero-heading"
-      >
-        {/* Accessible Background Pattern */}
-        <div
-          className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 pointer-events-none"
-          aria-hidden="true"
-        ></div>
-        <div className="container mx-auto px-6">
-          <div className="text-center max-w-6xl mx-auto">
-            {/* Main Headline */}
-            <div className="mb-12">
-              <h1
-                id="hero-heading"
-                className="text-4xl md:text-5xl font-bold text-gray-900 mb-6"
-              >
-                Sơn chất lượng cao
-              </h1>
-              <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
-                Tìm sơn phù hợp với không gian của bạn
-              </p>
+    <div className={styles.homePage}>
+      {/* Hero Section */}
+      <section className={styles.hero} role="banner" aria-labelledby="hero-heading">
+        <div className={styles.heroContent}>
+          <div className="mb-12">
+            <h1 id="hero-heading" className={styles.heroTitle}>
+              Sơn chất lượng cao
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Tìm sơn phù hợp với không gian của bạn
+            </p>
+          </div>
+          
+          <div className={styles.savingsBadge} role="banner" aria-label="Tiết kiệm đến 50%">
+            <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
+            Tiết kiệm đến <span className="font-bold text-lg mx-1">50%</span>
+          </div>
+          
+          <div className={styles.searchCard} role="search" aria-labelledby="search-title">
+            <div className="p-6">
+              <h3 className={styles.searchTitle} id="search-title">
+                Tìm sơn phù hợp
+              </h3>
             </div>
-
-            {/* Accessible Colorful Savings Badge */}
-            <div
-              className="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-lg text-sm font-semibold mb-8 shadow-lg"
-              role="banner"
-              aria-label="Tiết kiệm đến 50%"
-            >
-              <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
-              Tiết kiệm đến <span className="font-bold text-lg mx-1">50%</span>
-            </div>
-
-            {/* Accessible Colorful Search Interface */}
-            <Card
-              className="max-w-4xl mx-auto mb-8 bg-white shadow-lg border-2 border-blue-200"
-              role="search"
-              aria-labelledby="search-title"
-            >
-              <CardHeader>
-                <CardTitle
-                  id="search-title"
-                  className="text-center text-2xl font-bold text-gray-900"
-                >
-                  Tìm sơn phù hợp
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Search Input */}
-                <div className="space-y-4">
-                  {/* First row: Room size and Paint type */}
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex-1">
-                      <Label
-                        htmlFor="room-size"
-                        className="text-gray-800 font-semibold text-base"
-                      >
-                        Diện tích cần sơn (m²)
-                      </Label>
-                      <Input
-                        id="room-size"
-                        placeholder="Ví dụ: 25 m²"
-                        className="mt-1 border-2 border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 rounded-lg text-gray-900"
-                        aria-describedby="room-size-help"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <Label
-                        htmlFor="paint-type"
-                        className="text-gray-800 font-semibold text-base"
-                      >
-                        Loại sơn
-                      </Label>
-                      <Select
-                        value={selectedPaintType}
-                        onValueChange={setSelectedPaintType}
-                        options={paintTypes}
-                      >
-                        <SelectTrigger
-                          id="paint-type"
-                          className="mt-1 border-2 border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 rounded-lg text-gray-900"
-                          aria-describedby="paint-type-help"
-                        >
-                          <SelectValue placeholder="Chọn loại sơn..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {paintTypes.map(paintType => (
-                            <SelectItem
-                              key={paintType.value}
-                              value={paintType.value}
-                            >
-                              {paintType.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+            <div className="p-6 pt-0">
+              <div className={styles.searchForm}>
+                <div className={styles.searchRow}>
+                  <div className={styles.searchField}>
+                    <label className={styles.searchLabel} htmlFor="room-size">
+                      Diện tích cần sơn (m²)
+                    </label>
+                    <input
+                      className={styles.searchInput}
+                      id="room-size"
+                      placeholder="Ví dụ: 25 m²"
+                      aria-describedby="room-size-help"
+                    />
                   </div>
-
-                  {/* Second row: Address and Search button */}
-                  <div className="flex flex-col md:flex-row gap-4 items-start">
-                    <div className="flex-1">
-                      <Label
-                        htmlFor="address"
-                        className="text-gray-800 font-semibold text-base"
+                  <div className={styles.searchField}>
+                    <label className={styles.searchLabel} htmlFor="paint-type">
+                      Loại sơn
+                    </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className={styles.searchSelect}
+                        id="paint-type"
+                        aria-describedby="paint-type-help"
                       >
-                        Địa chỉ
-                      </Label>
-                      <Input
-                        id="address"
-                        placeholder="Ví dụ: Quận 1, TP.HCM"
-                        className="mt-1 border-2 border-green-300 focus:border-green-600 focus:ring-2 focus:ring-green-200 rounded-lg text-gray-900"
-                        aria-describedby="address-help"
-                      />
-                    </div>
-                    <div className="flex items-center pt-6">
-                      <Button
-                        size="lg"
-                        className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200"
-                        aria-label="Tìm kiếm sơn phù hợp"
-                      >
-                        <Search className="mr-2 h-5 w-5" aria-hidden="true" />
-                        Tìm sơn
-                      </Button>
+                        <span className="block truncate">Chọn loại sơn...</span>
+                        <ArrowRight className="h-4 w-4 opacity-50" />
+                      </button>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className={styles.searchRow}>
+                  <div className={styles.searchField}>
+                    <label className={styles.searchLabel} htmlFor="address">
+                      Địa chỉ
+                    </label>
+                    <input
+                      className={styles.searchInput}
+                      id="address"
+                      placeholder="Ví dụ: Quận 1, TP.HCM"
+                      aria-describedby="address-help"
+                    />
+                  </div>
+                  <div className="flex items-center pt-6">
+                    <button className={styles.searchButton} aria-label="Tìm kiếm sơn phù hợp">
+                      <Search className="mr-2 h-5 w-5" aria-hidden="true" />
+                      Tìm sơn
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className={styles.heroActions}>
+            <Link to="/products" data-discover="true">
+              <button className={styles.primaryButton} aria-label="Xem tất cả sản phẩm sơn">
+                <Package className="mr-2 h-5 w-5" aria-hidden="true" />
+                Xem sản phẩm
+              </button>
+            </Link>
+            <Link to="/register" data-discover="true">
+              <button className={styles.secondaryButton} aria-label="Đăng ký tài khoản mới">
+                <Users className="mr-2 h-5 w-5" aria-hidden="true" />
+                Đăng ký
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-            {/* Call to Action */}
-            <div className="text-center">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/products">
-                  <Button
-                    size="lg"
-                    className="w-full sm:w-auto bg-gradient-to-r from-paint-orange to-paint-pink hover:from-paint-orange/90 hover:to-paint-pink/90 text-white font-semibold shadow-lg transition-all duration-200"
-                    aria-label="Xem tất cả sản phẩm sơn"
-                  >
-                    <Package className="mr-2 h-5 w-5" aria-hidden="true" />
-                    Xem sản phẩm
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="w-full sm:w-auto border-2 border-paint-orange text-paint-orange hover:bg-paint-orange/5 font-semibold transition-all duration-200"
-                    aria-label="Đăng ký tài khoản mới"
-                  >
-                    <Users className="mr-2 h-5 w-5" aria-hidden="true" />
-                    Đăng ký
-                  </Button>
-                </Link>
+      {/* Brands Section */}
+      <section className={`${styles.section} ${styles['section--gradient']}`} role="region" aria-labelledby="brands-heading">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 id="brands-heading" className={styles.sectionTitle}>
+              Thương hiệu phổ biến
+            </h2>
+          </div>
+          <div className={styles.brandsGrid}>
+            {data.suppliers.slice(0, 6).map((supplier: Supplier, index: number) => (
+              <div
+                key={supplier._id?.toString() || index}
+                className={styles.brandCard}
+                role="button"
+                tabIndex={0}
+                aria-label={`Xem sản phẩm từ ${supplier.name}`}
+              >
+                <div className="p-6">
+                  <div className={`${styles.brandIcon} ${styles['brandIcon--blue']}`}>
+                    <Paintbrush className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className={styles.brandName}>{supplier.name}</h3>
+                  <p className={styles.brandType}>Hersteller</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <button className={styles.showAllButton} aria-label="Xem tất cả thương hiệu sơn">
+              hiển thị tất cả thương hiệu
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className={`${styles.section} ${styles['section--gray']}`}>
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className={styles.sectionTitle}>Tại sao chọn VNCompare?</h2>
+          </div>
+          <div className={styles.featuresGrid}>
+            <div className={styles.featureCard}>
+              <div className="p-6">
+                <div className={`${styles.featureIcon} ${styles['featureIcon--blue']}`}>
+                  <Package className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className={styles.featureTitle}>Lựa chọn lớn nhất</h3>
+              </div>
+              <div className="p-6 pt-0">
+                <p className={styles.featureDescription}>
+                  Tìm sơn & bộ hoàn chỉnh từ hơn 10 triệu tùy chọn.
+                </p>
+              </div>
+            </div>
+            <div className={styles.featureCard}>
+              <div className="p-6">
+                <div className={`${styles.featureIcon} ${styles['featureIcon--green']}`}>
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className={styles.featureTitle}>Giá cả hợp lý</h3>
+              </div>
+              <div className="p-6 pt-0">
+                <p className={styles.featureDescription}>
+                  So sánh sơn & bộ hoàn chỉnh và tiết kiệm.
+                </p>
+              </div>
+            </div>
+            <div className={styles.featureCard}>
+              <div className="p-6">
+                <div className={`${styles.featureIcon} ${styles['featureIcon--orange']}`}>
+                  <Truck className="h-6 w-6 text-orange-600" />
+                </div>
+                <h3 className={styles.featureTitle}>Dịch vụ trọn gói</h3>
+              </div>
+              <div className="p-6 pt-0">
+                <p className={styles.featureDescription}>
+                  Đặt dịch vụ thi công với giá cố định dễ dàng online.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Brand Highlights - Accessible & Colorful */}
-      <section
-        className="py-20 bg-gradient-to-r from-blue-50 to-purple-50"
-        role="region"
-        aria-labelledby="brands-heading"
-      >
-        <div className="container mx-auto px-6">
+      {/* Featured Products Section */}
+      <section className={`${styles.section} ${styles['section--gray']}`}>
+        <div className="container">
           <div className="text-center mb-12">
-            <h2
-              id="brands-heading"
-              className="text-3xl font-bold text-gray-900 mb-4"
-            >
-              Thương hiệu phổ biến
-            </h2>
+            <h2 className={styles.sectionTitle}>Sản phẩm nổi bật</h2>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 mb-8">
-            {suppliers.slice(0, 6).map((supplier, index) => (
-              <Card
-                key={supplier._id?.toString() || index}
-                className="text-center hover:shadow-lg transition-shadow cursor-pointer focus-within:ring-4 focus-within:ring-blue-200"
-                role="button"
-                tabIndex={0}
-                aria-label={`Xem sản phẩm từ ${supplier.name}`}
-              >
-                <CardContent className="p-6">
-                  <div
-                    className={`w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md ${
-                      index % 3 === 0
-                        ? 'bg-gradient-to-br from-blue-400 to-blue-500'
-                        : index % 3 === 1
-                          ? 'bg-gradient-to-br from-purple-400 to-purple-500'
-                          : 'bg-gradient-to-br from-pink-400 to-pink-500'
-                    }`}
-                  >
-                    <Paintbrush className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-sm text-gray-900">
-                    {supplier.name}
-                  </h3>
-                  <p className="text-xs text-gray-600 mt-1">Hersteller</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Button
-              variant="outline"
-              className="border-2 border-purple-400 text-purple-700 hover:bg-purple-50 focus:ring-4 focus:ring-purple-200"
-              aria-label="Xem tất cả thương hiệu sơn"
-            >
-              hiển thị tất cả thương hiệu
-              <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Customer Reviews - Clean & Focused */}
-      {reviews.length > 0 && (
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Đánh giá khách hàng
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {reviews.map((review, index) => (
-                <Card
-                  key={review._id?.toString() || index}
-                  className="hover:shadow-lg transition-shadow"
-                >
-                  <CardContent className="p-6">
-                    <div className="flex items-center mb-4">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-5 w-5 ${
-                              i < review.rating
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="ml-2 text-sm text-gray-500">
-                        {new Date(review.createdAt).toLocaleDateString('vi-VN')}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 mb-4 text-lg">
-                      {review.comment}
-                    </p>
-                    <p className="text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                      {review.title}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Features Section - Clean & Focused */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Tại sao chọn VNCompare?
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Package className="h-6 w-6 text-blue-600" />
-                </div>
-                <CardTitle className="text-lg font-semibold text-gray-900">
-                  Lựa chọn lớn nhất
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600">
-                  Tìm sơn & bộ hoàn chỉnh từ hơn 10 triệu tùy chọn.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
-                </div>
-                <CardTitle className="text-lg font-semibold text-gray-900">
-                  Giá cả hợp lý
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600">
-                  So sánh sơn & bộ hoàn chỉnh và tiết kiệm.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                  <Truck className="h-6 w-6 text-orange-600" />
-                </div>
-                <CardTitle className="text-lg font-semibold text-gray-900">
-                  Dịch vụ trọn gói
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600">
-                  Đặt dịch vụ thi công với giá cố định dễ dàng online.
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Sản phẩm nổi bật
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product: Product) => (
-              <Card
-                key={product._id?.toString()}
-                className="group hover:shadow-lg transition-shadow"
-              >
-                <CardHeader>
-                  <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+          <div className={styles.productsGrid}>
+            {data.featuredProducts.map((product: Product, index: number) => (
+              <div key={product._id?.toString() || index} className={styles.productCard}>
+                <div className="p-6">
+                  <div className={styles.productImage}>
                     <Paintbrush className="h-12 w-12 text-gray-400" />
                   </div>
-                  <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                    {product.name}
-                  </CardTitle>
-                  {product.brand && (
-                    <Badge variant="secondary" className="w-fit">
-                      {product.brand}
-                    </Badge>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {product.price && (
-                      <p className="text-lg font-semibold text-primary">
-                        {product.price.toLocaleString('vi-VN')} VNĐ
-                      </p>
-                    )}
-                    {product.description && (
-                      <CardDescription className="line-clamp-2">
-                        {product.description}
-                      </CardDescription>
-                    )}
-                    <Link to={`/products/${product._id}`}>
-                      <Button className="w-full" size="sm">
-                        Xem chi tiết
-                      </Button>
+                  <h3 className={styles.productName}>{product.name}</h3>
+                  <div className={styles.productBrand}>{product.brand}</div>
+                </div>
+                <div className="p-6 pt-0">
+                  <div>
+                    <p className={styles.productPrice}>{product.price.toLocaleString()} VNĐ</p>
+                    <p className={styles.productDescription}>{product.description}</p>
+                    <Link to={`/products/${product._id}`} data-discover="true">
+                      <button className={styles.productButton}>Xem chi tiết</button>
                     </Link>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
-
           <div className="text-center mt-8">
-            <Link to="/products">
-              <Button variant="outline" size="lg">
-                Xem tất cả sản phẩm
-              </Button>
+            <Link to="/products" data-discover="true">
+              <button className={styles.viewAllButton}>Xem tất cả sản phẩm</button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Trusted Suppliers */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
+      {/* Suppliers Section */}
+      <section className={`${styles.section} ${styles['section--white']}`}>
+        <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Nhà cung cấp tin cậy
-            </h2>
-            <p className="text-lg text-gray-600">
-              Đối tác với các nhà cung cấp uy tín trên toàn quốc
-            </p>
+            <h2 className={styles.sectionTitle}>Nhà cung cấp tin cậy</h2>
+            <p className={styles.sectionSubtitle}>Đối tác với các nhà cung cấp uy tín trên toàn quốc</p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {suppliers.map((supplier: Supplier) => (
-              <Card key={supplier._id?.toString()}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>{supplier.name}</CardTitle>
-                    {supplier.isVerified && (
-                      <Badge variant="default" className="bg-green-500">
-                        <Star className="h-3 w-3 mr-1" />
-                        Đã xác minh
-                      </Badge>
-                    )}
+          <div className={styles.suppliersGrid}>
+            {data.suppliers.map((supplier: Supplier, index: number) => (
+              <div key={supplier._id?.toString() || index} className={styles.supplierCard}>
+                <div className="p-6">
+                  <div className={styles.supplierHeader}>
+                    <h3 className={styles.supplierName}>{supplier.name}</h3>
+                    <div className={styles.verifiedBadge}>
+                      <Star className="h-3 w-3 mr-1" />
+                      Đã xác minh
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {supplier.email && (
-                      <p className="text-sm text-gray-600">{supplier.email}</p>
-                    )}
-                    {supplier.phone && (
-                      <p className="text-sm text-gray-600">{supplier.phone}</p>
-                    )}
-                    {supplier.address && (
-                      <p className="text-sm text-gray-600">
-                        {supplier.address}
-                      </p>
-                    )}
+                </div>
+                <div className="p-6 pt-0">
+                  <div className={styles.supplierInfo}>
+                    <p className={styles.supplierDetail}>{supplier.email}</p>
+                    <p className={styles.supplierDetail}>{supplier.phone}</p>
+                    <p className={styles.supplierDetail}>{supplier.address}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
