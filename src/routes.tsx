@@ -42,6 +42,9 @@ import { adminUsersLoader } from './features/admin/pages/loaders/adminUsersLoade
 import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppliersLoader';
 import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
 import { verifyAdmin } from './features/auth/loaders/verifyAuthLoader';
+import { verifyTokenLoader } from './features/auth/loaders/verifyTokenLoader';
+import { logoutLoader } from './features/auth/loaders/logoutLoader';
+import { registerLoader } from './features/auth/loaders/registerLoader';
 
 // Routes configuration for SSR
 const routes = [
@@ -148,6 +151,32 @@ const routes = [
         path: 'reviews',
         element: <AdminReviewsPage />,
         loader: adminReviewsLoader,
+      },
+    ],
+  },
+  // API routes
+  {
+    path: '/api',
+    children: [
+      {
+        path: 'verify',
+        loader: verifyTokenLoader,
+      },
+      {
+        path: 'logout',
+        loader: logoutLoader,
+      },
+      {
+        path: 'register',
+        loader: registerLoader,
+      },
+      {
+        path: 'product-detail/:id',
+        loader: productDetailLoader,
+      },
+      {
+        path: 'orders/:id',
+        loader: orderDetailLoader,
       },
     ],
   },
