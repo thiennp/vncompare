@@ -1,0 +1,3 @@
+/* VNCompare Tailwind CSS - Proper Layer Structure */
+@import './variables.css';
+@import 'tailwindcss/preflight';
