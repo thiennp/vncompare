@@ -1,4 +1,4 @@
-import { createBrowserRouter, createMemoryRouter } from 'react-router-dom';
+import { createMemoryRouter } from 'react-router-dom';
 import Root from './Root';
 import Layout from './features/shared/components/Layout';
 import HomePage from './features/home/pages/HomePage';
@@ -181,11 +181,6 @@ const routes = [
     ],
   },
 ];
-
-// Client-side router
-export function createClientRouter() {
-  return createBrowserRouter(routes);
-}
 
 // Server-side router
 export function createSSRRouter(url: string) {

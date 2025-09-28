@@ -1,12 +1,17 @@
 import { RouterProvider } from 'react-router-dom';
-import { createClientRouter } from './routes';
+import { createSSRRouter } from './routes';
 
-function App() {
-  const router = createClientRouter();
+interface AppProps {
+  url?: string;
+}
 
-  return (
-    <RouterProvider router={router} />
-  );
+function App({ url }: AppProps) {
+  // Use current URL for client-side, or provided URL for server-side
+  const currentUrl =
+    url || (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const router = createSSRRouter(currentUrl);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
