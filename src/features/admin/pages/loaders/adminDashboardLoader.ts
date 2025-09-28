@@ -1,14 +1,41 @@
+import { db } from '../../../shared/services/database.server';
+
 // Admin dashboard loader
 export async function adminDashboardLoader() {
   try {
-    const response = await fetch('/api/admin/dashboard');
+    // Get all data for admin dashboard
+    const { products } = await db.getProducts({}, 1, 1000);
+    const { orders } = await db.getOrders(undefined, {}, 1, 1000);
+    const { users } = await db.getUsers({}, 1, 1000);
+    const { suppliers } = await db.getSuppliers({}, 1, 1000);
+    const { reviews } = await db.getReviews(undefined, {}, 1, 1000);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    const stats = {
+      totalProducts: products.length,
+      totalOrders: orders.length,
+      totalUsers: users.length,
+      totalSuppliers: suppliers.length,
+      totalRevenue: orders.reduce(
+        (sum, order) => sum + (order.totalAmount || 0),
+        0
+      ),
+      pendingOrders: orders.filter(order => order.status === 'pending').length,
+      pendingReviews: reviews.filter(review => review.status === 'pending')
+        .length,
+    };
 
-    const data = await response.json();
-    return data;
+    // Get recent orders (last 10)
+    const recentOrders = orders
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
+      .slice(0, 10);
+
+    return {
+      stats,
+      recentOrders,
+    };
   } catch (error) {
     console.error('Error loading admin dashboard data:', error);
     return {

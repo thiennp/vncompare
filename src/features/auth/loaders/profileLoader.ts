@@ -1,3 +1,5 @@
+import { verifyJWT } from '../services/verifyJWT';
+
 // Profile page loader
 export async function profileLoader() {
   // Get token from cookies
@@ -11,20 +13,18 @@ export async function profileLoader() {
   }
 
   try {
-    const response = await fetch('/api/verify', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success && result.user) {
-        return { user: result.user };
-      }
+    // Verify JWT token directly
+    const decoded = verifyJWT(token);
+    if (decoded && decoded.userId) {
+      return {
+        user: {
+          _id: decoded.userId,
+          email: decoded.email,
+          role: decoded.role,
+        },
+      };
     }
-    
+
     throw new Response('Unauthorized', { status: 401 });
   } catch (error) {
     throw new Response('Unauthorized', { status: 401 });

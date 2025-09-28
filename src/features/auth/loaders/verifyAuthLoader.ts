@@ -1,3 +1,5 @@
+import { verifyJWT } from '../services/verifyJWT';
+
 // Shared auth verification loader
 export async function verifyAuth() {
   // Get token from cookies
@@ -15,23 +17,18 @@ export async function verifyAuth() {
   }
 
   try {
-    // For client-side, we'll use a simple token check
-    const response = await fetch('/api/verify', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success && result.user) {
-        console.log('✅ Auth check - User found:', result.user.email);
-        return result.user;
-      }
+    // Verify JWT token directly
+    const decoded = verifyJWT(token);
+    if (decoded && decoded.userId) {
+      console.log('✅ Auth check - User found:', decoded.email);
+      return {
+        _id: decoded.userId,
+        email: decoded.email,
+        role: decoded.role,
+      };
     }
-    
-    console.log('❌ Auth check - No user found');
+
+    console.log('❌ Auth check - Invalid token');
     return null;
   } catch (error) {
     console.log('❌ Auth check - Error:', error);
