@@ -3,30 +3,46 @@ import { useFetcher } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 
 export function useAuth() {
-  const { user, token, isLoading, isAuthenticated, setUser, setToken, setLoading, clearAuth } = useAuthStore();
+  const {
+    user,
+    token,
+    isLoading,
+    isAuthenticated,
+    setUser,
+    setToken,
+    setLoading,
+    clearAuth,
+  } = useAuthStore();
   const fetcher = useFetcher();
 
-  const verifyToken = useCallback(async (tokenToVerify: string) => {
-    try {
-      const formData = new FormData();
-      formData.append('token', tokenToVerify);
+  const verifyToken = useCallback(
+    async (tokenToVerify: string) => {
+      try {
+        const formData = new FormData();
+        formData.append('token', tokenToVerify);
 
-      fetcher.submit(formData, {
-        method: 'GET',
-        action: '/api/verify',
-      });
-    } catch (error) {
-      console.error('Token verification failed:', error);
-      clearAuth();
-    }
-  }, [fetcher, clearAuth]);
+        fetcher.submit(formData, {
+          method: 'GET',
+          action: '/api/verify',
+        });
+      } catch (error) {
+        console.error('Token verification failed:', error);
+        clearAuth();
+      }
+    },
+    [fetcher, clearAuth]
+  );
 
   // Initialize auth state on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem('auth_token');
-    if (storedToken) {
-      setToken(storedToken);
-      verifyToken(storedToken);
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('auth_token');
+      if (storedToken) {
+        setToken(storedToken);
+        verifyToken(storedToken);
+      } else {
+        setLoading(false);
+      }
     } else {
       setLoading(false);
     }

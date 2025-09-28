@@ -1,20 +1,20 @@
+import type { LoaderFunctionArgs } from 'react-router-dom';
+import { db } from '../../../shared/services/database.server';
+
 // Admin orders page loader
-export async function adminOrdersLoader({ request }: { request: Request }) {
+export async function adminOrdersLoader({ request }: LoaderFunctionArgs) {
   try {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1');
 
-    const apiUrl = new URL('/api/admin/orders', window.location.origin);
-    apiUrl.searchParams.set('page', page.toString());
+    // Get all orders from database (admin can see all)
+    const { orders, total } = await db.getOrders(undefined, {}, page, 20);
 
-    const response = await fetch(apiUrl.toString());
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    return {
+      orders,
+      total,
+      page,
+    };
   } catch (error) {
     console.error('Error loading admin orders data:', error);
     const url = new URL(request.url);

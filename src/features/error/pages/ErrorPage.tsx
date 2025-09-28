@@ -56,7 +56,11 @@ export default function ErrorPage() {
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.reload();
+                }
+              }}
             >
               Tải lại trang
             </Button>

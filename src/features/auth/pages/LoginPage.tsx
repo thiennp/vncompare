@@ -11,6 +11,7 @@ import {
 } from '../../shared/components/ui/card';
 import { Input } from '../../shared/components/ui/input';
 import { Label } from '../../shared/components/ui/label';
+import { User } from '@/features/shared/types';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ export default function LoginPage() {
   const { login } = useAuthStore();
   const loaderData = useLoaderData() as {
     success: boolean;
-    user?: any;
+    user?: User;
     token?: string;
     error?: string;
   } | null;

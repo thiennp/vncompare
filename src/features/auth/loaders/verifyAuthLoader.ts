@@ -1,15 +1,27 @@
 import { verifyJWT } from '../services/verifyJWT';
 
 // Shared auth verification loader
-export async function verifyAuth() {
-  // Get token from cookies
-  const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('auth_token='))
-    ?.split('=')[1];
+export async function verifyAuth(request?: Request) {
+  let token: string | undefined;
+
+  if (request) {
+    // Server-side: get token from request cookies
+    const cookieHeader = request.headers.get('Cookie');
+    token = cookieHeader
+      ?.split('; ')
+      .find(row => row.startsWith('auth_token='))
+      ?.split('=')[1];
+  } else {
+    // Client-side: get token from document.cookie
+    if (typeof document !== 'undefined') {
+      token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('auth_token='))
+        ?.split('=')[1];
+    }
+  }
 
   console.log('🔍 Auth check - Token exists:', !!token);
-  console.log('🔍 Auth check - All cookies:', document.cookie);
 
   if (!token) {
     console.log('❌ Auth check - No token found');
