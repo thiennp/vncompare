@@ -25,7 +25,6 @@ export default [
   route('/admin/reviews', './routes/admin.reviews.tsx'),
 
   // API Routes
-  route('/api/login', './api/login.server.ts'),
   route('/api/verify', './api/verify.server.ts'),
   route('/api/logout', './api/logout.server.ts'),
   route('/api/register', './api/register.server.ts'),

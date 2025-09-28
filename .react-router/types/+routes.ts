@@ -65,9 +65,6 @@ type Pages = {
   "/admin/reviews": {
     params: {};
   };
-  "/api/login": {
-    params: {};
-  };
   "/api/verify": {
     params: {};
   };
@@ -97,7 +94,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/reviews" | "/api/login" | "/api/verify" | "/api/logout" | "/api/register" | "/api/product-detail/:id" | "/api/orders/:id" | "/*";
+    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/reviews" | "/api/verify" | "/api/logout" | "/api/register" | "/api/product-detail/:id" | "/api/orders/:id" | "/*";
   };
   "./features/home/pages/HomePage.tsx": {
     id: "features/home/pages/HomePage";
@@ -166,10 +163,6 @@ type RouteFiles = {
   "./routes/admin.reviews.tsx": {
     id: "routes/admin.reviews";
     page: "/admin/reviews";
-  };
-  "./api/login.server.ts": {
-    id: "api/login.server";
-    page: "/api/login";
   };
   "./api/verify.server.ts": {
     id: "api/verify.server";
