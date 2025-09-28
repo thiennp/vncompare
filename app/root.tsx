@@ -1,4 +1,6 @@
 import { Outlet } from 'react-router-dom';
+import Header from './features/shared/components/layout/Header';
+import Footer from './features/shared/components/layout/Footer';
 
 export default function Root() {
   return (
@@ -20,7 +22,22 @@ export default function Root() {
       </head>
       <body data-new-gr-c-s-check-loaded="14.1255.0" data-gr-ext-installed="">
         <div id="root">
-        <Outlet />
+          <div className="min-h-screen bg-background">
+            <Header
+              isAuthenticated={false}
+              isAuthRoute={false}
+              displayName=""
+              initials=""
+              totalItems={0}
+              isMobileMenuOpen={false}
+              onMobileMenuToggle={() => {}}
+              onLogout={() => {}}
+              navigation={[]}
+              userMenuItems={[]}
+            />
+            <Outlet />
+            <Footer />
+          </div>
         </div>
       </body>
     </html>
