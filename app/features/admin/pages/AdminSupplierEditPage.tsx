@@ -43,7 +43,7 @@ export default function AdminSupplierEditPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Chỉnh sửa nhà cung cấp</h1>
         <p className="text-gray-600">Cập nhật thông tin nhà cung cấp</p>

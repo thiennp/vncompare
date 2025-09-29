@@ -36,7 +36,7 @@ export default function AdminDashboardPage() {
   const { user, stats } = useLoaderData() as AdminDashboardPageData;
 
   return (
-    <div className="p-6">
+    <div className="space-y-6 p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
           Bảng điều khiển quản trị
