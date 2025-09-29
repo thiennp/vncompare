@@ -30,7 +30,7 @@ export default function Layout() {
   const navigation = isAdminRoute ? adminNavigation : publicNavigation;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Header */}
       <Header
         isMobileMenuOpen={isMobileMenuOpen}

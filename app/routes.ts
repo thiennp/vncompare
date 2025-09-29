@@ -26,9 +26,13 @@ export default [
     // Admin pages
     route('/admin', './routes/admin.tsx'),
     route('/admin/products', './routes/admin.products.tsx'),
+    route('/admin/products/new', './routes/admin.products.new.tsx'),
+    route('/admin/products/:id/edit', './routes/admin.products.$id.edit.tsx'),
     route('/admin/orders', './routes/admin.orders.tsx'),
     route('/admin/users', './routes/admin.users.tsx'),
     route('/admin/suppliers', './routes/admin.suppliers.tsx'),
+    route('/admin/suppliers/new', './routes/admin.suppliers.new.tsx'),
+    route('/admin/suppliers/:id/edit', './routes/admin.suppliers.$id.edit.tsx'),
     route('/admin/reviews', './routes/admin.reviews.tsx'),
   ]),
 

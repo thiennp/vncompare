@@ -21,7 +21,7 @@ export default function Root() {
       </head>
       <body data-new-gr-c-s-check-loaded="14.1255.0" data-gr-ext-installed="">
         <div id="root">
-          <div className="min-h-screen bg-background">
+          <div className="bg-background">
             <Outlet />
             <Footer />
           </div>

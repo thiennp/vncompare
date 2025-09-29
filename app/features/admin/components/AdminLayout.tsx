@@ -146,7 +146,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* Mobile Header */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b">
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>

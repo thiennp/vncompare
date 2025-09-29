@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from '../../shared/components/ui/card';
 
 export function AdminDashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <div className="container mx-auto px-6 py-8">
         {/* Header Skeleton */}
         <div className="mb-8">
@@ -62,7 +62,7 @@ export function AdminDashboardSkeleton() {
 
 export function AdminTableSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <div className="container mx-auto px-6 py-8">
         {/* Header Skeleton */}
         <div className="mb-8">

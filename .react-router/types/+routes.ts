@@ -53,6 +53,14 @@ type Pages = {
   "/admin/products": {
     params: {};
   };
+  "/admin/products/new": {
+    params: {};
+  };
+  "/admin/products/:id/edit": {
+    params: {
+      "id": string;
+    };
+  };
   "/admin/orders": {
     params: {};
   };
@@ -61,6 +69,14 @@ type Pages = {
   };
   "/admin/suppliers": {
     params: {};
+  };
+  "/admin/suppliers/new": {
+    params: {};
+  };
+  "/admin/suppliers/:id/edit": {
+    params: {
+      "id": string;
+    };
   };
   "/admin/reviews": {
     params: {};
@@ -94,11 +110,11 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/reviews" | "/api/verify" | "/api/logout" | "/api/register" | "/api/product-detail/:id" | "/api/orders/:id" | "/*";
+    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/products/new" | "/admin/products/:id/edit" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/suppliers/new" | "/admin/suppliers/:id/edit" | "/admin/reviews" | "/api/verify" | "/api/logout" | "/api/register" | "/api/product-detail/:id" | "/api/orders/:id" | "/*";
   };
   "./routes/_layout.tsx": {
     id: "routes/_layout";
-    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/reviews";
+    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/products/new" | "/admin/products/:id/edit" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/suppliers/new" | "/admin/suppliers/:id/edit" | "/admin/reviews";
   };
   "./features/home/pages/HomePage.tsx": {
     id: "features/home/pages/HomePage";
@@ -152,6 +168,14 @@ type RouteFiles = {
     id: "routes/admin.products";
     page: "/admin/products";
   };
+  "./routes/admin.products.new.tsx": {
+    id: "routes/admin.products.new";
+    page: "/admin/products/new";
+  };
+  "./routes/admin.products.$id.edit.tsx": {
+    id: "routes/admin.products.$id.edit";
+    page: "/admin/products/:id/edit";
+  };
   "./routes/admin.orders.tsx": {
     id: "routes/admin.orders";
     page: "/admin/orders";
@@ -163,6 +187,14 @@ type RouteFiles = {
   "./routes/admin.suppliers.tsx": {
     id: "routes/admin.suppliers";
     page: "/admin/suppliers";
+  };
+  "./routes/admin.suppliers.new.tsx": {
+    id: "routes/admin.suppliers.new";
+    page: "/admin/suppliers/new";
+  };
+  "./routes/admin.suppliers.$id.edit.tsx": {
+    id: "routes/admin.suppliers.$id.edit";
+    page: "/admin/suppliers/:id/edit";
   };
   "./routes/admin.reviews.tsx": {
     id: "routes/admin.reviews";

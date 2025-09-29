@@ -15,7 +15,7 @@ export default function Sidebar({ navigation }: SidebarProps) {
   const location = useLocation();
 
   return (
-    <div className="w-64 bg-gray-50 border-r min-h-screen">
+    <div className="w-64 bg-gray-50 border-r">
       <div className="p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">
           Bảng quản trị

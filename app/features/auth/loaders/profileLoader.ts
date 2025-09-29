@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs } from 'react-router-dom';
 import { verifyAuth } from './verifyAuthLoader';
-import { db } from '../../shared/services/database.server';
 
 // Profile page loader
 export async function profileLoader({ request }: LoaderFunctionArgs) {
