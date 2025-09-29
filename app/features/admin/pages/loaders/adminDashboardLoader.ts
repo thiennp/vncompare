@@ -1,8 +1,29 @@
 import { db } from '../../../shared/services/database.server';
+import { getUserByToken } from '../../../auth/services/getUserByToken.server';
+import { redirect } from 'react-router';
 
 // Admin dashboard loader
-export async function adminDashboardLoader() {
+export async function adminDashboardLoader({ request }: { request: Request }) {
   try {
+    // Get authenticated user by token
+    const user = await getUserByToken(request);
+    if (!user) {
+      console.log(
+        '❌ Admin dashboard loader - User not authenticated, redirecting to login'
+      );
+      throw redirect('/login');
+    }
+
+    // Check if user is admin
+    if (user.role !== 'admin') {
+      console.log(
+        '❌ Admin dashboard loader - User is not admin, redirecting to login'
+      );
+      throw redirect('/login');
+    }
+
+    console.log('✅ Admin dashboard loader - User authenticated:', user.email);
+
     // Get all data for admin dashboard
     const { products } = await db.getProducts({}, 1, 1000);
     const { orders } = await db.getOrders(undefined, {}, 1, 1000);
@@ -33,22 +54,18 @@ export async function adminDashboardLoader() {
       .slice(0, 10);
 
     return {
+      user,
       stats,
       recentOrders,
     };
   } catch (error) {
+    // If it's a redirect, re-throw it
+    if (error instanceof Response) {
+      throw error;
+    }
+
     console.error('Error loading admin dashboard data:', error);
-    return {
-      stats: {
-        totalProducts: 0,
-        totalOrders: 0,
-        totalUsers: 0,
-        totalSuppliers: 0,
-        totalRevenue: 0,
-        pendingOrders: 0,
-        pendingReviews: 0,
-      },
-      recentOrders: [],
-    };
+    // If there's an error, redirect to login as well
+    throw redirect('/login');
   }
 }
