@@ -1,44 +1,52 @@
-// Pure header component - no business logic
-import React from 'react';
+// Header component with server-side auth data
 import { Link } from 'react-router-dom';
 import { Badge } from '../ui/badge';
 import { ShoppingCart, Menu, X, Paintbrush } from 'lucide-react';
+import { useCartLogic } from '../../../cart/hooks/useCartLogic';
+import { useNavigation } from '../../hooks/useNavigation';
+import {
+  getUserDisplayName,
+  getUserInitials,
+} from '../../../auth/services/auth-logic.service';
+import { User } from '../../services/models';
 
 interface HeaderProps {
-  isAuthenticated: boolean;
-  isAuthRoute: boolean;
-  displayName: string;
-  initials: string;
-  totalItems: number;
   isMobileMenuOpen: boolean;
   onMobileMenuToggle: () => void;
-  onLogout: () => void;
-  navigation: Array<{
-    name: string;
-    href: string;
-    icon: React.ComponentType;
-    shortName: string;
-  }>;
-  userMenuItems: Array<{
-    name: string;
-    href: string;
-    icon: React.ComponentType;
-    action?: string;
-  }>;
+  user: User | null;
+  isAuthenticated: boolean;
 }
 
 export default function Header({
-  isAuthenticated,
-  isAuthRoute,
-  displayName,
-  initials,
-  totalItems,
   isMobileMenuOpen,
   onMobileMenuToggle,
-  onLogout,
-  navigation,
-  userMenuItems,
+  user,
+  isAuthenticated,
 }: HeaderProps) {
+  // Get cart state
+  const { totalItems } = useCartLogic();
+
+  // Get navigation state
+  const {
+    isAdminRoute,
+    isAuthRoute,
+    publicNavigation,
+    adminNavigation,
+    userMenuItems,
+  } = useNavigation();
+
+  // Calculate auth-related values from user prop
+  const displayName = getUserDisplayName(user);
+  const initials = getUserInitials(user);
+
+  // Simple logout function
+  const logout = () => {
+    // Redirect to logout API endpoint
+    window.location.href = '/api/logout';
+  };
+
+  // Determine which navigation to use
+  const navigation = isAdminRoute ? adminNavigation : publicNavigation;
   return (
     <header className="sticky top-0 z-50 w-full border-b border-paint-orange/20 bg-gradient-to-r from-paint-orange/10 via-paint-teal/10 to-paint-purple/10 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80">
       <div className="container flex h-20 items-center justify-between px-6">
@@ -70,7 +78,7 @@ export default function Header({
                   to={item.href}
                   className="group flex items-center gap-2 text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-paint-orange/20 focus:ring-offset-2 rounded-xl px-4 py-2.5 whitespace-nowrap text-gray-700 hover:text-paint-orange hover:bg-paint-orange/5"
                 >
-                  <div className="h-4 w-4 flex-shrink-0">
+                  <div className="h-4 w-4 flex-shrink-0 flex items-center justify-center">
                     <Icon />
                   </div>
                   <span className="hidden xl:inline">{item.name}</span>
@@ -85,18 +93,19 @@ export default function Header({
           {isAuthenticated ? (
             <>
               {/* Cart */}
-              <Link className="relative group" to="/cart">
-                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-paint-orange hover:text-paint-orange hover:scale-105 px-4 text-xs relative h-10 w-10 rounded-full hover:bg-gray-100 transition-all duration-200">
-                  <ShoppingCart className="h-5 w-5" />
-                  {totalItems > 0 && (
-                    <Badge
-                      variant="destructive"
-                      className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs"
-                    >
-                      {totalItems}
-                    </Badge>
-                  )}
-                </button>
+              <Link
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-paint-orange hover:text-paint-orange hover:scale-105 px-4 text-xs relative h-10 w-10 rounded-full hover:bg-gray-100 transition-all duration-200"
+                to="/cart"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs"
+                  >
+                    {totalItems}
+                  </Badge>
+                )}
               </Link>
 
               {/* User Menu */}
@@ -114,7 +123,7 @@ export default function Header({
                     <Link
                       key={item.name}
                       to={item.href}
-                      onClick={item.action === 'logout' ? onLogout : undefined}
+                      onClick={item.action === 'logout' ? logout : undefined}
                       className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <item.icon />
@@ -126,15 +135,17 @@ export default function Header({
             </>
           ) : (
             <div className="flex items-center space-x-2">
-              <Link to="/login">
-                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-paint-orange hover:text-paint-orange hover:scale-105 text-xs h-9 px-4 rounded-full hover:bg-gray-100 transition-all duration-200">
-                  Đăng nhập
-                </button>
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-paint-orange hover:text-paint-orange hover:scale-105 text-xs h-9 px-4 rounded-full hover:bg-gray-100 transition-all duration-200"
+              >
+                Đăng nhập
               </Link>
-              <Link to="/register">
-                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-gradient-to-r from-paint-orange to-paint-pink shadow-lg hover:shadow-xl text-xs h-9 px-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-200 hover:scale-105">
-                  Đăng ký
-                </button>
+              <Link
+                to="/register"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-gradient-to-r from-paint-orange to-paint-pink shadow-lg hover:shadow-xl text-xs h-9 px-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-200 hover:scale-105"
+              >
+                Đăng ký
               </Link>
             </div>
           )}

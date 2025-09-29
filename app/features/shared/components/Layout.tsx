@@ -1,24 +1,19 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import { useNavigation } from '../hooks/useNavigation';
-import { useAuthLogic } from '../../auth/hooks/useAuthLogic';
-import { useCartLogic } from '../../cart/hooks/useCartLogic';
 import Header from './layout/Header';
 import Sidebar from './layout/Sidebar';
 import MobileMenu from './layout/MobileMenu';
+import { User } from '../services/models';
 
 export default function Layout() {
-  // Business logic hooks
-  const { isAuthenticated, displayName, initials, logout } = useAuthLogic();
-  const { totalItems } = useCartLogic();
-  const { 
-    isAdminRoute, 
-    isAuthRoute, 
-    publicNavigation, 
-    adminNavigation, 
-    userMenuItems 
-  } = useNavigation();
-  
+  const loaderData = useLoaderData() as {
+    user: User | null;
+    isAuthenticated: boolean;
+  };
+  // Navigation logic
+  const { isAdminRoute, publicNavigation, adminNavigation } = useNavigation();
+
   // UI state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -31,11 +26,6 @@ export default function Layout() {
     setIsMobileMenuOpen(false);
   };
 
-  const handleLogout = () => {
-    logout();
-    setIsMobileMenuOpen(false);
-  };
-
   // Determine which navigation to use
   const navigation = isAdminRoute ? adminNavigation : publicNavigation;
 
@@ -43,16 +33,10 @@ export default function Layout() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <Header
-        isAuthenticated={isAuthenticated}
-        isAuthRoute={isAuthRoute}
-        displayName={displayName}
-        initials={initials}
-        totalItems={totalItems}
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuToggle={handleMobileMenuToggle}
-        onLogout={handleLogout}
-        navigation={navigation}
-        userMenuItems={userMenuItems}
+        user={loaderData.user}
+        isAuthenticated={loaderData.isAuthenticated}
       />
 
       {/* Mobile Menu */}
@@ -65,12 +49,12 @@ export default function Layout() {
       {/* Main Content */}
       <div className="flex">
         {/* Admin Sidebar */}
-        {isAdminRoute && (
-          <Sidebar navigation={adminNavigation} />
-        )}
+        {isAdminRoute && <Sidebar navigation={adminNavigation} />}
 
         {/* Page Content */}
-        <main className={`flex-1 ${isAdminRoute ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}`}>
+        <main
+          className={`flex-1 ${isAdminRoute ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}`}
+        >
           <Outlet />
         </main>
       </div>
