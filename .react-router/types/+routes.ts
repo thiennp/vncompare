@@ -96,6 +96,10 @@ type RouteFiles = {
     id: "root";
     page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/reviews" | "/api/verify" | "/api/logout" | "/api/register" | "/api/product-detail/:id" | "/api/orders/:id" | "/*";
   };
+  "./routes/_layout.tsx": {
+    id: "routes/_layout";
+    page: "/" | "/dashboard" | "/products" | "/products/:id" | "/coverage-calculator" | "/orders" | "/orders/:id" | "/shipping-calculator" | "/login" | "/register" | "/profile" | "/admin" | "/admin/products" | "/admin/orders" | "/admin/users" | "/admin/suppliers" | "/admin/reviews";
+  };
   "./features/home/pages/HomePage.tsx": {
     id: "features/home/pages/HomePage";
     page: "/";

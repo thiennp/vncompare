@@ -12,7 +12,7 @@ export async function getUserByToken(request: Request) {
       ?.split('=')[1];
 
     if (!token) {
-      console.log('❌ getUserByToken - No auth token found');
+      // No token found - user is not authenticated (this is normal)
       return null;
     }
 
@@ -21,7 +21,10 @@ export async function getUserByToken(request: Request) {
     try {
       decoded = await verifyJWT(token);
     } catch (error) {
-      console.log('❌ getUserByToken - Invalid token:', error);
+      // Invalid or expired token - user needs to re-authenticate
+      console.log(
+        '🔒 getUserByToken - Token verification failed, user needs to re-authenticate'
+      );
       return null;
     }
 
@@ -38,10 +41,10 @@ export async function getUserByToken(request: Request) {
       return null;
     }
 
-    console.log('✅ getUserByToken - User found:', user.email);
+    console.log('✅ getUserByToken - User authenticated:', user.email);
     return user;
   } catch (error) {
-    console.error('❌ getUserByToken - Error:', error);
+    console.error('❌ getUserByToken - Unexpected error:', error);
     return null;
   }
 }

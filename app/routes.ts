@@ -1,30 +1,38 @@
-import { index, route, type RouteConfig } from '@react-router/dev/routes';
+import {
+  index,
+  route,
+  layout,
+  type RouteConfig,
+} from '@react-router/dev/routes';
 
 export default [
-  // Main pages
-  index('./features/home/pages/HomePage.tsx'),
-  route('/dashboard', './features/dashboard/pages/DashboardPage.tsx'),
-  route('/products', './routes/products.tsx'),
-  route('/products/:id', './routes/products.$id.tsx'),
-  route('/coverage-calculator', './routes/coverage-calculator.tsx'),
-  route('/orders', './routes/orders.tsx'),
-  route('/orders/:id', './routes/orders.$id.tsx'),
-  route('/shipping-calculator', './routes/shipping-calculator.tsx'),
+  // Layout wrapper for all main pages
+  layout('./routes/_layout.tsx', [
+    // Main pages
+    index('./features/home/pages/HomePage.tsx'),
+    route('/dashboard', './features/dashboard/pages/DashboardPage.tsx'),
+    route('/products', './routes/products.tsx'),
+    route('/products/:id', './routes/products.$id.tsx'),
+    route('/coverage-calculator', './routes/coverage-calculator.tsx'),
+    route('/orders', './routes/orders.tsx'),
+    route('/orders/:id', './routes/orders.$id.tsx'),
+    route('/shipping-calculator', './routes/shipping-calculator.tsx'),
 
-  // Auth pages
-  route('/login', './routes/login.tsx'),
-  route('/register', './routes/register.tsx'),
-  route('/profile', './routes/profile.tsx'),
+    // Auth pages
+    route('/login', './routes/login.tsx'),
+    route('/register', './routes/register.tsx'),
+    route('/profile', './routes/profile.tsx'),
 
-  // Admin pages
-  route('/admin', './routes/admin.tsx'),
-  route('/admin/products', './routes/admin.products.tsx'),
-  route('/admin/orders', './routes/admin.orders.tsx'),
-  route('/admin/users', './routes/admin.users.tsx'),
-  route('/admin/suppliers', './routes/admin.suppliers.tsx'),
-  route('/admin/reviews', './routes/admin.reviews.tsx'),
+    // Admin pages
+    route('/admin', './routes/admin.tsx'),
+    route('/admin/products', './routes/admin.products.tsx'),
+    route('/admin/orders', './routes/admin.orders.tsx'),
+    route('/admin/users', './routes/admin.users.tsx'),
+    route('/admin/suppliers', './routes/admin.suppliers.tsx'),
+    route('/admin/reviews', './routes/admin.reviews.tsx'),
+  ]),
 
-  // API Routes
+  // API Routes (outside layout)
   route('/api/verify', './features/auth/services/verify.server.ts'),
   route('/api/logout', './api/logout.server.ts'),
   route('/api/register', './api/register.server.ts'),

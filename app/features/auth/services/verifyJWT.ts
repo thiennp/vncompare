@@ -19,7 +19,7 @@ export async function verifyJWT(
 
     return payload as Record<string, unknown>;
   } catch (error) {
-    console.error('❌ JWT verification failed:', error);
-    throw new Error('Token không hợp lệ');
+    console.log('❌ JWT verification failed - Invalid or expired token');
+    throw new Error('Invalid token');
   }
 }
