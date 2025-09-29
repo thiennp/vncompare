@@ -12,11 +12,11 @@ import { User as UserIcon, MapPin, Plus } from 'lucide-react';
 
 interface ProfilePageData {
   user: User;
-  addresses: Address[];
+  addresses?: Address[];
 }
 
 export default function ProfilePage() {
-  const { user, addresses } = useLoaderData() as ProfilePageData;
+  const { user, addresses = [] } = useLoaderData() as ProfilePageData;
 
   return (
     <div className="container mx-auto px-4 py-8">

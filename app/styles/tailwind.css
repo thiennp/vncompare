@@ -1,3 +1,7 @@
 /* VNCompare Tailwind CSS - Proper Layer Structure */
 @import './variables.css';
 @import 'tailwindcss/preflight';
+
+* {
+  border: 0 solid hsl(var(--border));
+}
