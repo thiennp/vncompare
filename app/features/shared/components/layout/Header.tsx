@@ -8,6 +8,7 @@ import {
   getUserDisplayName,
   getUserInitials,
 } from '../../../auth/services/auth-logic.service';
+import { getUserMenuItems } from '../../services/getUserMenuItems';
 import { User } from '../../services/models';
 
 interface HeaderProps {
@@ -27,13 +28,10 @@ export default function Header({
   const { totalItems } = useCartLogic();
 
   // Get navigation state
-  const {
-    isAdminRoute,
-    isAuthRoute,
-    publicNavigation,
-    adminNavigation,
-    userMenuItems,
-  } = useNavigation();
+  const { isAuthRoute, publicNavigation, adminNavigation } = useNavigation();
+
+  // Get user menu items based on user role
+  const userMenuItems = getUserMenuItems(user?.role);
 
   // Calculate auth-related values from user prop
   const displayName = getUserDisplayName(user);
@@ -46,7 +44,9 @@ export default function Header({
   };
 
   // Determine which navigation to use
-  const navigation = isAdminRoute ? adminNavigation : publicNavigation;
+  // Show admin navigation if user is admin, otherwise show public navigation
+  const isAdmin = user?.role === 'admin';
+  const navigation = isAdmin ? adminNavigation : publicNavigation;
   return (
     <header className="sticky top-0 z-50 w-full border-b border-paint-orange/20 bg-gradient-to-r from-paint-orange/10 via-paint-teal/10 to-paint-purple/10 backdrop-blur-xl supports-[backdrop-filter]:bg-white/80">
       <div className="container flex h-20 items-center justify-between px-6">
