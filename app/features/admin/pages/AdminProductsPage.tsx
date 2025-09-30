@@ -13,13 +13,8 @@ import { Badge } from '../../shared/components/ui/badge';
 import { Button } from '../../shared/components/ui/button';
 import { Input } from '../../shared/components/ui/input';
 import { Label } from '../../shared/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../shared/components/ui/select';
+import { Checkbox } from '../../shared/components/ui/checkbox';
+import { Select } from '../../shared/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -321,41 +316,39 @@ export default function AdminProductsPage() {
               <div>
                 <Label htmlFor="create-category">Danh mục *</Label>
                 <Select
+                  id="create-category"
                   value={createForm.category}
-                  onValueChange={value =>
-                    setCreateForm({ ...createForm, category: value as typeof PRODUCT_CATEGORIES[number] })
+                  onChange={e =>
+                    setCreateForm({
+                      ...createForm,
+                      category: e.target
+                        .value as (typeof PRODUCT_CATEGORIES)[number],
+                    })
                   }
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRODUCT_CATEGORIES.map(category => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                  <option value="">Chọn danh mục</option>
+                  {PRODUCT_CATEGORIES.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
                 </Select>
               </div>
               <div>
                 <Label htmlFor="create-unit">Đơn vị *</Label>
                 <Select
+                  id="create-unit"
                   value={createForm.unit}
-                  onValueChange={value =>
-                    setCreateForm({ ...createForm, unit: value })
+                  onChange={e =>
+                    setCreateForm({ ...createForm, unit: e.target.value })
                   }
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn đơn vị" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRODUCT_UNITS.map(unit => (
-                      <SelectItem key={unit} value={unit}>
-                        {unit}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                  <option value="">Chọn đơn vị</option>
+                  {PRODUCT_UNITS.map(unit => (
+                    <option key={unit} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
                 </Select>
               </div>
             </div>
@@ -406,14 +399,12 @@ export default function AdminProductsPage() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="create-active"
                 checked={createForm.isActive}
                 onChange={e =>
                   setCreateForm({ ...createForm, isActive: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="create-active">Hoạt động</Label>
             </div>
@@ -467,41 +458,39 @@ export default function AdminProductsPage() {
               <div>
                 <Label htmlFor="edit-category">Danh mục *</Label>
                 <Select
-                  value={editForm.category || 'Exterior Paint'}
-                  onValueChange={value =>
-                    setEditForm({ ...editForm, category: value as typeof PRODUCT_CATEGORIES[number] })
+                  id="edit-category"
+                  value={editForm.category || 'Sơn ngoại thất'}
+                  onChange={e =>
+                    setEditForm({
+                      ...editForm,
+                      category: e.target
+                        .value as (typeof PRODUCT_CATEGORIES)[number],
+                    })
                   }
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn danh mục" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRODUCT_CATEGORIES.map(category => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                  <option value="">Chọn danh mục</option>
+                  {PRODUCT_CATEGORIES.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
                 </Select>
               </div>
               <div>
                 <Label htmlFor="edit-unit">Đơn vị *</Label>
                 <Select
-                  value={editForm.unit || 'liter'}
-                  onValueChange={value =>
-                    setEditForm({ ...editForm, unit: value })
+                  id="edit-unit"
+                  value={editForm.unit || 'lít'}
+                  onChange={e =>
+                    setEditForm({ ...editForm, unit: e.target.value })
                   }
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn đơn vị" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PRODUCT_UNITS.map(unit => (
-                      <SelectItem key={unit} value={unit}>
-                        {unit}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                  <option value="">Chọn đơn vị</option>
+                  {PRODUCT_UNITS.map(unit => (
+                    <option key={unit} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
                 </Select>
               </div>
             </div>
@@ -549,14 +538,12 @@ export default function AdminProductsPage() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="edit-active"
                 checked={editForm.isActive !== false}
                 onChange={e =>
                   setEditForm({ ...editForm, isActive: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="edit-active">Hoạt động</Label>
             </div>

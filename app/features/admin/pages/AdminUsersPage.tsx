@@ -13,13 +13,8 @@ import { Badge } from '../../shared/components/ui/badge';
 import { Button } from '../../shared/components/ui/button';
 import { Input } from '../../shared/components/ui/input';
 import { Label } from '../../shared/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../shared/components/ui/select';
+import { Checkbox } from '../../shared/components/ui/checkbox';
+import { Select } from '../../shared/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -380,32 +375,31 @@ export default function AdminUsersPage() {
             <div>
               <Label htmlFor="create-role">Vai trò</Label>
               <Select
+                id="create-role"
                 value={createForm.role || 'customer'}
-                onValueChange={value =>
-                  setCreateForm({ ...createForm, role: value as typeof USER_ROLES[number]['value'] })
+                onChange={e =>
+                  setCreateForm({
+                    ...createForm,
+                    role: e.target
+                      .value as (typeof USER_ROLES)[number]['value'],
+                  })
                 }
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn vai trò" />
-                </SelectTrigger>
-                <SelectContent>
-                  {USER_ROLES.map(role => (
-                    <SelectItem key={role.value} value={role.value}>
-                      {role.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                <option value="">Chọn vai trò</option>
+                {USER_ROLES.map(role => (
+                  <option key={role.value} value={role.value}>
+                    {role.label}
+                  </option>
+                ))}
               </Select>
             </div>
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="create-active"
                 checked={createForm.isActive}
                 onChange={e =>
                   setCreateForm({ ...createForm, isActive: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="create-active">Hoạt động</Label>
             </div>
@@ -467,32 +461,31 @@ export default function AdminUsersPage() {
             <div>
               <Label htmlFor="edit-role">Vai trò</Label>
               <Select
+                id="edit-role"
                 value={editForm.role || 'customer'}
-                onValueChange={value =>
-                  setEditForm({ ...editForm, role: value as typeof USER_ROLES[number]['value'] })
+                onChange={e =>
+                  setEditForm({
+                    ...editForm,
+                    role: e.target
+                      .value as (typeof USER_ROLES)[number]['value'],
+                  })
                 }
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Chọn vai trò" />
-                </SelectTrigger>
-                <SelectContent>
-                  {USER_ROLES.map(role => (
-                    <SelectItem key={role.value} value={role.value}>
-                      {role.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                <option value="">Chọn vai trò</option>
+                {USER_ROLES.map(role => (
+                  <option key={role.value} value={role.value}>
+                    {role.label}
+                  </option>
+                ))}
               </Select>
             </div>
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="edit-active"
                 checked={editForm.isActive !== false}
                 onChange={e =>
                   setEditForm({ ...editForm, isActive: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="edit-active">Hoạt động</Label>
             </div>

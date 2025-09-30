@@ -13,6 +13,7 @@ import { Badge } from '../../shared/components/ui/badge';
 import { Button } from '../../shared/components/ui/button';
 import { Input } from '../../shared/components/ui/input';
 import { Label } from '../../shared/components/ui/label';
+import { Checkbox } from '../../shared/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -327,26 +328,22 @@ export default function AdminSuppliersPage() {
               />
             </div>
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="create-verified"
                 checked={createForm.isVerified}
                 onChange={e =>
                   setCreateForm({ ...createForm, isVerified: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="create-verified">Đã xác minh</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="create-active"
                 checked={createForm.isActive}
                 onChange={e =>
                   setCreateForm({ ...createForm, isActive: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="create-active">Hoạt động</Label>
             </div>
@@ -419,26 +416,22 @@ export default function AdminSuppliersPage() {
               />
             </div>
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="edit-verified"
                 checked={editForm.isVerified || false}
                 onChange={e =>
                   setEditForm({ ...editForm, isVerified: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="edit-verified">Đã xác minh</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              <Checkbox
                 id="edit-active"
                 checked={editForm.isActive !== false}
                 onChange={e =>
                   setEditForm({ ...editForm, isActive: e.target.checked })
                 }
-                className="rounded"
               />
               <Label htmlFor="edit-active">Hoạt động</Label>
             </div>
