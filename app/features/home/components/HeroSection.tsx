@@ -55,7 +55,7 @@ export default function HeroSection() {
                       Diện tích cần sơn (m²)
                     </label>
                     <input
-                      className="flex h-11 w-full bg-white px-4 py-3 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-pink-400/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-pink-100 focus-visible:ring-offset-1 focus-visible:border-pink-400 hover:border-pink-300 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-pink-200 focus:border-pink-400 focus:ring-1 focus:ring-pink-100 rounded-lg text-pink-900"
+                      className="flex h-11 w-full bg-white px-4 py-3 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[#9C88FF]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9C88FF]/25 focus-visible:ring-offset-2 focus-visible:border-[#9C88FF] hover:border-[#9C88FF]/80 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-paint-orange/30 rounded-lg text-pink-900"
                       id="room-size"
                       placeholder="Ví dụ: 25 m²"
                       aria-describedby="room-size-help"
@@ -80,7 +80,7 @@ export default function HeroSection() {
                       <button
                         ref={buttonRef}
                         type="button"
-                        className={`flex h-11 w-full items-center justify-between bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-pink-400/40 focus:outline-none focus:ring-offset-1 hover:border-pink-300 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border rounded-lg text-pink-900 ${isOpen ? 'focus:border-pink-400 ring-1 ring-pink-100 border-pink-200' : 'border-pink-200'}`}
+                        className={`flex h-11 w-full items-center justify-between bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-pink-400/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-paint-orange/30 rounded-lg text-pink-900 ${isOpen ? 'focus-visible:border-paint-orange ring-2 ring-paint-orange/25 border-paint-orange/30' : 'border-paint-orange/30 hover:border-paint-orange/60'}`}
                         id="paint-type"
                         aria-haspopup="listbox"
                         aria-expanded={isOpen}
@@ -116,12 +116,12 @@ export default function HeroSection() {
                         <ul
                           id={listboxId}
                           role="listbox"
-                          className="absolute z-10 mt-2 w-full bg-white border border-pink-200 rounded-lg shadow-lg overflow-hidden"
+                          className="absolute z-10 mt-2 w-full bg-white border border-paint-orange/30 rounded-lg shadow-lg overflow-hidden"
                         >
                           <li
                             role="option"
                             aria-selected={selectedOption === 'interior'}
-                            className="px-4 py-2 text-sm hover:bg-pink-50 cursor-pointer text-pink-900"
+                            className="px-4 py-2 text-sm hover:bg-paint-orange/5 cursor-pointer text-pink-900"
                             onClick={() => selectOption('interior')}
                           >
                             Sơn nội thất
@@ -129,7 +129,7 @@ export default function HeroSection() {
                           <li
                             role="option"
                             aria-selected={selectedOption === 'exterior'}
-                            className="px-4 py-2 text-sm hover:bg-pink-50 cursor-pointer text-pink-900"
+                            className="px-4 py-2 text-sm hover:bg-paint-orange/5 cursor-pointer text-pink-900"
                             onClick={() => selectOption('exterior')}
                           >
                             Sơn ngoại thất
@@ -137,7 +137,7 @@ export default function HeroSection() {
                           <li
                             role="option"
                             aria-selected={selectedOption === 'specialty'}
-                            className="px-4 py-2 text-sm hover:bg-pink-50 cursor-pointer text-pink-900"
+                            className="px-4 py-2 text-sm hover:bg-paint-orange/5 cursor-pointer text-pink-900"
                             onClick={() => selectOption('specialty')}
                           >
                             Sơn chuyên dụng
@@ -164,7 +164,7 @@ export default function HeroSection() {
                       Địa chỉ
                     </label>
                     <input
-                      className="flex h-11 w-full bg-white px-4 py-3 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-pink-400/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-pink-100 focus-visible:ring-offset-1 focus-visible:border-pink-400 hover:border-pink-300 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-pink-200 focus:border-pink-400 focus:ring-1 focus:ring-pink-100 rounded-lg text-pink-900"
+                      className="flex h-11 w-full bg-white px-4 py-3 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-pink-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/25 focus-visible:ring-offset-2 focus-visible:border-paint-orange hover:border-paint-orange/60 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-paint-orange/30 rounded-lg text-pink-900"
                       id="address"
                       placeholder="Ví dụ: Quận 1, TP.HCM"
                       aria-describedby="address-help"
