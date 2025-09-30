@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Link } from 'react-router-dom';
+import { Input } from '../../shared/components/ui/input';
 import usePaintTypeDropdown from '../hooks/usePaintTypeDropdown';
 import { Package, Users } from 'lucide-react';
 
@@ -54,8 +55,8 @@ export default function HeroSection() {
                     >
                       Diện tích cần sơn (m²)
                     </label>
-                    <input
-                      className="flex h-11 w-full bg-white px-4 py-3 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-[#9C88FF]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9C88FF]/25 focus-visible:ring-offset-2 focus-visible:border-[#9C88FF] hover:border-[#9C88FF]/80 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-paint-orange/30 rounded-lg text-pink-900"
+                    <Input
+                      className="mt-1 text-pink-900"
                       id="room-size"
                       placeholder="Ví dụ: 25 m²"
                       aria-describedby="room-size-help"
@@ -163,8 +164,8 @@ export default function HeroSection() {
                     >
                       Địa chỉ
                     </label>
-                    <input
-                      className="flex h-11 w-full bg-white px-4 py-3 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-pink-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/25 focus-visible:ring-offset-2 focus-visible:border-paint-orange hover:border-paint-orange/60 disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-paint-orange/30 rounded-lg text-pink-900"
+                    <Input
+                      className="mt-1 text-pink-900"
                       id="address"
                       placeholder="Ví dụ: Quận 1, TP.HCM"
                       aria-describedby="address-help"
