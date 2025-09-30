@@ -1,19 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Link } from 'react-router-dom';
 import { Input } from '../../shared/components/ui/input';
+import { Select } from '../../shared/components/ui/select';
 import usePaintTypeDropdown from '../hooks/usePaintTypeDropdown';
 import { Package, Users } from 'lucide-react';
 
 export default function HeroSection() {
-  const {
-    isOpen,
-    selectedOption,
-    containerRef,
-    buttonRef,
-    listboxId,
-    toggleOpen,
-    selectOption,
-  } = usePaintTypeDropdown();
+  const { selectedOption, containerRef, selectOption } = usePaintTypeDropdown();
 
   return (
     <section
@@ -78,73 +71,25 @@ export default function HeroSection() {
                       Loại sơn
                     </label>
                     <div className="relative">
-                      <button
-                        ref={buttonRef}
-                        type="button"
-                        className={`flex h-11 w-full items-center justify-between bg-white px-4 py-3 text-sm transition-all duration-200 placeholder:text-pink-400/40 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 mt-1 border border-paint-orange/30 rounded-lg text-pink-900 ${isOpen ? 'focus-visible:border-paint-orange ring-2 ring-paint-orange/25 border-paint-orange/30' : 'border-paint-orange/30 hover:border-paint-orange/60'}`}
+                      <Select
                         id="paint-type"
-                        aria-haspopup="listbox"
-                        aria-expanded={isOpen}
-                        aria-controls={listboxId}
+                        className="mt-1 text-pink-900"
+                        value={selectedOption}
+                        onChange={e =>
+                          selectOption(
+                            e.target.value as
+                              | 'interior'
+                              | 'exterior'
+                              | 'specialty'
+                          )
+                        }
                         aria-describedby="paint-type-help"
-                        onClick={toggleOpen}
                       >
-                        <span className="block truncate">
-                          {selectedOption === ''
-                            ? 'Chọn loại sơn...'
-                            : selectedOption === 'interior'
-                              ? 'Sơn nội thất'
-                              : selectedOption === 'exterior'
-                                ? 'Sơn ngoại thất'
-                                : 'Sơn chuyên dụng'}
-                        </span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          className="lucide lucide-chevron-down h-4 w-4 opacity-50"
-                        >
-                          <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                      </button>
-                      {isOpen && (
-                        <ul
-                          id={listboxId}
-                          role="listbox"
-                          className="absolute z-10 mt-2 w-full bg-white border border-paint-orange/30 rounded-lg shadow-lg overflow-hidden"
-                        >
-                          <li
-                            role="option"
-                            aria-selected={selectedOption === 'interior'}
-                            className="px-4 py-2 text-sm hover:bg-paint-orange/5 cursor-pointer text-pink-900"
-                            onClick={() => selectOption('interior')}
-                          >
-                            Sơn nội thất
-                          </li>
-                          <li
-                            role="option"
-                            aria-selected={selectedOption === 'exterior'}
-                            className="px-4 py-2 text-sm hover:bg-paint-orange/5 cursor-pointer text-pink-900"
-                            onClick={() => selectOption('exterior')}
-                          >
-                            Sơn ngoại thất
-                          </li>
-                          <li
-                            role="option"
-                            aria-selected={selectedOption === 'specialty'}
-                            className="px-4 py-2 text-sm hover:bg-paint-orange/5 cursor-pointer text-pink-900"
-                            onClick={() => selectOption('specialty')}
-                          >
-                            Sơn chuyên dụng
-                          </li>
-                        </ul>
-                      )}
+                        <option value="">Chọn loại sơn...</option>
+                        <option value="interior">Sơn nội thất</option>
+                        <option value="exterior">Sơn ngoại thất</option>
+                        <option value="specialty">Sơn chuyên dụng</option>
+                      </Select>
                       <p
                         id="paint-type-help"
                         className="mt-1 text-xs text-gray-600"
