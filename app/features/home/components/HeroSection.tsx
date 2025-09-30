@@ -53,13 +53,14 @@ export default function HeroSection() {
                       id="room-size"
                       placeholder="Ví dụ: 25 m²"
                       aria-describedby="room-size-help"
+                      type="number"
                     />
                     <p
                       id="room-size-help"
-                      className="mt-1 text-xs text-gray-600"
+                      className="mt-1 text-xs text-gray-600 leading-relaxed"
                     >
-                      Tổng diện tích bề mặt cần sơn (trừ cửa sổ, cửa ra vào nếu
-                      cần).
+                      Tổng diện tích bề mặt cần sơn <br />
+                      (trừ cửa sổ, cửa ra vào nếu cần).
                     </p>
                   </div>
 
@@ -92,35 +93,15 @@ export default function HeroSection() {
                       </Select>
                       <p
                         id="paint-type-help"
-                        className="mt-1 text-xs text-gray-600"
+                        className="mt-1 text-xs text-gray-600 leading-relaxed"
                       >
-                        Chọn loại sơn phù hợp với không gian nội thất/ngoại thất
-                        hoặc nhu cầu đặc biệt.
+                        Chọn loại sơn phù hợp với không gian <br />
+                        nội thất/ngoại thất hoặc nhu cầu đặc biệt.
                       </p>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col md:flex-row gap-4 items-start">
-                  <div className="flex-1">
-                    <label
-                      className="peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-800 font-semibold text-base"
-                      htmlFor="address"
-                    >
-                      Địa chỉ
-                    </label>
-                    <Input
-                      className="mt-1 text-pink-900"
-                      id="address"
-                      placeholder="Ví dụ: Quận 1, TP.HCM"
-                      aria-describedby="address-help"
-                    />
-                    <p id="address-help" className="mt-1 text-xs text-gray-600">
-                      Nhập quận/huyện và tỉnh/thành phố để ước tính phí vận
-                      chuyển và dịch vụ.
-                    </p>
-                  </div>
-                  <div className="flex items-center pt-6">
+                  <div className="flex pt-6">
                     <button
                       className="inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:shadow-xl hover:scale-105 h-12 px-8 text-base rounded-2xl w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200"
                       aria-label="Tìm kiếm sơn phù hợp"
@@ -159,7 +140,7 @@ export default function HeroSection() {
             </Link>
             <Link
               to="/register"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-white shadow-sm hover:border-paint-orange hover:scale-105 h-12 px-8 text-base rounded-2xl w-full sm:w-auto border-2 border-paint-orange text-paint-orange hover:bg-paint-orange/5 font-semibold transition-all duration-200"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-white shadow-sm hover:border-paint-orange hover:scale-105 h-12 px-8 text-base rounded-2xl w-full sm:w-auto border-2 border-paint-orange text-paint-orange font-semibold transition-all duration-200"
             >
               <Users className="mr-2 h-5 w-5" />
               Đăng ký
