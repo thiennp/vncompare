@@ -2,15 +2,25 @@ import type { LoaderFunctionArgs } from 'react-router-dom';
 import { MongoClient } from 'mongodb';
 import { comparePassword } from '../features/auth/services/comparePassword';
 import { createJWT } from '../features/auth/services/createJWT';
+import { User } from '@/features/shared/types';
 
 const MONGODB_URI = 'mongodb://localhost:27017/vncompare';
 
-export async function login({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const email = url.searchParams.get('email');
-  const password = url.searchParams.get('password');
+export interface LoginSuccessResponse {
+  readonly success: true;
+  readonly user: Pick<User, 'email' | 'name' | 'role'>;
+  readonly token: string;
+}
 
-  if (!email || !password) {
+export interface LoginErrorResponse {
+  readonly success: false;
+  readonly error: string;
+}
+
+export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
+
+export async function loader({ params }: LoaderFunctionArgs): Promise<LoginResponse> {
+  if (!params.email || !params.password) {
     return { success: false, error: 'Email và mật khẩu là bắt buộc' };
   }
 
@@ -20,14 +30,14 @@ export async function login({ request }: LoaderFunctionArgs) {
     const db = client.db('vncompare');
 
     // Find user
-    const user = await db.collection('users').findOne({ email });
+    const user = await db.collection('users').findOne({ email: params.email });
     if (!user) {
       await client.close();
       return { success: false, error: 'Email hoặc mật khẩu không đúng' };
     }
 
     // Check password
-    const isValidPassword = await comparePassword(password, user.password);
+    const isValidPassword = await comparePassword(params.password, user.password);
     if (!isValidPassword) {
       await client.close();
       return { success: false, error: 'Email hoặc mật khẩu không đúng' };
@@ -45,7 +55,6 @@ export async function login({ request }: LoaderFunctionArgs) {
     return {
       success: true,
       user: {
-        _id: user._id,
         email: user.email,
         name: user.name,
         role: user.role,

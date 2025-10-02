@@ -11,29 +11,40 @@ import {
 } from '../features/shared/components/ui/card';
 import { Input } from '../features/shared/components/ui/input';
 import { Label } from '../features/shared/components/ui/label';
+import { Controller, useForm } from 'react-hook-form';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
   const { login } = useAuthStore();
   const fetcher = useFetcher();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const form = useForm({
+    mode: 'onSubmit',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  const submit = (e: React.FormEvent) => {
+    console.log('submit');
     e.preventDefault();
-    setError('');
+    e.stopPropagation();
+    console.log(form.getValues());
+    form.handleSubmit(() => {
+      setError('');
 
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('password', password);
-
-    fetcher.submit(formData, {
-      method: 'POST',
-      action: '/api/login',
+      const searchParams = new URLSearchParams();
+      searchParams.append('email', form.getValues('email'));
+      searchParams.append('password', form.getValues('password'));
+      const url = `/api/login?${searchParams.toString()}`;
+  
+      fetcher.load(url);
     });
   };
+  
 
   // Handle fetcher response
   useEffect(() => {
@@ -58,36 +69,50 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form className="space-y-4" onSubmit={submit}>
             {error && (
               <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                disabled={fetcher.state === 'submitting'}
-              />
-            </div>
+            <Controller 
+              name="email" 
+              control={form.control}
+              rules={{ required: true, pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email không hợp lệ' } }}
+              render={({ field }) => (
+                <div className="space-y-2">
+                  <fieldset>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      {...field}
+                      id="email"
+                      type="email"
+                      required
+                      disabled={fetcher.state === 'submitting'}
+                    />
+                  </fieldset>
+                </div>
+              )} />
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                disabled={fetcher.state === 'submitting'}
-              />
-            </div>
+            <Controller
+              name="password"
+              control={form.control}
+              rules={{ required: true, minLength: { value: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự' } }}
+              render={({ field }) => (
+                <div className="space-y-2">
+                  <fieldset>
+                    <Label htmlFor="password">Mật khẩu</Label>
+                    <Input
+                      {...field}
+                      id="password"
+                      type="password"
+                      required
+                      disabled={fetcher.state === 'submitting'}
+                    />
+                  </fieldset>
+                </div>
+              )} />
 
             <Button type="submit" className="w-full" disabled={fetcher.state === 'submitting'}>
               {fetcher.state === 'submitting' ? 'Đang đăng nhập...' : 'Đăng nhập'}
