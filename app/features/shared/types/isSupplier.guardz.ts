@@ -20,7 +20,7 @@ export function isSupplier(
       }>({
         license: isUndefinedOr(isString),
         taxCode: isUndefinedOr(isString),
-        businessLicense: isUndefinedOr(isString)
+        businessLicense: isUndefinedOr(isString),
       })
     ),
     contactInfo: isUndefinedOr(
@@ -31,11 +31,11 @@ export function isSupplier(
       }>({
         contactPerson: isUndefinedOr(isString),
         position: isUndefinedOr(isString),
-        phone: isUndefinedOr(isString)
+        phone: isUndefinedOr(isString),
       })
     ),
     isVerified: isUndefinedOr(isBoolean),
     createdAt: isString,
-    isActive: isUndefinedOr(isBoolean)
+    isActive: isUndefinedOr(isBoolean),
   })(value, config);
 }

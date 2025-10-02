@@ -21,10 +21,10 @@ export default function Sidebar({ navigation }: SidebarProps) {
           Bảng quản trị
         </h2>
         <nav className="space-y-2">
-          {navigation.map((item) => {
+          {navigation.map(item => {
             const Icon = item.icon;
             const isActive = location.pathname === item.href;
-            
+
             return (
               <Link
                 key={item.name}

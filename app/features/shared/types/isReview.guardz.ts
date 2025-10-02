@@ -20,6 +20,6 @@ export function isReview(
         'rejected'
       )
     ),
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

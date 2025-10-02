@@ -16,6 +16,6 @@ export function isAddress(
     district: isString,
     ward: isString,
     isDefault: isUndefinedOr(isBoolean),
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

@@ -124,9 +124,7 @@ export class DatabaseService {
 
   async getProductById(id: string): Promise<Product | null> {
     const db = await this.ensureDb();
-    return await db
-      .collection('products')
-      .findOne({ _id: new ObjectId(id) });
+    return await db.collection('products').findOne({ _id: new ObjectId(id) });
   }
 
   async createProduct(
@@ -193,9 +191,7 @@ export class DatabaseService {
 
   async getOrderById(id: string): Promise<Order | null> {
     const db = await this.ensureDb();
-    return await db
-      .collection('orders')
-      .findOne({ _id: new ObjectId(id) });
+    return await db.collection('orders').findOne({ _id: new ObjectId(id) });
   }
 
   async createOrder(
@@ -247,9 +243,7 @@ export class DatabaseService {
 
   async getSupplierById(id: string): Promise<Supplier | null> {
     const db = await this.ensureDb();
-    return await db
-      .collection('suppliers')
-      .findOne({ _id: new ObjectId(id) });
+    return await db.collection('suppliers').findOne({ _id: new ObjectId(id) });
   }
 
   async createSupplier(

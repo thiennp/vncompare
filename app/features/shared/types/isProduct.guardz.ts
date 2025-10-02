@@ -9,7 +9,7 @@ import {
   isString,
   isType,
   isUndefinedOr,
-  isUnknown
+  isUnknown,
 } from 'guardz';
 
 export function isProduct(
@@ -42,6 +42,6 @@ export function isProduct(
     isActive: isUndefinedOr(isBoolean),
     createdAt: isString,
     images: isUndefinedOr(isArrayWithEachItem(isString)),
-    specifications: isUndefinedOr(isObjectWithEachItem(isUnknown))
+    specifications: isUndefinedOr(isObjectWithEachItem(isUnknown)),
   })(value, config);
 }

@@ -11,14 +11,14 @@ export default function Layout() {
   // Business logic hooks
   const { isAuthenticated, displayName, initials, logout } = useAuthLogic();
   const { totalItems } = useCartLogic();
-  const { 
-    isAdminRoute, 
-    isAuthRoute, 
-    publicNavigation, 
-    adminNavigation, 
-    userMenuItems 
+  const {
+    isAdminRoute,
+    isAuthRoute,
+    publicNavigation,
+    adminNavigation,
+    userMenuItems,
   } = useNavigation();
-  
+
   // UI state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -65,12 +65,12 @@ export default function Layout() {
       {/* Main Content */}
       <div className="flex">
         {/* Admin Sidebar */}
-        {isAdminRoute && (
-          <Sidebar navigation={adminNavigation} />
-        )}
+        {isAdminRoute && <Sidebar navigation={adminNavigation} />}
 
         {/* Page Content */}
-        <main className={`flex-1 ${isAdminRoute ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}`}>
+        <main
+          className={`flex-1 ${isAdminRoute ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}`}
+        >
           <Outlet />
         </main>
       </div>

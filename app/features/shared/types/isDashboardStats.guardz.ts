@@ -13,6 +13,6 @@ export function isDashboardStats(
     totalSuppliers: isNumber,
     totalRevenue: isNumber,
     activeProducts: isNumber,
-    verifiedSuppliers: isNumber
+    verifiedSuppliers: isNumber,
   })(value, config);
 }

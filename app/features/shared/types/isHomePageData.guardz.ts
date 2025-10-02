@@ -12,6 +12,6 @@ export function isHomePageData(
   return isType<HomePageData>({
     featuredProducts: isArrayWithEachItem(isProduct),
     suppliers: isArrayWithEachItem(isSupplier),
-    reviews: isArrayWithEachItem(isReview)
+    reviews: isArrayWithEachItem(isReview),
   })(value, config);
 }

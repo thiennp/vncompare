@@ -16,7 +16,7 @@ export function isApiResponse<T = unknown>(
       success: isBoolean,
       message: isUndefinedOr(isString),
       data: isUndefinedOr(typeGuardT),
-      error: isUndefinedOr(isString)
+      error: isUndefinedOr(isString),
     })(value, config);
   };
 }

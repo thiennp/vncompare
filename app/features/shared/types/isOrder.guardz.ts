@@ -6,7 +6,7 @@ import {
   isOneOf,
   isString,
   isType,
-  isUndefinedOr
+  isUndefinedOr,
 } from 'guardz';
 import { isOrderItem } from './isOrderItem.guardz';
 
@@ -35,6 +35,6 @@ export function isOrder(
     ),
     shippingAddress: isString,
     createdAt: isString,
-    updatedAt: isUndefinedOr(isString)
+    updatedAt: isUndefinedOr(isString),
   })(value, config);
 }

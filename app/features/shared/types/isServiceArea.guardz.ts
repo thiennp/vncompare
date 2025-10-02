@@ -11,6 +11,6 @@ export function isServiceArea(
     supplierId: isString,
     provinces: isArrayWithEachItem(isString),
     districts: isArrayWithEachItem(isString),
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

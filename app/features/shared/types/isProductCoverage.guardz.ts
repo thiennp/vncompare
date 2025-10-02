@@ -11,6 +11,6 @@ export function isProductCoverage(
     productId: isString,
     area: isNumber,
     unit: isString,
-    createdAt: isString
+    createdAt: isString,
   })(value, config);
 }

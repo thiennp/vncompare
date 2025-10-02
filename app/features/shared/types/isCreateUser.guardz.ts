@@ -18,6 +18,6 @@ export function isCreateUser(
         'supplier'
       )
     ),
-    isActive: isUndefinedOr(isBoolean)
+    isActive: isUndefinedOr(isBoolean),
   })(value, config);
 }
