@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useFetcher } from 'react-router-dom';
 import { useAuthStore } from '../features/auth/stores/authStore';
 import {
   Card,
@@ -8,37 +8,38 @@ import {
   CardHeader,
   CardTitle,
 } from '../features/shared/components/ui/card';
-import { LoginForm } from '../features/shared/components/forms/Form.component';
+import { Button } from '../features/shared/components/ui/button';
+import { Input } from '../features/shared/components/ui/input';
+import { Label } from '../features/shared/components/ui/label';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const fetcher = useFetcher();
   const { login } = useAuthStore();
 
-  const handleLoginSuccess = (result: {
-    success: boolean;
-    data?: unknown;
-    error?: string;
-  }) => {
-    if (result.success && result.data) {
-      const data = result.data as {
-        user: {
-          email: string;
-          name: string;
-          role: 'customer' | 'admin' | 'supplier';
-          createdAt: string;
-        };
-        token: string;
-      };
-      login(data.user, data.token);
-      navigate('/dashboard');
-    } else {
-      setError(result.error || 'Đăng nhập thất bại');
+  // Handle fetcher response
+  useEffect(() => {
+    if (fetcher.data) {
+      if (fetcher.data.success) {
+        const { user, token } = fetcher.data;
+        login(user, token);
+        navigate('/dashboard');
+      } else {
+        setError(fetcher.data.error || 'Đăng nhập thất bại');
+      }
     }
-  };
+  }, [fetcher.data, login, navigate]);
 
-  const handleLoginError = (errorMessage: string) => {
-    setError(errorMessage);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    // Use fetcher to submit to the API
+    const params = new URLSearchParams({ email, password });
+    fetcher.load(`/api/login?${params.toString()}`);
   };
 
   return (
@@ -57,11 +58,41 @@ export default function Login() {
             </div>
           )}
 
-          <LoginForm
-            onSubmit={handleLoginSuccess}
-            onError={handleLoginError}
-            className="space-y-4"
-          />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                disabled={fetcher.state === 'loading'}
+                placeholder="Nhập email của bạn"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Mật khẩu</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                disabled={fetcher.state === 'loading'}
+                placeholder="Nhập mật khẩu"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={fetcher.state === 'loading'}
+            >
+              {fetcher.state === 'loading' ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            </Button>
+          </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
