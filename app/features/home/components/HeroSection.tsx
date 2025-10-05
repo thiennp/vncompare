@@ -113,9 +113,9 @@ export default function HeroSection() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         className="lucide lucide-search mr-2 h-5 w-5"
                         aria-hidden="true"
                       >

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useFetcher } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { useAuthStore } from '../features/auth/stores/authStore';
 import {
   Card,
@@ -10,36 +11,149 @@ import {
 } from '../features/shared/components/ui/card';
 import { Button } from '../features/shared/components/ui/button';
 import { Input } from '../features/shared/components/ui/input';
-import { Label } from '../features/shared/components/ui/label';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../features/shared/components/ui/form';
+import { isLoginRequest } from '../features/shared/types/guards';
+import { isString, isType } from 'guardz';
+
+// Form data type
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+// Enhanced validation using guardz
+const validateLoginForm = (data: LoginFormData) => {
+  const errors: Record<string, string> = {};
+
+  // First, validate with guardz for type safety
+  const isValidType = isType<LoginFormData>({
+    email: isString,
+    password: isString,
+  })(data);
+
+  if (!isValidType) {
+    errors.general = 'Dữ liệu không hợp lệ';
+    return { isValid: false, errors };
+  }
+
+  // Email validation with guardz
+  if (!data.email || data.email.trim() === '') {
+    errors.email = 'Email là bắt buộc';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    errors.email = 'Email không hợp lệ';
+  }
+
+  // Password validation with guardz
+  if (!data.password || data.password.trim() === '') {
+    errors.password = 'Mật khẩu là bắt buộc';
+  } else if (data.password.length < 6) {
+    errors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+};
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = React.useState('');
   const navigate = useNavigate();
-  const fetcher = useFetcher();
   const { login } = useAuthStore();
 
-  // Handle fetcher response
-  useEffect(() => {
-    if (fetcher.data) {
-      if (fetcher.data.success) {
-        const { user, token } = fetcher.data;
+  // Custom validation rules using guardz
+  const validateEmail = (value: string) => {
+    if (!value || value.trim() === '') {
+      return 'Email là bắt buộc';
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      return 'Email không hợp lệ';
+    }
+    return true;
+  };
+
+  const validatePassword = (value: string) => {
+    if (!value || value.trim() === '') {
+      return 'Mật khẩu là bắt buộc';
+    }
+    if (value.length < 6) {
+      return 'Mật khẩu phải có ít nhất 6 ký tự';
+    }
+    return true;
+  };
+
+  const form = useForm<LoginFormData>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    mode: 'onChange',
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    setError('');
+
+    // Step 1: Validate with custom validation function (includes guardz type checking)
+    const validation = validateLoginForm(data);
+    if (!validation.isValid) {
+      // Set form errors
+      Object.entries(validation.errors).forEach(([field, message]) => {
+        if (field === 'general') {
+          setError(message);
+        } else {
+          form.setError(field as keyof LoginFormData, { message });
+        }
+      });
+      return;
+    }
+
+    // Step 2: Validate with guardz LoginRequest type guard
+    if (!isLoginRequest(data)) {
+      setError('Dữ liệu đăng nhập không hợp lệ');
+      return;
+    }
+
+    // Step 3: Additional guardz validation for runtime type safety
+    const isDataValid = isType<LoginFormData>({
+      email: isString,
+      password: isString,
+    })(data);
+
+    if (!isDataValid) {
+      setError('Cấu trúc dữ liệu không hợp lệ');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('email', data.email.trim());
+      formData.append('password', data.password);
+
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const responseData = await response.json();
+
+      if (responseData.success) {
+        const { user, token } = responseData;
         login(user, token);
         navigate('/dashboard');
       } else {
-        setError(fetcher.data.error || 'Đăng nhập thất bại');
+        setError(responseData.error || 'Đăng nhập thất bại');
       }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Đăng nhập thất bại');
     }
-  }, [fetcher.data, login, navigate]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    // Use fetcher to submit to the API
-    const params = new URLSearchParams({ email, password });
-    fetcher.load(`/api/login?${params.toString()}`);
   };
 
   return (
@@ -58,41 +172,57 @@ export default function Login() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                disabled={fetcher.state === 'loading'}
-                placeholder="Nhập email của bạn"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                rules={{ validate: validateEmail }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Nhập email của bạn"
+                        disabled={form.formState.isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                disabled={fetcher.state === 'loading'}
-                placeholder="Nhập mật khẩu"
+              <FormField
+                control={form.control}
+                name="password"
+                rules={{ validate: validatePassword }}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mật khẩu</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Nhập mật khẩu"
+                        disabled={form.formState.isSubmitting}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={fetcher.state === 'loading'}
-            >
-              {fetcher.state === 'loading' ? 'Đang đăng nhập...' : 'Đăng nhập'}
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              </Button>
+            </form>
+          </Form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">

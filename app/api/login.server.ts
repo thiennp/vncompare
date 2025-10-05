@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from 'react-router-dom';
+import type { ActionFunctionArgs } from 'react-router-dom';
 import { MongoClient } from 'mongodb';
 import { comparePassword } from '../features/auth/services/comparePassword';
 import { createJWT } from '../features/auth/services/createJWT';
@@ -19,8 +19,12 @@ export interface LoginErrorResponse {
 
 export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
 
-export async function loader({ params }: LoaderFunctionArgs): Promise<LoginResponse> {
-  if (!params.email || !params.password) {
+export async function action({ request }: ActionFunctionArgs): Promise<LoginResponse> {
+  const formData = await request.formData();
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+
+  if (!email || !password) {
     return { success: false, error: 'Email và mật khẩu là bắt buộc' };
   }
 
@@ -30,14 +34,14 @@ export async function loader({ params }: LoaderFunctionArgs): Promise<LoginRespo
     const db = client.db('vncompare');
 
     // Find user
-    const user = await db.collection('users').findOne({ email: params.email });
+    const user = await db.collection('users').findOne({ email: email });
     if (!user) {
       await client.close();
       return { success: false, error: 'Email hoặc mật khẩu không đúng' };
     }
 
     // Check password
-    const isValidPassword = await comparePassword(params.password, user.password);
+    const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) {
       await client.close();
       return { success: false, error: 'Email hoặc mật khẩu không đúng' };

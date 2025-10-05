@@ -143,9 +143,6 @@ dependencies:
   tailwind-merge:
     specifier: ^2.0.0
     version: 2.6.0
-  zod:
-    specifier: ^4.1.11
-    version: 4.1.11
   zustand:
     specifier: ^4.5.7
     version: 4.5.7(@types/react@18.3.24)(react@18.3.1)
@@ -6102,10 +6099,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-  /zod@4.1.11:
-    resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
-    dev: false
 
   /zustand@4.5.7(@types/react@18.3.24)(react@18.3.1):
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
