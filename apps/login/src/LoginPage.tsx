@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useAuthStore } from '../features/auth/stores/authStore';
+import { useAuthStore } from '../../../app/features/auth/stores/authStore';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../features/shared/components/ui/card';
-import { Button } from '../features/shared/components/ui/button';
-import { Input } from '../features/shared/components/ui/input';
+} from '../../../app/features/shared/components/ui/card';
+import { Button } from '../../../app/features/shared/components/ui/button';
+import { Input } from '../../../app/features/shared/components/ui/input';
 import {
   Form,
   FormControl,
@@ -18,21 +18,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../features/shared/components/ui/form';
-import { isLoginRequest } from '../features/shared/types/guards';
+} from '../../../app/features/shared/components/ui/form';
+import { isLoginRequest } from '../../../app/features/shared/types/guards';
 import { isString, isType } from 'guardz';
 
-// Form data type
 interface LoginFormData {
   email: string;
   password: string;
 }
 
-// Enhanced validation using guardz
 const validateLoginForm = (data: LoginFormData) => {
   const errors: Record<string, string> = {};
 
-  // First, validate with guardz for type safety
   const isValidType = isType<LoginFormData>({
     email: isString,
     password: isString,
@@ -43,14 +40,12 @@ const validateLoginForm = (data: LoginFormData) => {
     return { isValid: false, errors };
   }
 
-  // Email validation with guardz
   if (!data.email || data.email.trim() === '') {
     errors.email = 'Email là bắt buộc';
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     errors.email = 'Email không hợp lệ';
   }
 
-  // Password validation with guardz
   if (!data.password || data.password.trim() === '') {
     errors.password = 'Mật khẩu là bắt buộc';
   } else if (data.password.length < 6) {
@@ -63,12 +58,15 @@ const validateLoginForm = (data: LoginFormData) => {
   };
 };
 
-export default function Login() {
+export default function LoginPage() {
   const [error, setError] = React.useState('');
   const navigate = useNavigate();
   const { login } = useAuthStore();
 
-  // Custom validation rules using guardz
+  useEffect(() => {
+    // no-op for initial mount
+  }, []);
+
   const validateEmail = (value: string) => {
     if (!value || value.trim() === '') {
       return 'Email là bắt buộc';
@@ -100,10 +98,8 @@ export default function Login() {
   const onSubmit = async (data: LoginFormData) => {
     setError('');
 
-    // Step 1: Validate with custom validation function (includes guardz type checking)
     const validation = validateLoginForm(data);
     if (!validation.isValid) {
-      // Set form errors
       Object.entries(validation.errors).forEach(([field, message]) => {
         if (field === 'general') {
           setError(message);
@@ -114,13 +110,11 @@ export default function Login() {
       return;
     }
 
-    // Step 2: Validate with guardz LoginRequest type guard
     if (!isLoginRequest(data)) {
       setError('Dữ liệu đăng nhập không hợp lệ');
       return;
     }
 
-    // Step 3: Additional guardz validation for runtime type safety
     const isDataValid = isType<LoginFormData>({
       email: isString,
       password: isString,
@@ -146,12 +140,12 @@ export default function Login() {
       if (responseData.success) {
         const { user, token } = responseData;
         login(user, token);
-        navigate('/dashboard');
+        navigate('/');
       } else {
         setError(responseData.error || 'Đăng nhập thất bại');
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (err) {
+      console.error('Login error:', err);
       setError('Đăng nhập thất bại');
     }
   };
@@ -173,7 +167,7 @@ export default function Login() {
           )}
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
               <FormField
                 control={form.control}
                 name="email"
@@ -239,3 +233,5 @@ export default function Login() {
     </div>
   );
 }
+
+
