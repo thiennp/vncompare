@@ -33,7 +33,7 @@ export async function login(
       success: true,
       user: {
         email: email,
-        name: email.split('@')[0], // Use email prefix as name
+        name: email.split('@')[0] || 'User', // Use email prefix as name
         role: 'user',
       },
       token: 'mock-jwt-token-' + Date.now(),
