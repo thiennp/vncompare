@@ -219,6 +219,167 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
+// Orders endpoints
+app.get('/api/orders', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const orders = await db.collection('orders').find({}).skip(skip).limit(limit).toArray();
+    const total = await db.collection('orders').countDocuments();
+
+    res.json({
+      orders,
+      total,
+      page,
+      limit
+    });
+  } catch (error) {
+    console.error('Get orders error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi lấy danh sách đơn hàng' 
+    });
+  }
+});
+
+app.put('/api/orders/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Trạng thái không được để trống' 
+      });
+    }
+
+    const result = await db.collection('orders').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status, updatedAt: new Date() } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy đơn hàng' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Cập nhật trạng thái đơn hàng thành công'
+    });
+  } catch (error) {
+    console.error('Update order status error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi cập nhật trạng thái đơn hàng' 
+    });
+  }
+});
+
+// Users endpoints
+app.get('/api/users', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const users = await db.collection('users').find({}).skip(skip).limit(limit).toArray();
+    const total = await db.collection('users').countDocuments();
+
+    res.json({
+      users,
+      total,
+      page,
+      limit
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi lấy danh sách người dùng' 
+    });
+  }
+});
+
+// Suppliers endpoints
+app.get('/api/suppliers', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const suppliers = await db.collection('suppliers').find({}).skip(skip).limit(limit).toArray();
+    const total = await db.collection('suppliers').countDocuments();
+
+    res.json({
+      suppliers,
+      total,
+      page,
+      limit
+    });
+  } catch (error) {
+    console.error('Get suppliers error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi lấy danh sách nhà cung cấp' 
+    });
+  }
+});
+
+// Reviews endpoints
+app.get('/api/reviews', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const reviews = await db.collection('reviews').find({}).skip(skip).limit(limit).toArray();
+    const total = await db.collection('reviews').countDocuments();
+
+    res.json({
+      reviews,
+      total,
+      page,
+      limit
+    });
+  } catch (error) {
+    console.error('Get reviews error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi lấy danh sách đánh giá' 
+    });
+  }
+});
+
+// Dashboard stats endpoint
+app.get('/api/dashboard/stats', async (req, res) => {
+  try {
+    const totalUsers = await db.collection('users').countDocuments();
+    const totalProducts = await db.collection('products').countDocuments();
+    const totalOrders = await db.collection('orders').countDocuments();
+    const totalSuppliers = await db.collection('suppliers').countDocuments();
+
+    res.json({
+      totalUsers,
+      totalProducts,
+      totalOrders,
+      totalSuppliers,
+      totalRevenue: 0 // TODO: Calculate from orders
+    });
+  } catch (error) {
+    console.error('Get dashboard stats error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi lấy thống kê dashboard' 
+    });
+  }
+});
+
 // Start server
 async function startServer() {
   await connectToDatabase();

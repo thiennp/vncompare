@@ -1,12 +1,12 @@
-import { User } from '../../shared/services/models';
+import { User } from '../../../features/shared/services/models';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../shared/components/ui/card';
-import { Button } from '../../shared/components/ui/button';
+} from '../../../features/shared/components/ui/card';
+import { Button } from '../../../features/shared/components/ui/button';
 import {
   Users,
   Package,

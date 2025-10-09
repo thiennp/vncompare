@@ -26,20 +26,81 @@ export const db = {
     }
   },
 
-  async getSuppliers() {
-    return { suppliers: [], total: 0 };
+  async getSuppliers(filters = {}, page = 1, limit = 20) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/suppliers?page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch suppliers');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching suppliers:', error);
+      return { suppliers: [], total: 0 };
+    }
   },
 
-  async getReviews() {
-    return { reviews: [], total: 0 };
+  async getReviews(filters = {}, page = 1, limit = 20) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reviews?page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch reviews');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      return { reviews: [], total: 0 };
+    }
   },
 
-  async getOrders() {
-    return { orders: [], total: 0 };
+  async getOrders(filters = {}, page = 1, limit = 20) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders?page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch orders');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      return { orders: [], total: 0 };
+    }
   },
 
-  async getOrderById() {
-    return null;
+  async getOrderById(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/${id}`);
+      if (!response.ok) throw new Error('Failed to fetch order');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching order:', error);
+      return null;
+    }
+  },
+
+  async updateOrderStatus(id: string, status: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update order status');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  },
+
+  async getUsers(filters = {}, page = 1, limit = 20) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users?page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch users');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return { users: [], total: 0 };
+    }
   },
 
   async getAddresses() {
@@ -47,12 +108,19 @@ export const db = {
   },
 
   async getDashboardStats() {
-    return {
-      totalProducts: 0,
-      totalOrders: 0,
-      totalUsers: 0,
-      totalRevenue: 0,
-    };
+    try {
+      const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
+      if (!response.ok) throw new Error('Failed to fetch dashboard stats');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      return {
+        totalProducts: 0,
+        totalOrders: 0,
+        totalUsers: 0,
+        totalRevenue: 0,
+      };
+    }
   },
 
   async getProvinces() {

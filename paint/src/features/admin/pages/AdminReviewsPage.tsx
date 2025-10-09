@@ -1,14 +1,14 @@
 import { useLoaderData } from 'react-router-dom';
-import { Review } from '../../shared/services/models';
+import { Review } from '../../../features/shared/services/models';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../shared/components/ui/card';
-import { Badge } from '../../shared/components/ui/badge';
-import { Button } from '../../shared/components/ui/button';
+} from '../../../features/shared/components/ui/card';
+import { Badge } from '../../../features/shared/components/ui/badge';
+import { Button } from '../../../features/shared/components/ui/button';
 import { Star, Check, X, Edit } from 'lucide-react';
 
 interface AdminReviewsPageData {

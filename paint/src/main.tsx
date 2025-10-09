@@ -11,6 +11,11 @@ import AdminUsersPage from './features/admin/pages/AdminUsersPage';
 import AdminSuppliersPage from './features/admin/pages/AdminSuppliersPage';
 import AdminReviewsPage from './features/admin/pages/AdminReviewsPage';
 import { adminProductsLoader } from './features/admin/pages/loaders/adminProductsLoader';
+import { adminOrdersLoader } from './features/admin/pages/loaders/adminOrdersLoader';
+import { adminUsersLoader } from './features/admin/pages/loaders/adminUsersLoader';
+import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppliersLoader';
+import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
+import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashboardLoader';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -20,12 +25,12 @@ const router = createBrowserRouter([
     path: '/admin',
     element: <AdminLayout />,
     children: [
-      { index: true, element: <AdminDashboardPage /> },
+      { index: true, element: <AdminDashboardPage />, loader: adminDashboardLoader },
       { path: 'products', element: <AdminProductsPage />, loader: adminProductsLoader },
-      { path: 'orders', element: <AdminOrdersPage /> },
-      { path: 'users', element: <AdminUsersPage /> },
-      { path: 'suppliers', element: <AdminSuppliersPage /> },
-      { path: 'reviews', element: <AdminReviewsPage /> },
+      { path: 'orders', element: <AdminOrdersPage />, loader: adminOrdersLoader },
+      { path: 'users', element: <AdminUsersPage />, loader: adminUsersLoader },
+      { path: 'suppliers', element: <AdminSuppliersPage />, loader: adminSuppliersLoader },
+      { path: 'reviews', element: <AdminReviewsPage />, loader: adminReviewsLoader },
     ],
   },
 ]);
