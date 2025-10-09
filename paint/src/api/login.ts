@@ -1,4 +1,10 @@
-// Mock API for client-side demo
+// Real MongoDB authentication API
+import { MongoClient } from 'mongodb';
+import { comparePassword } from '../features/auth/services/comparePassword';
+import { createJWT } from '../features/auth/services/createJWT';
+
+const MONGODB_URI = 'mongodb://localhost:27017/vncompare';
+
 export interface LoginSuccessResponse {
   readonly success: true;
   readonly user: {
@@ -24,24 +30,45 @@ export async function login(
     return { success: false, error: 'Email và mật khẩu là bắt buộc' };
   }
 
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  try {
+    const client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const db = client.db('vncompare');
 
-  // Mock authentication - accept any email/password for demo
-  if (email && password) {
-    // Check if it's an admin email
-    const isAdmin = email.includes('admin') || email.includes('paint.com');
-    
+    // Find user
+    const user = await db.collection('users').findOne({ email: email });
+    if (!user) {
+      await client.close();
+      return { success: false, error: 'Email hoặc mật khẩu không đúng' };
+    }
+
+    // Check password
+    const isValidPassword = comparePassword(password, user.password);
+    if (!isValidPassword) {
+      await client.close();
+      return { success: false, error: 'Email hoặc mật khẩu không đúng' };
+    }
+
+    // Create JWT token
+    const token = createJWT({
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+    });
+
+    await client.close();
+
     return {
       success: true,
       user: {
-        email: email,
-        name: email.split('@')[0] || 'User', // Use email prefix as name
-        role: isAdmin ? 'admin' : 'user',
+        email: user.email,
+        name: user.name,
+        role: user.role,
       },
-      token: 'mock-jwt-token-' + Date.now(),
+      token,
     };
+  } catch (error) {
+    console.error('Login error:', error);
+    return { success: false, error: 'Đăng nhập thất bại' };
   }
-
-  return { success: false, error: 'Email hoặc mật khẩu không đúng' };
 }

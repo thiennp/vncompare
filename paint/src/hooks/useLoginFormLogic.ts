@@ -32,6 +32,7 @@ export function useLoginFormLogic() {
         email: fetcher.data.user.email,
         name: fetcher.data.user.name,
         role: fetcher.data.user.role,
+        token: fetcher.data.token,
       };
       
       localStorage.setItem('paint_user', JSON.stringify(userData));

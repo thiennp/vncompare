@@ -1,5 +1,6 @@
-// Mock auth hook for paint project
+// Real auth hook for paint project with MongoDB
 import { useState, useEffect } from 'react';
+import { verifyAuth } from '../loaders/verifyAuthLoader';
 
 interface User {
   _id: string;
@@ -13,26 +14,37 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored user data
-    const storedUser = localStorage.getItem('paint_user');
-    if (storedUser) {
+    // Check authentication on mount
+    const checkAuth = async () => {
       try {
-        const userData = JSON.parse(storedUser);
-        setUser(userData);
+        const authUser = await verifyAuth();
+        if (authUser) {
+          // Get full user data from localStorage or API
+          const storedUser = localStorage.getItem('paint_user');
+          if (storedUser) {
+            const userData = JSON.parse(storedUser);
+            setUser(userData);
+          } else {
+            // Fallback to basic auth data
+            setUser({
+              _id: authUser._id,
+              email: authUser.email,
+              name: authUser.email.split('@')[0],
+              role: authUser.role,
+            });
+          }
+        } else {
+          setUser(null);
+        }
       } catch (error) {
-        console.error('Error parsing stored user data:', error);
-        localStorage.removeItem('paint_user');
+        console.error('Auth check error:', error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
       }
-    } else {
-      // Default admin user for demo
-      setUser({
-        _id: '1',
-        email: 'admin@paint.com',
-        name: 'Admin User',
-        role: 'admin',
-      });
-    }
-    setIsLoading(false);
+    };
+
+    checkAuth();
   }, []);
 
   // Listen for login events
@@ -41,11 +53,16 @@ export function useAuth() {
       const userData = event.detail;
       setUser(userData);
       localStorage.setItem('paint_user', JSON.stringify(userData));
+      
+      // Set auth token cookie
+      document.cookie = `auth_token=${userData.token}; path=/; max-age=${7 * 24 * 60 * 60}`;
     };
 
     const handleLogout = () => {
       setUser(null);
       localStorage.removeItem('paint_user');
+      // Clear auth token cookie
+      document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     };
 
     window.addEventListener('paint:login', handleLogin as EventListener);
@@ -60,6 +77,8 @@ export function useAuth() {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('paint_user');
+    // Clear auth token cookie
+    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     // Dispatch logout event
     window.dispatchEvent(new CustomEvent('paint:logout'));
   };
