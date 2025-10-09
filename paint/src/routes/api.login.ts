@@ -11,14 +11,17 @@ async function authenticateUser(email: string, password: string) {
       body: JSON.stringify({ email, password }),
     });
 
+    const result = await response.json();
+    
+    // If response is not ok, return the error from the server
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      return { success: false, error: result.error || 'Đăng nhập thất bại' };
     }
 
-    const result = await response.json();
     return result;
   } catch (error) {
     console.error('Authentication error:', error);
+    // Only show connection error for actual network issues
     return { success: false, error: 'Không thể kết nối đến server' };
   }
 }
