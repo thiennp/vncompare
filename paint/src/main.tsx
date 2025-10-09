@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import { action as loginAction } from './routes/api.login.server';
+import { action as loginAction } from './routes/api.login';
 import AdminLayout from './features/admin/components/AdminLayout';
 import AdminDashboardPage from './features/admin/pages/AdminDashboardPage';
 import AdminProductsPage from './features/admin/pages/AdminProductsPage';

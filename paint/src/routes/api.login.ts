@@ -1,5 +1,5 @@
 import { json } from 'react-router-dom';
-import { login } from '../api/login';
+import { login } from '../api/login.server';
 
 export async function action({ request }: { request: Request }) {
   const formData = await request.formData();
