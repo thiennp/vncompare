@@ -4,6 +4,13 @@ import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+// Declare process for Node.js environment
+declare const process: {
+  env: {
+    JWT_SECRET?: string;
+  };
+};
+
 const MONGODB_URI = 'mongodb://localhost:27017/vncompare';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 

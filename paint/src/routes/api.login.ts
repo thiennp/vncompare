@@ -1,14 +1,25 @@
 import { json } from 'react-router-dom';
 
-// Dynamic import to avoid bundling server-side dependencies in client
+// Call external API server for authentication
 async function authenticateUser(email: string, password: string) {
   try {
-    // Dynamic import of server-side authentication
-    const { authenticateUser: serverAuth } = await import('../server/auth');
-    return await serverAuth(email, password);
+    const response = await fetch('http://localhost:3001/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
   } catch (error) {
     console.error('Authentication error:', error);
-    return { success: false, error: 'Đăng nhập thất bại' };
+    return { success: false, error: 'Không thể kết nối đến server' };
   }
 }
 
@@ -21,7 +32,7 @@ export async function action({ request }: { request: Request }) {
     return json({ success: false, error: 'Email và mật khẩu là bắt buộc' });
   }
 
-  // Use real MongoDB authentication
+  // Use external API server for authentication
   const result = await authenticateUser(email, password);
   return json(result);
 }
