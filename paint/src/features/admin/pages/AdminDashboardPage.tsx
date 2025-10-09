@@ -1,3 +1,4 @@
+import { useLoaderData } from 'react-router-dom';
 import { User } from '../../../features/shared/services/models';
 import {
   Card,
@@ -32,7 +33,9 @@ interface AdminDashboardPageData {
 }
 
 export default function AdminDashboardPage() {
-  // Mock data for demo
+  const { stats } = useLoaderData() as { stats: AdminDashboardPageData['stats'] };
+  
+  // Mock user data for demo (could be loaded from auth context)
   const user: User = {
     _id: '1',
     email: 'admin@paint.com',
@@ -40,16 +43,6 @@ export default function AdminDashboardPage() {
     role: 'admin',
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
-  
-  const stats = {
-    totalUsers: 2,
-    totalProducts: 2,
-    totalOrders: 1,
-    totalSuppliers: 1,
-    totalRevenue: 1000000,
-    pendingOrders: 1,
-    pendingReviews: 1,
   };
 
   return (

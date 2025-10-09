@@ -7,7 +7,11 @@ export async function adminDashboardLoader() {
     const stats = await db.getDashboardStats();
 
     return {
-      stats,
+      stats: {
+        ...stats,
+        pendingOrders: 0, // TODO: Calculate from orders with pending status
+        pendingReviews: 0, // TODO: Calculate from reviews with pending status
+      },
     };
   } catch (error) {
     console.error('Error loading admin dashboard data:', error);
@@ -19,6 +23,8 @@ export async function adminDashboardLoader() {
         totalOrders: 0,
         totalSuppliers: 0,
         totalRevenue: 0,
+        pendingOrders: 0,
+        pendingReviews: 0,
       },
     };
   }

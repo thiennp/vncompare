@@ -69,7 +69,7 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.createSupplier();
+      await db.createSupplier(createForm);
       setShowCreateModal(false);
       setCreateForm({
         name: '',
@@ -80,9 +80,10 @@ export default function AdminSuppliersPage() {
         isActive: true,
       });
       revalidator.revalidate();
+      alert('Tạo nhà cung cấp thành công!');
     } catch (error) {
       console.error('Error creating supplier:', error);
-      alert('Có lỗi xảy ra khi tạo nhà cung cấp');
+      alert('Có lỗi xảy ra khi tạo nhà cung cấp: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -93,14 +94,15 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateSupplier();
+      await db.updateSupplier(selectedSupplier._id.toString(), editForm);
       setShowEditModal(false);
       setSelectedSupplier(null);
       setEditForm({});
       revalidator.revalidate();
+      alert('Cập nhật nhà cung cấp thành công!');
     } catch (error) {
       console.error('Error updating supplier:', error);
-      alert('Có lỗi xảy ra khi cập nhật nhà cung cấp');
+      alert('Có lỗi xảy ra khi cập nhật nhà cung cấp: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -111,13 +113,14 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.deleteSupplier();
+      await db.deleteSupplier(selectedSupplier._id.toString());
       setShowDeleteModal(false);
       setSelectedSupplier(null);
       revalidator.revalidate();
+      alert('Xóa nhà cung cấp thành công!');
     } catch (error) {
       console.error('Error deleting supplier:', error);
-      alert('Có lỗi xảy ra khi xóa nhà cung cấp');
+      alert('Có lỗi xảy ra khi xóa nhà cung cấp: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }

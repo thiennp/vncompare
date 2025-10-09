@@ -306,6 +306,116 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
+app.post('/api/users', async (req, res) => {
+  try {
+    const { email, name, password, role } = req.body;
+
+    if (!email || !name || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Email, tên và mật khẩu là bắt buộc' 
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await db.collection('users').findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Email đã tồn tại' 
+      });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = {
+      email,
+      name,
+      password: hashedPassword,
+      role: role || 'user',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('users').insertOne(user);
+    
+    res.json({
+      success: true,
+      user: { ...user, _id: result.insertedId, password: undefined }
+    });
+  } catch (error) {
+    console.error('Create user error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi tạo người dùng' 
+    });
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email, name, role } = req.body;
+
+    const updateData = {
+      email,
+      name,
+      role,
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('users').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy người dùng' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Cập nhật người dùng thành công'
+    });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi cập nhật người dùng' 
+    });
+  }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await db.collection('users').deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy người dùng' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Xóa người dùng thành công'
+    });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi xóa người dùng' 
+    });
+  }
+});
+
 // Suppliers endpoints
 app.get('/api/suppliers', async (req, res) => {
   try {
@@ -327,6 +437,116 @@ app.get('/api/suppliers', async (req, res) => {
     res.status(500).json({ 
       success: false, 
       error: 'Lỗi khi lấy danh sách nhà cung cấp' 
+    });
+  }
+});
+
+app.post('/api/suppliers', async (req, res) => {
+  try {
+    const { name, email, phone, address, verified } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Tên và email là bắt buộc' 
+      });
+    }
+
+    // Check if supplier already exists
+    const existingSupplier = await db.collection('suppliers').findOne({ email });
+    if (existingSupplier) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Email nhà cung cấp đã tồn tại' 
+      });
+    }
+
+    const supplier = {
+      name,
+      email,
+      phone: phone || '',
+      address: address || '',
+      verified: verified || false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('suppliers').insertOne(supplier);
+    
+    res.json({
+      success: true,
+      supplier: { ...supplier, _id: result.insertedId }
+    });
+  } catch (error) {
+    console.error('Create supplier error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi tạo nhà cung cấp' 
+    });
+  }
+});
+
+app.put('/api/suppliers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, address, verified } = req.body;
+
+    const updateData = {
+      name,
+      email,
+      phone,
+      address,
+      verified,
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('suppliers').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy nhà cung cấp' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Cập nhật nhà cung cấp thành công'
+    });
+  } catch (error) {
+    console.error('Update supplier error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi cập nhật nhà cung cấp' 
+    });
+  }
+});
+
+app.delete('/api/suppliers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await db.collection('suppliers').deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy nhà cung cấp' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Xóa nhà cung cấp thành công'
+    });
+  } catch (error) {
+    console.error('Delete supplier error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi xóa nhà cung cấp' 
     });
   }
 });

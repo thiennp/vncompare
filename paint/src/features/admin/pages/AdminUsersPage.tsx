@@ -81,7 +81,7 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.createUser();
+      await db.createUser(createForm);
       setShowCreateModal(false);
       setCreateForm({
         email: '',
@@ -92,9 +92,10 @@ export default function AdminUsersPage() {
         isActive: true,
       });
       revalidator.revalidate();
+      alert('Tạo người dùng thành công!');
     } catch (error) {
       console.error('Error creating user:', error);
-      alert('Có lỗi xảy ra khi tạo người dùng');
+      alert('Có lỗi xảy ra khi tạo người dùng: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -105,14 +106,15 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateUser();
+      await db.updateUser(selectedUser._id.toString(), editForm);
       setShowEditModal(false);
       setSelectedUser(null);
       setEditForm({});
       revalidator.revalidate();
+      alert('Cập nhật người dùng thành công!');
     } catch (error) {
       console.error('Error updating user:', error);
-      alert('Có lỗi xảy ra khi cập nhật người dùng');
+      alert('Có lỗi xảy ra khi cập nhật người dùng: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -123,13 +125,14 @@ export default function AdminUsersPage() {
 
     setIsLoading(true);
     try {
-      await db.deleteUser();
+      await db.deleteUser(selectedUser._id.toString());
       setShowDeleteModal(false);
       setSelectedUser(null);
       revalidator.revalidate();
+      alert('Xóa người dùng thành công!');
     } catch (error) {
       console.error('Error deleting user:', error);
-      alert('Có lỗi xảy ra khi xóa người dùng');
+      alert('Có lỗi xảy ra khi xóa người dùng: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }

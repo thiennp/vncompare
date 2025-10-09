@@ -136,16 +136,66 @@ export const db = {
   },
 
   // Admin methods
-  async createUser() {
-    return null;
+  async createUser(userData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create user');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   },
 
-  async updateUser() {
-    return null;
+  async updateUser(id: string, userData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update user');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
   },
 
-  async deleteUser() {
-    return null;
+  async deleteUser(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete user');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
   },
 
   async createProduct(productData: any) {
@@ -210,15 +260,65 @@ export const db = {
     }
   },
 
-  async createSupplier() {
-    return null;
+  async createSupplier(supplierData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/suppliers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(supplierData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create supplier');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating supplier:', error);
+      throw error;
+    }
   },
 
-  async updateSupplier() {
-    return null;
+  async updateSupplier(id: string, supplierData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/suppliers/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(supplierData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update supplier');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating supplier:', error);
+      throw error;
+    }
   },
 
-  async deleteSupplier() {
-    return null;
+  async deleteSupplier(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/suppliers/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete supplier');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting supplier:', error);
+      throw error;
+    }
   },
 };
