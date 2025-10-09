@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import { action as loginAction } from './routes/api.login';
 import AdminLayout from './features/admin/components/AdminLayout';
@@ -19,7 +19,8 @@ import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashbo
 import './index.css';
 
 const router = createBrowserRouter([
-  { path: '/', element: <LoginPage /> },
+  { path: '/', element: <Navigate to="/login" replace /> },
+  { path: '/login', element: <LoginPage /> },
   { path: '/api/login', action: loginAction },
   {
     path: '/admin',
