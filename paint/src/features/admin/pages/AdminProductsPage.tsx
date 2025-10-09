@@ -1,21 +1,21 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
-import { Product } from '../../shared/services/models';
-import { CreateProduct } from '../../shared/services/types';
-import { db } from '../../shared/services/database.server';
+import { Product } from '../../../features/shared/services/models';
+import { CreateProduct } from '../../../features/shared/services/types';
+import { db } from '../../../features/shared/services/database.client';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../shared/components/ui/card';
-import { Badge } from '../../shared/components/ui/badge';
-import { Button } from '../../shared/components/ui/button';
-import { Input } from '../../shared/components/ui/input';
-import { Label } from '../../shared/components/ui/label';
-import { Checkbox } from '../../shared/components/ui/checkbox';
-import { Select } from '../../shared/components/ui/select';
+} from '../../../features/shared/components/ui/card';
+import { Badge } from '../../../features/shared/components/ui/badge';
+import { Button } from '../../../features/shared/components/ui/button';
+import { Input } from '../../../features/shared/components/ui/input';
+import { Label } from '../../../features/shared/components/ui/label';
+import { Checkbox } from '../../../features/shared/components/ui/checkbox';
+import { Select } from '../../../features/shared/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -24,7 +24,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '../../shared/components/ui/dialog';
+} from '../../../features/shared/components/ui/dialog';
 import { Package, Plus, Edit, Trash2, Eye } from 'lucide-react';
 
 interface AdminProductsPageData {
@@ -89,7 +89,7 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.createProduct();
+      await db.createProduct(createForm);
       setShowCreateModal(false);
       setCreateForm({
         name: '',
@@ -97,16 +97,17 @@ export default function AdminProductsPage() {
         category: 'Sơn ngoại thất',
         description: '',
         price: 0,
-        unit: 'liter',
+        unit: 'lít',
         coverage: 0,
         isActive: true,
         images: [],
         specifications: {},
       });
       revalidator.revalidate();
+      alert('Tạo sản phẩm thành công!');
     } catch (error) {
       console.error('Error creating product:', error);
-      alert('Có lỗi xảy ra khi tạo sản phẩm');
+      alert('Có lỗi xảy ra khi tạo sản phẩm: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -117,14 +118,15 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.updateProduct();
+      await db.updateProduct(selectedProduct._id.toString(), editForm);
       setShowEditModal(false);
       setSelectedProduct(null);
       setEditForm({});
       revalidator.revalidate();
+      alert('Cập nhật sản phẩm thành công!');
     } catch (error) {
       console.error('Error updating product:', error);
-      alert('Có lỗi xảy ra khi cập nhật sản phẩm');
+      alert('Có lỗi xảy ra khi cập nhật sản phẩm: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -135,13 +137,14 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.deleteProduct();
+      await db.deleteProduct(selectedProduct._id.toString());
       setShowDeleteModal(false);
       setSelectedProduct(null);
       revalidator.revalidate();
+      alert('Xóa sản phẩm thành công!');
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert('Có lỗi xảy ra khi xóa sản phẩm');
+      alert('Có lỗi xảy ra khi xóa sản phẩm: ' + (error as Error).message);
     } finally {
       setIsLoading(false);
     }

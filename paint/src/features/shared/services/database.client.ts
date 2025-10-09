@@ -1,14 +1,29 @@
-// Simple database service for client-side routes
-// This is a placeholder that returns mock data
-// In a real application, these would be replaced with actual API calls
+// Database service for client-side routes
+// Calls the API server for all operations
+
+const API_BASE_URL = 'http://localhost:3001/api';
 
 export const db = {
-  async getProducts() {
-    return { products: [], total: 0 };
+  async getProducts(filters = {}, page = 1, limit = 20) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products?page=${page}&limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch products');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      return { products: [], total: 0 };
+    }
   },
 
-  async getProductById() {
-    return null;
+  async getProductById(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products/${id}`);
+      if (!response.ok) throw new Error('Failed to fetch product');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      return null;
+    }
   },
 
   async getSuppliers() {
@@ -65,16 +80,66 @@ export const db = {
     return null;
   },
 
-  async createProduct() {
-    return null;
+  async createProduct(productData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create product');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw error;
+    }
   },
 
-  async updateProduct() {
-    return null;
+  async updateProduct(id: string, productData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update product');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    }
   },
 
-  async deleteProduct() {
-    return null;
+  async deleteProduct(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete product');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw error;
+    }
   },
 
   async createSupplier() {

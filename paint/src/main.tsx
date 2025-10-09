@@ -10,6 +10,7 @@ import AdminOrdersPage from './features/admin/pages/AdminOrdersPage';
 import AdminUsersPage from './features/admin/pages/AdminUsersPage';
 import AdminSuppliersPage from './features/admin/pages/AdminSuppliersPage';
 import AdminReviewsPage from './features/admin/pages/AdminReviewsPage';
+import { adminProductsLoader } from './features/admin/pages/loaders/adminProductsLoader';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { index: true, element: <AdminDashboardPage /> },
-      { path: 'products', element: <AdminProductsPage /> },
+      { path: 'products', element: <AdminProductsPage />, loader: adminProductsLoader },
       { path: 'orders', element: <AdminOrdersPage /> },
       { path: 'users', element: <AdminUsersPage /> },
       { path: 'suppliers', element: <AdminSuppliersPage /> },

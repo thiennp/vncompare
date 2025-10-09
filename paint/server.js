@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -81,6 +81,140 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ 
       success: false, 
       error: 'Đăng nhập thất bại' 
+    });
+  }
+});
+
+// Products endpoints
+app.get('/api/products', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const products = await db.collection('products').find({}).skip(skip).limit(limit).toArray();
+    const total = await db.collection('products').countDocuments();
+
+    res.json({
+      products,
+      total,
+      page,
+      limit
+    });
+  } catch (error) {
+    console.error('Get products error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi lấy danh sách sản phẩm' 
+    });
+  }
+});
+
+app.post('/api/products', async (req, res) => {
+  try {
+    const { name, brand, category, description, price, unit, coverage, isActive } = req.body;
+
+    if (!name || !brand || !price || !coverage) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Thông tin bắt buộc không được để trống' 
+      });
+    }
+
+    const product = {
+      name,
+      brand,
+      category: category || 'Sơn ngoại thất',
+      description: description || '',
+      price: parseFloat(price),
+      unit: unit || 'lít',
+      coverage: parseFloat(coverage),
+      isActive: isActive !== false,
+      images: [],
+      specifications: {},
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('products').insertOne(product);
+    
+    res.json({
+      success: true,
+      product: { ...product, _id: result.insertedId }
+    });
+  } catch (error) {
+    console.error('Create product error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi tạo sản phẩm' 
+    });
+  }
+});
+
+app.put('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, brand, category, description, price, unit, coverage, isActive } = req.body;
+
+    const updateData = {
+      name,
+      brand,
+      category,
+      description,
+      price: parseFloat(price),
+      unit,
+      coverage: parseFloat(coverage),
+      isActive,
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('products').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy sản phẩm' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Cập nhật sản phẩm thành công'
+    });
+  } catch (error) {
+    console.error('Update product error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi cập nhật sản phẩm' 
+    });
+  }
+});
+
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await db.collection('products').deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'Không tìm thấy sản phẩm' 
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Xóa sản phẩm thành công'
+    });
+  } catch (error) {
+    console.error('Delete product error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Lỗi khi xóa sản phẩm' 
     });
   }
 });
