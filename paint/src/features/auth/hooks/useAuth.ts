@@ -1,5 +1,6 @@
 // Client-side auth hook for paint project
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
   _id: string;
@@ -12,6 +13,7 @@ interface User {
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check for stored user data on mount
@@ -55,6 +57,8 @@ export function useAuth() {
     localStorage.removeItem('paint_user');
     // Dispatch logout event
     window.dispatchEvent(new CustomEvent('paint:logout'));
+    // Redirect to login page
+    navigate('/login');
   };
 
   return {
