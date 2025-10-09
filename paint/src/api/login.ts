@@ -1,5 +1,5 @@
-// Client-side API that calls server-side MongoDB authentication
-import { login as serverLogin } from './login.server';
+// Client-side API for browser compatibility
+// This will be handled by the server-side route action
 
 export interface LoginSuccessResponse {
   readonly success: true;
@@ -18,10 +18,8 @@ export interface LoginErrorResponse {
 
 export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
 
-export async function login(
-  email: string,
-  password: string
-): Promise<LoginResponse> {
-  // Call the server-side MongoDB authentication
-  return await serverLogin(email, password);
+// This function is not used - the actual authentication happens in the server-side route action
+export async function login(): Promise<LoginResponse> {
+  // This should not be called directly - use the server-side route instead
+  throw new Error('Use server-side route for authentication');
 }
