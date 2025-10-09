@@ -1,9 +1,5 @@
-// Real MongoDB authentication API
-import { MongoClient } from 'mongodb';
-import { comparePassword } from '../features/auth/services/comparePassword';
-import { createJWT } from '../features/auth/services/createJWT';
-
-const MONGODB_URI = 'mongodb://localhost:27017/vncompare';
+// Client-side mock API for browser compatibility
+// In a real SSR application, this would be handled server-side
 
 export interface LoginSuccessResponse {
   readonly success: true;
@@ -30,34 +26,34 @@ export async function login(
     return { success: false, error: 'Email và mật khẩu là bắt buộc' };
   }
 
-  try {
-    const client = new MongoClient(MONGODB_URI);
-    await client.connect();
-    const db = client.db('vncompare');
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Find user
-    const user = await db.collection('users').findOne({ email: email });
-    if (!user) {
-      await client.close();
-      return { success: false, error: 'Email hoặc mật khẩu không đúng' };
-    }
+  // Mock authentication with seeded users
+  const mockUsers = [
+    {
+      email: 'admin@paint.com',
+      password: 'admin123',
+      name: 'Admin User',
+      role: 'admin',
+    },
+    {
+      email: 'user@paint.com',
+      password: 'user123',
+      name: 'Regular User',
+      role: 'user',
+    },
+    {
+      email: 'test@example.com',
+      password: 'test123',
+      name: 'Test User',
+      role: 'user',
+    },
+  ];
 
-    // Check password
-    const isValidPassword = comparePassword(password, user.password);
-    if (!isValidPassword) {
-      await client.close();
-      return { success: false, error: 'Email hoặc mật khẩu không đúng' };
-    }
-
-    // Create JWT token
-    const token = createJWT({
-      userId: user._id,
-      email: user.email,
-      role: user.role,
-    });
-
-    await client.close();
-
+  const user = mockUsers.find(u => u.email === email && u.password === password);
+  
+  if (user) {
     return {
       success: true,
       user: {
@@ -65,10 +61,9 @@ export async function login(
         name: user.name,
         role: user.role,
       },
-      token,
+      token: 'mock-jwt-token-' + Date.now(),
     };
-  } catch (error) {
-    console.error('Login error:', error);
-    return { success: false, error: 'Đăng nhập thất bại' };
   }
+
+  return { success: false, error: 'Email hoặc mật khẩu không đúng' };
 }
