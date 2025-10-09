@@ -6,4 +6,12 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js',
   },
+  build: {
+    rollupOptions: {
+      external: ['mongodb', 'bcryptjs', 'jsonwebtoken'],
+    },
+  },
+  optimizeDeps: {
+    exclude: ['mongodb', 'bcryptjs', 'jsonwebtoken'],
+  },
 });
