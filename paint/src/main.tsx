@@ -1,8 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import { action as loginAction } from './routes/api.login';
+import HomePage from './features/home/pages/HomePage';
 import AdminLayout from './features/admin/components/AdminLayout';
 import AdminDashboardPage from './features/admin/pages/AdminDashboardPage';
 import AdminProductsPage from './features/admin/pages/AdminProductsPage';
@@ -19,19 +20,39 @@ import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashbo
 import './index.css';
 
 const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/login" replace /> },
+  { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/api/login', action: loginAction },
   {
     path: '/admin',
     element: <AdminLayout />,
     children: [
-      { index: true, element: <AdminDashboardPage />, loader: adminDashboardLoader },
-      { path: 'products', element: <AdminProductsPage />, loader: adminProductsLoader },
-      { path: 'orders', element: <AdminOrdersPage />, loader: adminOrdersLoader },
+      {
+        index: true,
+        element: <AdminDashboardPage />,
+        loader: adminDashboardLoader,
+      },
+      {
+        path: 'products',
+        element: <AdminProductsPage />,
+        loader: adminProductsLoader,
+      },
+      {
+        path: 'orders',
+        element: <AdminOrdersPage />,
+        loader: adminOrdersLoader,
+      },
       { path: 'users', element: <AdminUsersPage />, loader: adminUsersLoader },
-      { path: 'suppliers', element: <AdminSuppliersPage />, loader: adminSuppliersLoader },
-      { path: 'reviews', element: <AdminReviewsPage />, loader: adminReviewsLoader },
+      {
+        path: 'suppliers',
+        element: <AdminSuppliersPage />,
+        loader: adminSuppliersLoader,
+      },
+      {
+        path: 'reviews',
+        element: <AdminReviewsPage />,
+        loader: adminReviewsLoader,
+      },
     ],
   },
 ]);
