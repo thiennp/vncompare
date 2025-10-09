@@ -1,7 +1,8 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
-import { Product } from '../../shared/types';
-import { db } from '../../shared/services/database.client';
+import { Product } from '../../shared/services/models';
+import { CreateProduct } from '../../shared/services/types';
+import { db } from '../../shared/services/database.server';
 import {
   Card,
   CardContent,

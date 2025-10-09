@@ -29,12 +29,15 @@ export async function login(
 
   // Mock authentication - accept any email/password for demo
   if (email && password) {
+    // Check if it's an admin email
+    const isAdmin = email.includes('admin') || email.includes('paint.com');
+    
     return {
       success: true,
       user: {
         email: email,
         name: email.split('@')[0] || 'User', // Use email prefix as name
-        role: 'user',
+        role: isAdmin ? 'admin' : 'user',
       },
       token: 'mock-jwt-token-' + Date.now(),
     };

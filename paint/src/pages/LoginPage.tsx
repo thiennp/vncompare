@@ -34,12 +34,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          {result && result.success && (
-            <div className="p-3 text-sm text-green-600 bg-green-50 border border-green-200 rounded-md mb-4">
-              Đăng nhập thành công! Chào mừng {result.user.name}
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label
