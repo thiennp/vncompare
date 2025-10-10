@@ -18,11 +18,16 @@ import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppli
 import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
 import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashboardLoader';
 import ErrorPage from './features/error/pages/ErrorPage';
+import RegisterPage from './features/auth/pages/RegisterPage';
+import ProfilePage from './features/auth/pages/ProfilePage';
+import { profileLoader } from './features/auth/loaders/profileLoader';
 import './index.css';
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
+  { path: '/register', element: <RegisterPage /> },
+  { path: '/profile', element: <ProfilePage />, loader: profileLoader },
   { path: '/api/login', action: loginAction },
   {
     path: '/admin',

@@ -58,3 +58,16 @@ export interface Review {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Address {
+  _id?: string;
+  userId: string;
+  name: string;
+  phone: string;
+  address: string;
+  province: string;
+  district: string;
+  ward: string;
+  isDefault?: boolean;
+  createdAt: string;
+}
