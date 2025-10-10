@@ -81,7 +81,12 @@ export const LoginForm: React.FC<{
   const config = {
     fields: [
       { name: 'email', label: 'Email', type: 'email' as const, required: true },
-      { name: 'password', label: 'Mật khẩu', type: 'password' as const, required: true },
+      {
+        name: 'password',
+        label: 'Mật khẩu',
+        type: 'password' as const,
+        required: true,
+      },
     ],
     defaultValues: { email: '', password: '' },
     validation: {
@@ -103,6 +108,92 @@ export const LoginForm: React.FC<{
     >
       <Button type="submit" className="w-full">
         Đăng nhập
+      </Button>
+    </Form>
+  );
+};
+
+export const RegisterForm: React.FC<{
+  onSubmit?: (result: {
+    success: boolean;
+    data?: unknown;
+    error?: string;
+  }) => void;
+  onError?: (error: string) => void;
+  className?: string;
+}> = ({ onSubmit, onError, className }) => {
+  const config = {
+    fields: [
+      {
+        name: 'name',
+        label: 'Họ và tên',
+        type: 'text' as const,
+        placeholder: 'Nhập họ và tên',
+        required: true,
+      },
+      {
+        name: 'email',
+        label: 'Email',
+        type: 'email' as const,
+        placeholder: 'Nhập email của bạn',
+        required: true,
+      },
+      {
+        name: 'phone',
+        label: 'Số điện thoại',
+        type: 'tel' as const,
+        placeholder: 'Nhập số điện thoại',
+      },
+      {
+        name: 'password',
+        label: 'Mật khẩu',
+        type: 'password' as const,
+        placeholder: 'Nhập mật khẩu',
+        required: true,
+      },
+      {
+        name: 'confirmPassword',
+        label: 'Xác nhận mật khẩu',
+        type: 'password' as const,
+        placeholder: 'Nhập lại mật khẩu',
+        required: true,
+      },
+    ] as const,
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validation: {
+      name: { required: true, minLength: 2 },
+      email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+      phone: { pattern: /^[0-9+\-\s()]+$/ },
+      password: { required: true, minLength: 6 },
+      confirmPassword: {
+        required: true,
+        custom: () => {
+          // This validation will be handled in the form component
+          return null;
+        },
+      },
+    },
+    submission: {
+      endpoint: '/api/register',
+      method: 'POST' as const,
+    },
+  };
+
+  return (
+    <Form
+      config={config}
+      onSubmit={onSubmit}
+      onError={onError}
+      className={className}
+    >
+      <Button type="submit" className="w-full" disabled={false}>
+        Đăng ký
       </Button>
     </Form>
   );
