@@ -23,6 +23,12 @@ import ProfilePage from './features/auth/pages/ProfilePage';
 import { profileLoader } from './features/auth/loaders/profileLoader';
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import { dashboardLoader } from './features/dashboard/loaders/dashboardLoader';
+import ProductsPage from './features/products/pages/ProductsPage';
+import ProductDetailPage from './features/products/pages/ProductDetailPage';
+import CoverageCalculatorPage from './features/products/pages/CoverageCalculatorPage';
+import { productsLoader } from './features/products/pages/loaders/productsLoader';
+import { productDetailLoader } from './features/products/pages/loaders/productDetailLoader';
+import { coverageCalculatorLoader } from './features/products/pages/loaders/coverageCalculatorLoader';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -31,6 +37,17 @@ const router = createBrowserRouter([
   { path: '/register', element: <RegisterPage /> },
   { path: '/profile', element: <ProfilePage />, loader: profileLoader },
   { path: '/dashboard', element: <DashboardPage />, loader: dashboardLoader },
+  { path: '/products', element: <ProductsPage />, loader: productsLoader },
+  {
+    path: '/products/:id',
+    element: <ProductDetailPage />,
+    loader: productDetailLoader,
+  },
+  {
+    path: '/coverage-calculator',
+    element: <CoverageCalculatorPage />,
+    loader: coverageCalculatorLoader,
+  },
   { path: '/api/login', action: loginAction },
   {
     path: '/admin',

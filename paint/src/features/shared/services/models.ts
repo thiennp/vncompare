@@ -13,10 +13,13 @@ export interface Product {
   name: string;
   brand: string;
   category: string;
-  description: string;
-  price: number;
+  description?: string;
+  price?: number;
+  basePrice?: number;
+  originalPrice?: number;
   unit: string;
-  coverage: number;
+  coverage?: number;
+  coverageRate?: number;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -53,6 +56,7 @@ export interface Review {
   userId: string;
   productId: string;
   rating: number;
+  title?: string;
   comment: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: Date;
