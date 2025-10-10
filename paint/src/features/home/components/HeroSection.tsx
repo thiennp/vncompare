@@ -1,12 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../../shared/components/ui/input';
 import { Select } from '../../shared/components/ui/select';
 import usePaintTypeDropdown from '../hooks/usePaintTypeDropdown';
 import { Package, Users } from 'lucide-react';
+import { useState } from 'react';
 
 export default function HeroSection() {
   const { selectedOption, containerRef, selectOption } = usePaintTypeDropdown();
+  const [roomSize, setRoomSize] = useState('');
+  const navigate = useNavigate();
 
   return (
     <section
@@ -54,6 +57,8 @@ export default function HeroSection() {
                       placeholder="Ví dụ: 25 m²"
                       aria-describedby="room-size-help"
                       type="number"
+                      value={roomSize}
+                      onChange={e => setRoomSize(e.target.value)}
                     />
                     <p
                       id="room-size-help"
@@ -105,6 +110,16 @@ export default function HeroSection() {
                     <button
                       className="inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paint-orange/20 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:shadow-xl hover:scale-105 h-12 px-8 text-base rounded-2xl w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200"
                       aria-label="Tìm kiếm sơn phù hợp"
+                      onClick={() => {
+                        const params = new URLSearchParams();
+                        if (selectedOption) {
+                          params.append('category', selectedOption);
+                        }
+                        if (roomSize) {
+                          params.append('roomSize', roomSize);
+                        }
+                        navigate(`/products?${params.toString()}`);
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
