@@ -29,6 +29,12 @@ import CoverageCalculatorPage from './features/products/pages/CoverageCalculator
 import { productsLoader } from './features/products/pages/loaders/productsLoader';
 import { productDetailLoader } from './features/products/pages/loaders/productDetailLoader';
 import { coverageCalculatorLoader } from './features/products/pages/loaders/coverageCalculatorLoader';
+import OrdersPage from './features/orders/pages/OrdersPage';
+import OrderDetailPage from './features/orders/pages/OrderDetailPage';
+import ShippingCalculatorPage from './features/orders/pages/ShippingCalculatorPage';
+import { ordersLoader } from './features/orders/pages/loaders/ordersLoader';
+import { orderDetailLoader } from './features/orders/pages/loaders/orderDetailLoader';
+import { shippingCalculatorLoader } from './features/orders/pages/loaders/shippingCalculatorLoader';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -47,6 +53,17 @@ const router = createBrowserRouter([
     path: '/coverage-calculator',
     element: <CoverageCalculatorPage />,
     loader: coverageCalculatorLoader,
+  },
+  { path: '/orders', element: <OrdersPage />, loader: ordersLoader },
+  {
+    path: '/orders/:id',
+    element: <OrderDetailPage />,
+    loader: orderDetailLoader,
+  },
+  {
+    path: '/shipping-calculator',
+    element: <ShippingCalculatorPage />,
+    loader: shippingCalculatorLoader,
   },
   { path: '/api/login', action: loginAction },
   {

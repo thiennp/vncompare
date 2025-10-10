@@ -25,19 +25,40 @@ export interface Product {
   updatedAt: Date;
 }
 
+export interface OrderItem {
+  _id?: string;
+  productId: string;
+  quantity: number;
+  price: number;
+}
+
 export interface Order {
   _id: string;
   userId: string;
-  products: Array<{
+  products?: Array<{
     productId: string;
     quantity: number;
     price: number;
   }>;
+  orderItems: OrderItem[];
   totalAmount: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status:
+    | 'pending'
+    | 'processing'
+    | 'confirmed'
+    | 'shipped'
+    | 'delivered'
+    | 'cancelled';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   shippingAddress: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Province {
+  _id?: string;
+  name: string;
+  code: string;
 }
 
 export interface Supplier {
