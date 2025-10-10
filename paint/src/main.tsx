@@ -17,6 +17,7 @@ import { adminUsersLoader } from './features/admin/pages/loaders/adminUsersLoade
 import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppliersLoader';
 import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
 import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashboardLoader';
+import ErrorPage from './features/error/pages/ErrorPage';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: '*', element: <ErrorPage /> },
 ]);
 
 const rootElement = document.getElementById('root');
