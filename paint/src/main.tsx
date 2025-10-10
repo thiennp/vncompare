@@ -21,6 +21,8 @@ import ErrorPage from './features/error/pages/ErrorPage';
 import RegisterPage from './features/auth/pages/RegisterPage';
 import ProfilePage from './features/auth/pages/ProfilePage';
 import { profileLoader } from './features/auth/loaders/profileLoader';
+import DashboardPage from './features/dashboard/pages/DashboardPage';
+import { dashboardLoader } from './features/dashboard/loaders/dashboardLoader';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -28,6 +30,7 @@ const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
   { path: '/profile', element: <ProfilePage />, loader: profileLoader },
+  { path: '/dashboard', element: <DashboardPage />, loader: dashboardLoader },
   { path: '/api/login', action: loginAction },
   {
     path: '/admin',
