@@ -711,15 +711,12 @@ app.get('/api/health', (req, res) => {
 // Database test endpoint
 app.get('/api/test-db', async (req, res) => {
   try {
-    if (!db) {
-      return res.status(500).json({ error: 'Database not connected' });
-    }
-    
-    const userCount = await db.collection('users').countDocuments();
     res.json({
       status: 'OK',
-      userCount,
-      mongodbUri: MONGODB_URI ? 'Set' : 'Not set'
+      dbConnected: !!db,
+      mongodbUri: MONGODB_URI ? 'Set' : 'Not set',
+      nodeEnv: process.env.NODE_ENV,
+      hasMongoEnv: !!process.env.MONGODB_URI
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
