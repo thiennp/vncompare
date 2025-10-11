@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "name": "vncompare-api",
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://nguyenphongthien_db_user:FlTTgdiuA44ZuQ5W@cluster0.mongodb.net/vncompare",
+    "JWT_SECRET": "your-super-secret-jwt-key-here-2024-production",
+    "NODE_ENV": "production"
+  }
+}
