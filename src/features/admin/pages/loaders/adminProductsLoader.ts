@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from 'react-router-dom';
-import { db } from '../../../../features/shared/services/database.client';
+import { db } from '../../../shared/services/database.client';
 
 // Admin products page loader
 export async function adminProductsLoader({ request }: LoaderFunctionArgs) {

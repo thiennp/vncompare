@@ -1,4 +1,4 @@
-import { db } from '../../../../features/shared/services/database.client';
+import { db } from '../../../shared/services/database.client';
 
 // Admin dashboard page loader
 export async function adminDashboardLoader() {

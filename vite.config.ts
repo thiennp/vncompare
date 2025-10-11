@@ -1,28 +1,55 @@
 import { defineConfig } from 'vite';
-import { reactRouter } from '@react-router/dev/vite';
-import path from 'path';
-import { fileURLToPath } from 'node:url';
-import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter()],
-  resolve: {
-    alias: {
-      '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), './app'),
-    },
-  },
-  define: {
-    global: 'globalThis',
-  },
-  server: {
-    port: 3000,
-    host: true,
-  },
+  plugins: [react()],
   css: {
-    modules: {
-      localsConvention: 'camelCase',
-    },
+    postcss: './postcss.config.js',
   },
+  build: {
+    rollupOptions: {
+      external: [
+        'mongodb',
+        'bcryptjs',
+        'jsonwebtoken',
+        'util',
+        'crypto',
+        'fs',
+        'path',
+        'os',
+        'stream',
+        'buffer',
+        'events',
+        'url',
+        'querystring',
+        'http',
+        'https',
+        'net',
+        'tls',
+        'zlib',
+        'child_process',
+        'cluster',
+        'worker_threads',
+        'perf_hooks',
+        'async_hooks',
+        'timers',
+        'tty',
+        'readline',
+        'repl',
+        'vm',
+        'v8',
+        'inspector',
+        'trace_events',
+        'diagnostics_channel',
+        'wasi'
+      ]
+    }
+  },
+  optimizeDeps: {
+    exclude: [
+      'mongodb',
+      'bcryptjs',
+      'jsonwebtoken'
+    ]
+  }
 });
-

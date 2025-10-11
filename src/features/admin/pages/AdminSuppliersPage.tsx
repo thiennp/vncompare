@@ -1,20 +1,20 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
-import { Supplier } from '../../../features/shared/services/models';
-import { CreateSupplier } from '../../../features/shared/services/types';
-import { db } from '../../../features/shared/services/database.client';
+import { Supplier } from '../../shared/services/models';
+import { CreateSupplier } from '../../shared/services/types';
+import { db } from '../../shared/services/database.client';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../../features/shared/components/ui/card';
-import { Badge } from '../../../features/shared/components/ui/badge';
-import { Button } from '../../../features/shared/components/ui/button';
-import { Input } from '../../../features/shared/components/ui/input';
-import { Label } from '../../../features/shared/components/ui/label';
-import { Checkbox } from '../../../features/shared/components/ui/checkbox';
+} from '../../shared/components/ui/card';
+import { Badge } from '../../shared/components/ui/badge';
+import { Button } from '../../shared/components/ui/button';
+import { Input } from '../../shared/components/ui/input';
+import { Label } from '../../shared/components/ui/label';
+import { Checkbox } from '../../shared/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '../../../features/shared/components/ui/dialog';
+} from '../../shared/components/ui/dialog';
 import { Building2, Edit, Trash2, Check, Plus } from 'lucide-react';
 
 interface AdminSuppliersPageData {

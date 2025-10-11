@@ -1,21 +1,21 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
-import { User } from '../../../features/shared/services/models';
-import { CreateUser } from '../../../features/shared/services/types';
-import { db } from '../../../features/shared/services/database.client';
+import { User } from '../../shared/services/models';
+import { CreateUser } from '../../shared/services/types';
+import { db } from '../../shared/services/database.client';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../../features/shared/components/ui/card';
-import { Badge } from '../../../features/shared/components/ui/badge';
-import { Button } from '../../../features/shared/components/ui/button';
-import { Input } from '../../../features/shared/components/ui/input';
-import { Label } from '../../../features/shared/components/ui/label';
-import { Checkbox } from '../../../features/shared/components/ui/checkbox';
-import { Select } from '../../../features/shared/components/ui/select';
+} from '../../shared/components/ui/card';
+import { Badge } from '../../shared/components/ui/badge';
+import { Button } from '../../shared/components/ui/button';
+import { Input } from '../../shared/components/ui/input';
+import { Label } from '../../shared/components/ui/label';
+import { Checkbox } from '../../shared/components/ui/checkbox';
+import { Select } from '../../shared/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -24,7 +24,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '../../../features/shared/components/ui/dialog';
+} from '../../shared/components/ui/dialog';
 import {
   Users,
   Edit,
