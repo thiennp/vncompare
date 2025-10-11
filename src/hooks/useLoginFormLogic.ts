@@ -15,6 +15,7 @@ export function useLoginFormLogic() {
       formData.append('email', email);
       formData.append('password', password);
 
+      // Use React Router fetcher instead of direct fetch
       fetcher.submit(formData, {
         method: 'POST',
         action: '/api/login',
@@ -26,16 +27,15 @@ export function useLoginFormLogic() {
   // Handle successful login redirect
   useEffect(() => {
     if (fetcher.data && fetcher.data.success) {
-      // Store user data and dispatch login event
+      // Dispatch login event with user data (no localStorage per workspace rules)
       const userData = {
-        _id: Date.now().toString(),
+        _id: fetcher.data.user._id,
         email: fetcher.data.user.email,
         name: fetcher.data.user.name,
         role: fetcher.data.user.role,
         token: fetcher.data.token,
       };
 
-      localStorage.setItem('paint_user', JSON.stringify(userData));
       window.dispatchEvent(
         new CustomEvent('paint:login', { detail: userData })
       );
