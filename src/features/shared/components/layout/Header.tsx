@@ -33,11 +33,13 @@ export default function Header({
           <div className="flex items-center">
             <h1 className="text-xl font-bold text-paint-orange">Paint Admin</h1>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             {isAuthenticated && (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-700">Xin chào, {displayName}</span>
+                <span className="text-sm text-gray-700">
+                  Xin chào, {displayName}
+                </span>
                 <button
                   onClick={onLogout}
                   className="text-sm text-paint-orange hover:text-paint-orange/80"

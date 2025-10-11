@@ -102,7 +102,9 @@ export default function AdminSuppliersPage() {
       alert('Cập nhật nhà cung cấp thành công!');
     } catch (error) {
       console.error('Error updating supplier:', error);
-      alert('Có lỗi xảy ra khi cập nhật nhà cung cấp: ' + (error as Error).message);
+      alert(
+        'Có lỗi xảy ra khi cập nhật nhà cung cấp: ' + (error as Error).message
+      );
     } finally {
       setIsLoading(false);
     }

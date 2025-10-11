@@ -34,10 +34,12 @@ export function useLoginFormLogic() {
         role: fetcher.data.user.role,
         token: fetcher.data.token,
       };
-      
+
       localStorage.setItem('paint_user', JSON.stringify(userData));
-      window.dispatchEvent(new CustomEvent('paint:login', { detail: userData }));
-      
+      window.dispatchEvent(
+        new CustomEvent('paint:login', { detail: userData })
+      );
+
       // Redirect to admin dashboard after successful login
       navigate('/admin');
     }

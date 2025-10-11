@@ -31,7 +31,9 @@ export interface LoginErrorResponse {
 
 export type LoginResponse = LoginSuccessResponse | LoginErrorResponse;
 
-export async function action({ request }: ActionFunctionArgs): Promise<LoginResponse> {
+export async function action({
+  request,
+}: ActionFunctionArgs): Promise<LoginResponse> {
   const formData = await request.formData();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;

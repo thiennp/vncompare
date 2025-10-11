@@ -33,8 +33,10 @@ interface AdminDashboardPageData {
 }
 
 export default function AdminDashboardPage() {
-  const { stats } = useLoaderData() as { stats: AdminDashboardPageData['stats'] };
-  
+  const { stats } = useLoaderData() as {
+    stats: AdminDashboardPageData['stats'];
+  };
+
   // Mock user data for demo (could be loaded from auth context)
   const user: User = {
     _id: '1',

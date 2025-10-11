@@ -7,7 +7,11 @@ interface MobileMenuProps {
   navigation: any[];
 }
 
-export default function MobileMenu({ isOpen, onClose, navigation }: MobileMenuProps) {
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  navigation,
+}: MobileMenuProps) {
   if (!isOpen) return null;
 
   return (
@@ -25,7 +29,7 @@ export default function MobileMenu({ isOpen, onClose, navigation }: MobileMenuPr
         </div>
         <div className="flex-1 overflow-y-auto px-4 py-4">
           <nav className="space-y-2">
-            {navigation.map((item) => (
+            {navigation.map(item => (
               <a
                 key={item.name}
                 href={item.href}

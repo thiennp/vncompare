@@ -42,11 +42,11 @@ export function useForm<T = any>(
 
   const validate = () => {
     const errors: Record<string, string> = {};
-    
+
     Object.keys(validation).forEach(field => {
       const rules = validation[field];
       const value = formState.values[field];
-      
+
       if (rules.required && (!value || value === '')) {
         errors[field] = `${field} là bắt buộc`;
       } else if (rules.minLength && value && value.length < rules.minLength) {
@@ -62,12 +62,12 @@ export function useForm<T = any>(
 
   const submit = async () => {
     setFormState(prev => ({ ...prev, isSubmitting: true }));
-    
+
     // Mock API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     setFormState(prev => ({ ...prev, isSubmitting: false }));
-    
+
     return {
       success: true,
       data: formState.values,

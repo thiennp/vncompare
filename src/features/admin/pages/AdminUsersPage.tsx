@@ -114,7 +114,9 @@ export default function AdminUsersPage() {
       alert('Cập nhật người dùng thành công!');
     } catch (error) {
       console.error('Error updating user:', error);
-      alert('Có lỗi xảy ra khi cập nhật người dùng: ' + (error as Error).message);
+      alert(
+        'Có lỗi xảy ra khi cập nhật người dùng: ' + (error as Error).message
+      );
     } finally {
       setIsLoading(false);
     }

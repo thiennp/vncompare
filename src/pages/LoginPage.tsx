@@ -71,21 +71,21 @@ export default function LoginPage() {
                 disabled={isSubmitting}
               />
             </div>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
-              </Button>
-            </form>
-            
-            <div className="mt-4 text-center">
-              <a 
-                href="/admin" 
-                className="text-sm text-paint-orange hover:text-paint-orange/80 underline"
-              >
-                Truy cập trang quản trị
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+            </Button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <a
+              href="/admin"
+              className="text-sm text-paint-orange hover:text-paint-orange/80 underline"
+            >
+              Truy cập trang quản trị
+            </a>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

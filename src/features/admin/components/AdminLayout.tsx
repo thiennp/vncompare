@@ -3,7 +3,11 @@ import { useAuth } from '../../auth/hooks/useAuth';
 import { Button } from '../../shared/components/ui/button';
 import { Avatar, AvatarFallback } from '../../shared/components/ui/avatar';
 import { Separator } from '../../shared/components/ui/separator';
-import { Sheet, SheetContent, SheetTrigger } from '../../shared/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '../../shared/components/ui/sheet';
 import {
   BarChart3,
   Package,

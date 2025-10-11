@@ -6,17 +6,17 @@ const MONGODB_URI = 'mongodb://localhost:27017/vncompare';
 
 async function seedDatabase() {
   const client = new MongoClient(MONGODB_URI);
-  
+
   try {
     await client.connect();
     const db = client.db('vncompare');
-    
+
     // Create users collection if it doesn't exist
     const usersCollection = db.collection('users');
-    
+
     // Clear existing users
     await usersCollection.deleteMany({});
-    
+
     // Seed test users with hashed passwords
     const testUsers = [
       {
@@ -56,16 +56,15 @@ async function seedDatabase() {
         updatedAt: new Date(),
       },
     ];
-    
+
     await usersCollection.insertMany(testUsers);
-    
+
     console.log('✅ Database seeded successfully!');
     console.log('Test users created:');
     console.log('- admin@paint.com / admin123 (admin)');
     console.log('- user@paint.com / user123 (user)');
     console.log('- test@example.com / test123 (user)');
     console.log('- nguyenphongthien@gmail.com / Kimtuoc2 (user)');
-    
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   } finally {

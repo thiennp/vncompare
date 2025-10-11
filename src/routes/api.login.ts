@@ -12,7 +12,7 @@ async function authenticateUser(email: string, password: string) {
     });
 
     const result = await response.json();
-    
+
     // If response is not ok, return the error from the server
     if (!response.ok) {
       return { success: false, error: result.error || 'Đăng nhập thất bại' };

@@ -15,19 +15,25 @@ interface FormFieldProps {
   disabled?: boolean;
 }
 
-export function FormField({ field, value, error, onChange, disabled }: FormFieldProps) {
+export function FormField({
+  field,
+  value,
+  error,
+  onChange,
+  disabled,
+}: FormFieldProps) {
   const renderInput = () => {
     switch (field.type) {
       case 'select':
         return (
           <select
             value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             disabled={disabled}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-paint-orange/20 focus:border-paint-orange"
           >
             <option value="">Chọn {field.label}</option>
-            {field.options?.map((option) => (
+            {field.options?.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -38,7 +44,7 @@ export function FormField({ field, value, error, onChange, disabled }: FormField
         return (
           <textarea
             value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             placeholder={field.placeholder}
             disabled={disabled}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-paint-orange/20 focus:border-paint-orange"
@@ -50,7 +56,7 @@ export function FormField({ field, value, error, onChange, disabled }: FormField
           <input
             type="checkbox"
             checked={value || false}
-            onChange={(e) => onChange(e.target.checked)}
+            onChange={e => onChange(e.target.checked)}
             disabled={disabled}
             className="h-4 w-4 text-paint-orange focus:ring-paint-orange border-gray-300 rounded"
           />
@@ -60,7 +66,7 @@ export function FormField({ field, value, error, onChange, disabled }: FormField
           <input
             type={field.type}
             value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             placeholder={field.placeholder}
             disabled={disabled}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-paint-orange/20 focus:border-paint-orange"
@@ -89,7 +95,13 @@ export function FormError({ error }: { error: string }) {
   );
 }
 
-export function FormLoading({ isLoading, children }: { isLoading: boolean; children: React.ReactNode }) {
+export function FormLoading({
+  isLoading,
+  children,
+}: {
+  isLoading: boolean;
+  children: React.ReactNode;
+}) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">

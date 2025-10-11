@@ -6,7 +6,9 @@ const API_BASE_URL = 'http://localhost:3001/api';
 export const db = {
   async getProducts(filters = {}, page = 1, limit = 20) {
     try {
-      const response = await fetch(`${API_BASE_URL}/products?page=${page}&limit=${limit}`);
+      const response = await fetch(
+        `${API_BASE_URL}/products?page=${page}&limit=${limit}`
+      );
       if (!response.ok) throw new Error('Failed to fetch products');
       return await response.json();
     } catch (error) {
@@ -28,7 +30,9 @@ export const db = {
 
   async getSuppliers(filters = {}, page = 1, limit = 20) {
     try {
-      const response = await fetch(`${API_BASE_URL}/suppliers?page=${page}&limit=${limit}`);
+      const response = await fetch(
+        `${API_BASE_URL}/suppliers?page=${page}&limit=${limit}`
+      );
       if (!response.ok) throw new Error('Failed to fetch suppliers');
       return await response.json();
     } catch (error) {
@@ -39,7 +43,9 @@ export const db = {
 
   async getReviews(filters = {}, page = 1, limit = 20) {
     try {
-      const response = await fetch(`${API_BASE_URL}/reviews?page=${page}&limit=${limit}`);
+      const response = await fetch(
+        `${API_BASE_URL}/reviews?page=${page}&limit=${limit}`
+      );
       if (!response.ok) throw new Error('Failed to fetch reviews');
       return await response.json();
     } catch (error) {
@@ -50,7 +56,9 @@ export const db = {
 
   async getOrders(filters = {}, page = 1, limit = 20) {
     try {
-      const response = await fetch(`${API_BASE_URL}/orders?page=${page}&limit=${limit}`);
+      const response = await fetch(
+        `${API_BASE_URL}/orders?page=${page}&limit=${limit}`
+      );
       if (!response.ok) throw new Error('Failed to fetch orders');
       return await response.json();
     } catch (error) {
@@ -79,12 +87,12 @@ export const db = {
         },
         body: JSON.stringify({ status }),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to update order status');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -94,7 +102,9 @@ export const db = {
 
   async getUsers(filters = {}, page = 1, limit = 20) {
     try {
-      const response = await fetch(`${API_BASE_URL}/users?page=${page}&limit=${limit}`);
+      const response = await fetch(
+        `${API_BASE_URL}/users?page=${page}&limit=${limit}`
+      );
       if (!response.ok) throw new Error('Failed to fetch users');
       return await response.json();
     } catch (error) {
@@ -145,12 +155,12 @@ export const db = {
         },
         body: JSON.stringify(userData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to create user');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error creating user:', error);
@@ -167,12 +177,12 @@ export const db = {
         },
         body: JSON.stringify(userData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to update user');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error updating user:', error);
@@ -185,12 +195,12 @@ export const db = {
       const response = await fetch(`${API_BASE_URL}/users/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to delete user');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -207,12 +217,12 @@ export const db = {
         },
         body: JSON.stringify(productData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to create product');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error creating product:', error);
@@ -229,12 +239,12 @@ export const db = {
         },
         body: JSON.stringify(productData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to update product');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error updating product:', error);
@@ -247,12 +257,12 @@ export const db = {
       const response = await fetch(`${API_BASE_URL}/products/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to delete product');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -269,12 +279,12 @@ export const db = {
         },
         body: JSON.stringify(supplierData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to create supplier');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error creating supplier:', error);
@@ -291,12 +301,12 @@ export const db = {
         },
         body: JSON.stringify(supplierData),
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to update supplier');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error updating supplier:', error);
@@ -309,12 +319,12 @@ export const db = {
       const response = await fetch(`${API_BASE_URL}/suppliers/${id}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to delete supplier');
       }
-      
+
       return await response.json();
     } catch (error) {
       console.error('Error deleting supplier:', error);

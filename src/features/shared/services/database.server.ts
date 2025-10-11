@@ -54,9 +54,7 @@ const mockOrders: Order[] = [
   {
     _id: '1',
     userId: '2',
-    products: [
-      { productId: '1', quantity: 2, price: 500000 },
-    ],
+    products: [{ productId: '1', quantity: 2, price: 500000 }],
     totalAmount: 1000000,
     status: 'pending',
     shippingAddress: '123 Main St, City',
@@ -101,7 +99,11 @@ export const db = {
     };
   },
 
-  getProducts: async (filter: any = {}, page: number = 1, limit: number = 10) => {
+  getProducts: async (
+    filter: any = {},
+    page: number = 1,
+    limit: number = 10
+  ) => {
     return {
       products: mockProducts,
       total: mockProducts.length,
@@ -110,7 +112,12 @@ export const db = {
     };
   },
 
-  getOrders: async (userId?: string, filter: any = {}, page: number = 1, limit: number = 10) => {
+  getOrders: async (
+    userId?: string,
+    filter: any = {},
+    page: number = 1,
+    limit: number = 10
+  ) => {
     return {
       orders: mockOrders,
       total: mockOrders.length,
@@ -119,7 +126,11 @@ export const db = {
     };
   },
 
-  getSuppliers: async (filter: any = {}, page: number = 1, limit: number = 10) => {
+  getSuppliers: async (
+    filter: any = {},
+    page: number = 1,
+    limit: number = 10
+  ) => {
     return {
       suppliers: mockSuppliers,
       total: mockSuppliers.length,
@@ -128,7 +139,12 @@ export const db = {
     };
   },
 
-  getReviews: async (userId?: string, filter: any = {}, page: number = 1, limit: number = 10) => {
+  getReviews: async (
+    userId?: string,
+    filter: any = {},
+    page: number = 1,
+    limit: number = 10
+  ) => {
     return {
       reviews: mockReviews,
       total: mockReviews.length,

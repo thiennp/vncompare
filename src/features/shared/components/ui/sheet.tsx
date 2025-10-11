@@ -30,7 +30,7 @@ const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
       top: 'fixed inset-x-0 top-0 h-3/4 border-b',
       bottom: 'fixed inset-x-0 bottom-0 h-3/4 border-t',
     };
-    
+
     return (
       <div
         ref={ref}
@@ -42,7 +42,8 @@ const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
 );
 SheetContent.displayName = 'SheetContent';
 
-interface SheetTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface SheetTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
 }
 
@@ -51,13 +52,9 @@ const SheetTrigger = React.forwardRef<HTMLButtonElement, SheetTriggerProps>(
     if (asChild && React.isValidElement(children)) {
       return React.cloneElement(children, { ref, ...props });
     }
-    
+
     return (
-      <button
-        ref={ref}
-        className={`${className || ''}`}
-        {...props}
-      >
+      <button ref={ref} className={`${className || ''}`} {...props}>
         {children}
       </button>
     );

@@ -41,15 +41,11 @@ export default defineConfig({
         'inspector',
         'trace_events',
         'diagnostics_channel',
-        'wasi'
-      ]
-    }
+        'wasi',
+      ],
+    },
   },
   optimizeDeps: {
-    exclude: [
-      'mongodb',
-      'bcryptjs',
-      'jsonwebtoken'
-    ]
-  }
+    exclude: ['mongodb', 'bcryptjs', 'jsonwebtoken'],
+  },
 });

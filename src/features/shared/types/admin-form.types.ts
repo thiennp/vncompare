@@ -26,34 +26,76 @@ export interface AdminSupplierFormData {
 }
 
 export const PRODUCT_FORM_FIELDS = [
-  { name: 'name', label: 'Tên sản phẩm', type: 'text' as const, required: true },
-  { name: 'brand', label: 'Thương hiệu', type: 'text' as const, required: true },
-  { name: 'category', label: 'Danh mục', type: 'select' as const, required: true, options: [
-    { value: 'Sơn ngoại thất', label: 'Sơn ngoại thất' },
-    { value: 'Sơn nội thất', label: 'Sơn nội thất' },
-  ]},
+  {
+    name: 'name',
+    label: 'Tên sản phẩm',
+    type: 'text' as const,
+    required: true,
+  },
+  {
+    name: 'brand',
+    label: 'Thương hiệu',
+    type: 'text' as const,
+    required: true,
+  },
+  {
+    name: 'category',
+    label: 'Danh mục',
+    type: 'select' as const,
+    required: true,
+    options: [
+      { value: 'Sơn ngoại thất', label: 'Sơn ngoại thất' },
+      { value: 'Sơn nội thất', label: 'Sơn nội thất' },
+    ],
+  },
   { name: 'description', label: 'Mô tả', type: 'textarea' as const },
   { name: 'price', label: 'Giá', type: 'number' as const, required: true },
   { name: 'unit', label: 'Đơn vị', type: 'text' as const, required: true },
-  { name: 'coverage', label: 'Diện tích phủ', type: 'number' as const, required: true },
+  {
+    name: 'coverage',
+    label: 'Diện tích phủ',
+    type: 'number' as const,
+    required: true,
+  },
   { name: 'isActive', label: 'Hoạt động', type: 'checkbox' as const },
 ];
 
 export const USER_FORM_FIELDS = [
   { name: 'name', label: 'Tên', type: 'text' as const, required: true },
   { name: 'email', label: 'Email', type: 'email' as const, required: true },
-  { name: 'role', label: 'Vai trò', type: 'select' as const, required: true, options: [
-    { value: 'user', label: 'Người dùng' },
-    { value: 'admin', label: 'Quản trị' },
-  ]},
+  {
+    name: 'role',
+    label: 'Vai trò',
+    type: 'select' as const,
+    required: true,
+    options: [
+      { value: 'user', label: 'Người dùng' },
+      { value: 'admin', label: 'Quản trị' },
+    ],
+  },
   { name: 'phone', label: 'Số điện thoại', type: 'text' as const },
 ];
 
 export const SUPPLIER_FORM_FIELDS = [
-  { name: 'name', label: 'Tên nhà cung cấp', type: 'text' as const, required: true },
+  {
+    name: 'name',
+    label: 'Tên nhà cung cấp',
+    type: 'text' as const,
+    required: true,
+  },
   { name: 'email', label: 'Email', type: 'email' as const, required: true },
-  { name: 'phone', label: 'Số điện thoại', type: 'text' as const, required: true },
-  { name: 'address', label: 'Địa chỉ', type: 'textarea' as const, required: true },
+  {
+    name: 'phone',
+    label: 'Số điện thoại',
+    type: 'text' as const,
+    required: true,
+  },
+  {
+    name: 'address',
+    label: 'Địa chỉ',
+    type: 'textarea' as const,
+    required: true,
+  },
   { name: 'verified', label: 'Đã xác minh', type: 'checkbox' as const },
 ];
 

@@ -26,7 +26,7 @@ export default function Sidebar({ navigation }: SidebarProps) {
       <div className="p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-6">Quản trị</h2>
         <nav className="space-y-2">
-          {navigation.map((item) => (
+          {navigation.map(item => (
             <Link
               key={item.name}
               to={item.href}
