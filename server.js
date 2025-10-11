@@ -36,6 +36,15 @@ async function connectToDatabase() {
   }
 }
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Login endpoint
 app.post('/api/login', async (req, res) => {
   try {

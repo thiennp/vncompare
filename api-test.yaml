@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: VNCompare API Test
+  description: API testing for VNCompare server
+  version: 1.0.0
+servers:
+  - url: https://your-server-url.railway.app/api
+    description: Railway deployed server
+  - url: http://localhost:3001/api
+    description: Local development server
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  timestamp:
+                    type: string
+                  environment:
+                    type: string
+  /users:
+    get:
+      summary: Get users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+        '500':
+          description: Internal server error
+    post:
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - name
+                - password
+              properties:
+                email:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  default: user
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    type: object
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    type: object
+                  token:
+                    type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
