@@ -347,7 +347,15 @@ app.put('/api/orders/:id/status', async (req, res) => {
 
 // Users endpoints
 app.get('/api/users', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
@@ -372,11 +380,24 @@ app.get('/api/users', async (req, res) => {
       success: false,
       error: 'Lỗi khi lấy danh sách người dùng',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
 app.post('/api/users', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const { email, name, password, role } = req.body;
 
     if (!email || !name || !password) {
@@ -419,6 +440,11 @@ app.post('/api/users', async (req, res) => {
       success: false,
       error: 'Lỗi khi tạo người dùng',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
