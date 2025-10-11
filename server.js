@@ -36,6 +36,21 @@ async function connectToDatabase() {
   }
 }
 
+// Root endpoint for Railway
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'VNCompare API Server is running!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    endpoints: [
+      'GET /api/health',
+      'GET /api/users',
+      'POST /api/users',
+      'POST /api/login'
+    ]
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
