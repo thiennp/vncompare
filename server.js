@@ -692,6 +692,55 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Reset database endpoint
+app.post('/api/reset-db', async (req, res) => {
+  try {
+    // Only allow admin users to reset database
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized - Admin token required'
+      });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    
+    if (decoded.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Forbidden - Admin role required'
+      });
+    }
+
+    // Drop all collections
+    const collections = ['users', 'products', 'orders', 'suppliers', 'reviews'];
+    for (const collectionName of collections) {
+      await db.collection(collectionName).drop().catch(() => {
+        // Collection might not exist, ignore error
+      });
+    }
+
+    // Recreate collections with indexes
+    await db.collection('users').createIndex({ email: 1 }, { unique: true });
+    await db.collection('products').createIndex({ name: 1 });
+    await db.collection('orders').createIndex({ userId: 1 });
+    await db.collection('suppliers').createIndex({ email: 1 }, { unique: true });
+
+    res.json({
+      success: true,
+      message: 'Database reset successfully'
+    });
+  } catch (error) {
+    console.error('Reset database error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to reset database'
+    });
+  }
+});
+
 // Start server
 async function startServer() {
   try {

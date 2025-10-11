@@ -44,5 +44,11 @@ export function getAdminNavigation(): AdminNavigationItem[] {
       icon: null,
       description: 'Quản lý đánh giá',
     },
+    {
+      name: 'Cài đặt',
+      href: '/settings',
+      icon: null,
+      description: 'Cài đặt hệ thống',
+    },
   ];
 }
