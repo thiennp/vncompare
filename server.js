@@ -449,7 +449,15 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.put('/api/users/:id', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const { id } = req.params;
     const { email, name, role } = req.body;
 
@@ -481,11 +489,24 @@ app.put('/api/users/:id', async (req, res) => {
       success: false,
       error: 'Lỗi khi cập nhật người dùng',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
 app.delete('/api/users/:id', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const { id } = req.params;
 
     const result = await db
@@ -509,6 +530,11 @@ app.delete('/api/users/:id', async (req, res) => {
       success: false,
       error: 'Lỗi khi xóa người dùng',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
