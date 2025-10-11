@@ -708,6 +708,24 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Database test endpoint
+app.get('/api/test-db', async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(500).json({ error: 'Database not connected' });
+    }
+    
+    const userCount = await db.collection('users').countDocuments();
+    res.json({
+      status: 'OK',
+      userCount,
+      mongodbUri: MONGODB_URI ? 'Set' : 'Not set'
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Start server
 async function startServer() {
   try {
