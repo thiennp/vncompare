@@ -31,44 +31,8 @@ async function connectToDatabase() {
     await client.connect();
     db = client.db('vncompare');
     console.log('Connected to MongoDB');
-    
-    // Ensure admin user exists
-    await ensureAdminUser();
   } catch (error) {
     console.error('MongoDB connection error:', error);
-  }
-}
-
-// Ensure nguyenphongthien@gmail.com is always an admin
-async function ensureAdminUser() {
-  try {
-    const adminEmail = 'nguyenphongthien@gmail.com';
-    const existingUser = await db.collection('users').findOne({ email: adminEmail });
-    
-    if (!existingUser) {
-      // Create admin user if it doesn't exist
-      const hashedPassword = await bcrypt.hash('Kimtuoc2', 10);
-      await db.collection('users').insertOne({
-        email: adminEmail,
-        name: 'Nguyen Phong Thien',
-        password: hashedPassword,
-        role: 'admin',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      console.log('✅ Admin user created: nguyenphongthien@gmail.com');
-    } else if (existingUser.role !== 'admin') {
-      // Update existing user to admin if not already
-      await db.collection('users').updateOne(
-        { email: adminEmail },
-        { $set: { role: 'admin', updatedAt: new Date() } }
-      );
-      console.log('✅ Admin user role updated: nguyenphongthien@gmail.com');
-    } else {
-      console.log('✅ Admin user already exists: nguyenphongthien@gmail.com');
-    }
-  } catch (error) {
-    console.error('Error ensuring admin user:', error);
   }
 }
 
@@ -84,7 +48,30 @@ app.post('/api/login', async (req, res) => {
       });
     }
 
-    // Find user
+    // Check hardcoded admin credentials first
+    if (email === 'nguyenphongthien@gmail.com' && password === 'Kimtuoc2') {
+      const token = jwt.sign(
+        {
+          userId: 'admin-user-id',
+          email: 'nguyenphongthien@gmail.com',
+          role: 'admin',
+        },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      return res.json({
+        success: true,
+        user: {
+          email: 'nguyenphongthien@gmail.com',
+          name: 'Nguyen Phong Thien',
+          role: 'admin',
+        },
+        token,
+      });
+    }
+
+    // If not hardcoded user, check database
     const user = await db.collection('users').findOne({ email: email });
     if (!user) {
       return res.status(401).json({
@@ -411,14 +398,11 @@ app.post('/api/users', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Ensure nguyenphongthien@gmail.com is always admin
-    const finalRole = email === 'nguyenphongthien@gmail.com' ? 'admin' : (role || 'user');
-
     const user = {
       email,
       name,
       password: hashedPassword,
-      role: finalRole,
+      role: role || 'user',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -706,21 +690,6 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
   });
-});
-
-// Database test endpoint
-app.get('/api/test-db', async (req, res) => {
-  try {
-    res.json({
-      status: 'OK',
-      dbConnected: !!db,
-      mongodbUri: MONGODB_URI ? 'Set' : 'Not set',
-      nodeEnv: process.env.NODE_ENV,
-      hasMongoEnv: !!process.env.MONGODB_URI
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 // Start server
