@@ -1,7 +1,7 @@
 // Database service for client-side routes
 // Calls the API server for all operations
 
-const API_BASE_URL = '/api';
+import { API_BASE_URL } from './api-config';
 
 export const db = {
   async getProducts(filters = {}, page = 1, limit = 20) {

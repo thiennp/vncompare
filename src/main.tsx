@@ -37,69 +37,75 @@ import { orderDetailLoader } from './features/orders/pages/loaders/orderDetailLo
 import { shippingCalculatorLoader } from './features/orders/pages/loaders/shippingCalculatorLoader';
 import './index.css';
 
-const router = createBrowserRouter([
-  { path: '/', element: <HomePage /> },
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <RegisterPage /> },
-  { path: '/profile', element: <ProfilePage />, loader: profileLoader },
-  { path: '/dashboard', element: <DashboardPage />, loader: dashboardLoader },
-  { path: '/products', element: <ProductsPage />, loader: productsLoader },
-  {
-    path: '/products/:id',
-    element: <ProductDetailPage />,
-    loader: productDetailLoader,
-  },
-  {
-    path: '/coverage-calculator',
-    element: <CoverageCalculatorPage />,
-    loader: coverageCalculatorLoader,
-  },
-  { path: '/orders', element: <OrdersPage />, loader: ordersLoader },
-  {
-    path: '/orders/:id',
-    element: <OrderDetailPage />,
-    loader: orderDetailLoader,
-  },
-  {
-    path: '/shipping-calculator',
-    element: <ShippingCalculatorPage />,
-    loader: shippingCalculatorLoader,
-  },
-  { path: '/api/login', action: loginAction },
-  {
-    path: '/admin',
-    element: <AdminLayout />,
-    children: [
-      {
-        index: true,
-        element: <AdminDashboardPage />,
-        loader: adminDashboardLoader,
-      },
-      {
-        path: 'products',
-        element: <AdminProductsPage />,
-        loader: adminProductsLoader,
-      },
-      {
-        path: 'orders',
-        element: <AdminOrdersPage />,
-        loader: adminOrdersLoader,
-      },
-      { path: 'users', element: <AdminUsersPage />, loader: adminUsersLoader },
-      {
-        path: 'suppliers',
-        element: <AdminSuppliersPage />,
-        loader: adminSuppliersLoader,
-      },
-      {
-        path: 'reviews',
-        element: <AdminReviewsPage />,
-        loader: adminReviewsLoader,
-      },
-    ],
-  },
-  { path: '*', element: <ErrorPage /> },
-]);
+const router = createBrowserRouter(
+  [
+    { path: '/', element: <HomePage /> },
+    { path: '/login', element: <LoginPage /> },
+    { path: '/register', element: <RegisterPage /> },
+    { path: '/profile', element: <ProfilePage />, loader: profileLoader },
+    { path: '/dashboard', element: <DashboardPage />, loader: dashboardLoader },
+    { path: '/products', element: <ProductsPage />, loader: productsLoader },
+    {
+      path: '/products/:id',
+      element: <ProductDetailPage />,
+      loader: productDetailLoader,
+    },
+    {
+      path: '/coverage-calculator',
+      element: <CoverageCalculatorPage />,
+      loader: coverageCalculatorLoader,
+    },
+    { path: '/orders', element: <OrdersPage />, loader: ordersLoader },
+    {
+      path: '/orders/:id',
+      element: <OrderDetailPage />,
+      loader: orderDetailLoader,
+    },
+    {
+      path: '/shipping-calculator',
+      element: <ShippingCalculatorPage />,
+      loader: shippingCalculatorLoader,
+    },
+    { path: '/api/login', action: loginAction },
+    {
+      path: '/admin',
+      element: <AdminLayout />,
+      children: [
+        {
+          index: true,
+          element: <AdminDashboardPage />,
+          loader: adminDashboardLoader,
+        },
+        {
+          path: 'products',
+          element: <AdminProductsPage />,
+          loader: adminProductsLoader,
+        },
+        {
+          path: 'orders',
+          element: <AdminOrdersPage />,
+          loader: adminOrdersLoader,
+        },
+        {
+          path: 'users',
+          element: <AdminUsersPage />,
+          loader: adminUsersLoader,
+        },
+        {
+          path: 'suppliers',
+          element: <AdminSuppliersPage />,
+          loader: adminSuppliersLoader,
+        },
+        {
+          path: 'reviews',
+          element: <AdminReviewsPage />,
+          loader: adminReviewsLoader,
+        },
+      ],
+    },
+    { path: '*', element: <ErrorPage /> },
+  ],
+);
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

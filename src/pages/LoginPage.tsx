@@ -41,6 +41,7 @@ export default function LoginPage() {
                 className="text-sm font-medium text-gray-700"
               >
                 Email
+                <sup className="text-orange-500">*</sup>
               </label>
               <input
                 id="email"
@@ -59,6 +60,7 @@ export default function LoginPage() {
                 className="text-sm font-medium text-gray-700"
               >
                 Mật khẩu
+                <sup className="text-orange-500">*</sup>
               </label>
               <input
                 id="password"
