@@ -51,7 +51,7 @@ async function seedDatabase() {
         email: 'nguyenphongthien@gmail.com',
         name: 'Nguyen Phong Thien',
         password: bcrypt.hashSync('Kimtuoc2', 10),
-        role: 'user',
+        role: 'admin',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -64,7 +64,7 @@ async function seedDatabase() {
     console.log('- admin@paint.com / admin123 (admin)');
     console.log('- user@paint.com / user123 (user)');
     console.log('- test@example.com / test123 (user)');
-    console.log('- nguyenphongthien@gmail.com / Kimtuoc2 (user)');
+    console.log('- nguyenphongthien@gmail.com / Kimtuoc2 (admin)');
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   } finally {

@@ -31,8 +31,44 @@ async function connectToDatabase() {
     await client.connect();
     db = client.db('vncompare');
     console.log('Connected to MongoDB');
+    
+    // Ensure admin user exists
+    await ensureAdminUser();
   } catch (error) {
     console.error('MongoDB connection error:', error);
+  }
+}
+
+// Ensure nguyenphongthien@gmail.com is always an admin
+async function ensureAdminUser() {
+  try {
+    const adminEmail = 'nguyenphongthien@gmail.com';
+    const existingUser = await db.collection('users').findOne({ email: adminEmail });
+    
+    if (!existingUser) {
+      // Create admin user if it doesn't exist
+      const hashedPassword = await bcrypt.hash('Kimtuoc2', 10);
+      await db.collection('users').insertOne({
+        email: adminEmail,
+        name: 'Nguyen Phong Thien',
+        password: hashedPassword,
+        role: 'admin',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      console.log('✅ Admin user created: nguyenphongthien@gmail.com');
+    } else if (existingUser.role !== 'admin') {
+      // Update existing user to admin if not already
+      await db.collection('users').updateOne(
+        { email: adminEmail },
+        { $set: { role: 'admin', updatedAt: new Date() } }
+      );
+      console.log('✅ Admin user role updated: nguyenphongthien@gmail.com');
+    } else {
+      console.log('✅ Admin user already exists: nguyenphongthien@gmail.com');
+    }
+  } catch (error) {
+    console.error('Error ensuring admin user:', error);
   }
 }
 
@@ -375,11 +411,14 @@ app.post('/api/users', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Ensure nguyenphongthien@gmail.com is always admin
+    const finalRole = email === 'nguyenphongthien@gmail.com' ? 'admin' : (role || 'user');
+
     const user = {
       email,
       name,
       password: hashedPassword,
-      role: role || 'user',
+      role: finalRole,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
