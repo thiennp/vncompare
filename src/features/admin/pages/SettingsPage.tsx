@@ -1,15 +1,28 @@
 import { useState } from 'react';
 import { Button } from '../../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../../../components/ui/card';
 import { Alert, AlertDescription } from '../../../components/ui/alert';
 import { Trash2, Database, AlertTriangle } from 'lucide-react';
 
 export default function SettingsPage() {
   const [isResetting, setIsResetting] = useState(false);
-  const [resetResult, setResetResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [resetResult, setResetResult] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
 
   const handleResetDatabase = async () => {
-    if (!confirm('Bạn có chắc chắn muốn reset toàn bộ database? Hành động này không thể hoàn tác!')) {
+    if (
+      !confirm(
+        'Bạn có chắc chắn muốn reset toàn bộ database? Hành động này không thể hoàn tác!'
+      )
+    ) {
       return;
     }
 
@@ -27,7 +40,7 @@ export default function SettingsPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userData.token}`,
+          Authorization: `Bearer ${userData.token}`,
         },
       });
 
@@ -36,18 +49,18 @@ export default function SettingsPage() {
       if (result.success) {
         setResetResult({
           type: 'success',
-          message: 'Database đã được reset thành công!'
+          message: 'Database đã được reset thành công!',
         });
       } else {
         setResetResult({
           type: 'error',
-          message: result.error || 'Có lỗi xảy ra khi reset database'
+          message: result.error || 'Có lỗi xảy ra khi reset database',
         });
       }
     } catch (error) {
       setResetResult({
         type: 'error',
-        message: 'Không thể kết nối đến server'
+        message: 'Không thể kết nối đến server',
       });
     } finally {
       setIsResetting(false);
@@ -79,7 +92,8 @@ export default function SettingsPage() {
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Cảnh báo:</strong> Hành động này sẽ xóa toàn bộ dữ liệu trong database bao gồm:
+                <strong>Cảnh báo:</strong> Hành động này sẽ xóa toàn bộ dữ liệu
+                trong database bao gồm:
                 <ul className="list-disc list-inside mt-2 space-y-1">
                   <li>Tất cả người dùng (trừ tài khoản admin hardcoded)</li>
                   <li>Tất cả sản phẩm</li>
@@ -94,8 +108,20 @@ export default function SettingsPage() {
             </Alert>
 
             {resetResult && (
-              <Alert className={resetResult.type === 'success' ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}>
-                <AlertDescription className={resetResult.type === 'success' ? 'text-green-700' : 'text-red-700'}>
+              <Alert
+                className={
+                  resetResult.type === 'success'
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-red-500 bg-red-50'
+                }
+              >
+                <AlertDescription
+                  className={
+                    resetResult.type === 'success'
+                      ? 'text-green-700'
+                      : 'text-red-700'
+                  }
+                >
                   {resetResult.message}
                 </AlertDescription>
               </Alert>
@@ -133,19 +159,27 @@ export default function SettingsPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Phiên bản</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Phiên bản
+                </label>
                 <p className="text-sm">1.0.0</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Môi trường</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Môi trường
+                </label>
                 <p className="text-sm">Production</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Database</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Database
+                </label>
                 <p className="text-sm">MongoDB Atlas</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Hosting</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Hosting
+                </label>
                 <p className="text-sm">Vercel</p>
               </div>
             </div>

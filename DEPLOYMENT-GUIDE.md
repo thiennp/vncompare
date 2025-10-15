@@ -40,6 +40,7 @@
    - Replace `<dbname>` with `vncompare`
 
    **Example connection string:**
+
    ```
    mongodb+srv://vncompare-admin:YOUR_PASSWORD@vncompare-cluster.xxxxx.mongodb.net/vncompare?retryWrites=true&w=majority
    ```
@@ -47,23 +48,29 @@
 ## Step 2: Railway Deployment
 
 1. **Login to Railway**
+
    ```bash
    railway login
    ```
+
    - This will open a browser window for authentication
    - Complete the login process
 
 2. **Initialize Railway Project**
+
    ```bash
    railway init
    ```
+
    - Choose "Empty Project"
    - Name: `vncompare-api`
 
 3. **Deploy to Railway**
+
    ```bash
    railway up
    ```
+
    - This will build and deploy your application
    - Wait for deployment to complete
 

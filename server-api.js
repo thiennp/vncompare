@@ -6,15 +6,17 @@ import jwt from 'jsonwebtoken';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/vncompare';
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://localhost:27017/vncompare';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Middleware
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production'
-      ? ['https://vncompare.vercel.app', 'https://www.vncompare.vercel.app']
-      : ['http://localhost:3000', 'http://localhost:5173'],
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? ['https://vncompare.vercel.app', 'https://www.vncompare.vercel.app']
+        : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
   })
 );
@@ -36,7 +38,7 @@ async function connectToDatabase() {
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'VNCompare API Server is running!',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
@@ -44,17 +46,17 @@ app.get('/', (req, res) => {
       'GET /api/health',
       'GET /api/users',
       'POST /api/users',
-      'POST /api/login'
-    ]
+      'POST /api/login',
+    ],
   });
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 

@@ -4,7 +4,7 @@
 
 1. **Railway CLI Installed**: `@railway/cli` is installed globally
 2. **Configuration Updated**: `railway.toml` now uses `server.js` with MongoDB
-3. **Deployment Scripts Created**: 
+3. **Deployment Scripts Created**:
    - `deploy-railway.sh` - Automated deployment script
    - `test-deployment.sh` - Testing script for live deployment
 4. **Documentation Created**: `DEPLOYMENT-GUIDE.md` with step-by-step instructions
@@ -12,12 +12,14 @@
 ## 🎯 Next Steps (Manual Actions Required)
 
 ### 1. MongoDB Atlas Setup (5 minutes)
+
 - Go to https://www.mongodb.com/cloud/atlas
 - Create free account and cluster
 - Set up database user and network access
 - Get connection string
 
 ### 2. Railway Login & Deploy (2 minutes)
+
 ```bash
 # Login to Railway (opens browser)
 railway login
@@ -27,6 +29,7 @@ railway login
 ```
 
 ### 3. Set Environment Variables (2 minutes)
+
 - Go to Railway dashboard
 - Add variables:
   - `MONGODB_URI`: Your Atlas connection string
@@ -34,6 +37,7 @@ railway login
   - `NODE_ENV`: production
 
 ### 4. Test Deployment (1 minute)
+
 ```bash
 # Replace YOUR_URL with actual Railway URL
 ./test-deployment.sh https://your-app-name.railway.app
@@ -56,6 +60,7 @@ railway up
 ## 🎉 Expected Results
 
 After completion, you'll have:
+
 - ✅ Live API server on Railway
 - ✅ MongoDB Atlas database connected
 - ✅ Swagger UI accessible at `/api-docs`

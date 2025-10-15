@@ -26,10 +26,10 @@ async function testGetUsers() {
   try {
     const response = await fetch(`${API_BASE}/users?page=1&limit=20`);
     const data = await response.json();
-    console.log('✅ GET users passed:', { 
-      status: response.status, 
+    console.log('✅ GET users passed:', {
+      status: response.status,
       userCount: data.users?.length || 0,
-      total: data.total 
+      total: data.total,
     });
     return true;
   } catch (error) {
@@ -45,7 +45,7 @@ async function testCreateUser() {
       email: `test-${Date.now()}@example.com`,
       name: 'Test User',
       password: 'testpassword123',
-      role: 'user'
+      role: 'user',
     };
 
     const response = await fetch(`${API_BASE}/users`, {
@@ -53,13 +53,13 @@ async function testCreateUser() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(testUser)
+      body: JSON.stringify(testUser),
     });
 
     const data = await response.json();
-    console.log('✅ POST users passed:', { 
-      status: response.status, 
-      success: data.success 
+    console.log('✅ POST users passed:', {
+      status: response.status,
+      success: data.success,
     });
     return true;
   } catch (error) {
@@ -73,7 +73,7 @@ async function testLogin() {
   try {
     const loginData = {
       email: 'nguyenphongthien@gmail.com',
-      password: 'Kimtuoc2'
+      password: 'Kimtuoc2',
     };
 
     const response = await fetch(`${API_BASE}/login`, {
@@ -81,13 +81,13 @@ async function testLogin() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(loginData)
+      body: JSON.stringify(loginData),
     });
 
     const data = await response.json();
-    console.log('✅ POST login passed:', { 
-      status: response.status, 
-      success: data.success 
+    console.log('✅ POST login passed:', {
+      status: response.status,
+      success: data.success,
     });
     return true;
   } catch (error) {
@@ -105,7 +105,7 @@ async function runTests() {
     health: await testHealth(),
     getUsers: await testGetUsers(),
     createUser: await testCreateUser(),
-    login: await testLogin()
+    login: await testLogin(),
   };
 
   console.log('='.repeat(50));
@@ -117,9 +117,9 @@ async function runTests() {
 
   const passed = Object.values(results).filter(Boolean).length;
   const total = Object.keys(results).length;
-  
+
   console.log(`\n🎯 Overall: ${passed}/${total} tests passed`);
-  
+
   if (passed === total) {
     console.log('🎉 All tests passed! Server is working correctly.');
   } else {

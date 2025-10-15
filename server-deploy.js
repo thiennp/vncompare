@@ -9,9 +9,10 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production'
-      ? ['https://vncompare.vercel.app', 'https://www.vncompare.vercel.app']
-      : ['http://localhost:3000', 'http://localhost:5173'],
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? ['https://vncompare.vercel.app', 'https://www.vncompare.vercel.app']
+        : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
   })
 );
@@ -28,24 +29,28 @@ const swaggerOptions = {
       description: 'API documentation for VNCompare paint comparison platform',
       contact: {
         name: 'VNCompare Team',
-        email: 'nguyenphongthien@gmail.com'
-      }
+        email: 'nguyenphongthien@gmail.com',
+      },
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' 
-          ? 'https://vncompare-api.railway.app' 
-          : `http://localhost:${PORT}`,
-        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
-      }
+        url:
+          process.env.NODE_ENV === 'production'
+            ? 'https://vncompare-api.railway.app'
+            : `http://localhost:${PORT}`,
+        description:
+          process.env.NODE_ENV === 'production'
+            ? 'Production server'
+            : 'Development server',
+      },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
+          bearerFormat: 'JWT',
+        },
       },
       schemas: {
         User: {
@@ -56,8 +61,8 @@ const swaggerOptions = {
             name: { type: 'string' },
             role: { type: 'string', enum: ['user', 'admin'] },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Product: {
           type: 'object',
@@ -74,8 +79,8 @@ const swaggerOptions = {
             images: { type: 'array', items: { type: 'string' } },
             specifications: { type: 'object' },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Order: {
           type: 'object',
@@ -84,10 +89,19 @@ const swaggerOptions = {
             userId: { type: 'string' },
             products: { type: 'array' },
             total: { type: 'number' },
-            status: { type: 'string', enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] },
+            status: {
+              type: 'string',
+              enum: [
+                'pending',
+                'processing',
+                'shipped',
+                'delivered',
+                'cancelled',
+              ],
+            },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Supplier: {
           type: 'object',
@@ -99,41 +113,45 @@ const swaggerOptions = {
             address: { type: 'string' },
             verified: { type: 'boolean' },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Error: {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            error: { type: 'string' }
-          }
+            error: { type: 'string' },
+          },
         },
         Success: {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: true },
-            message: { type: 'string' }
-          }
-        }
-      }
+            message: { type: 'string' },
+          },
+        },
+      },
     },
     security: [
       {
-        bearerAuth: []
-      }
-    ]
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: ['./server-deploy.js']
+  apis: ['./server-deploy.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Serve Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'VNCompare API Documentation'
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'VNCompare API Documentation',
+  })
+);
 
 /**
  * @swagger
@@ -165,7 +183,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
  *                   type: string
  */
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'VNCompare API Server is running!',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
@@ -178,9 +196,9 @@ app.get('/', (req, res) => {
       'POST /api/products',
       'GET /api/orders',
       'GET /api/suppliers',
-      'GET /api/dashboard/stats'
+      'GET /api/dashboard/stats',
     ],
-    documentation: '/api-docs'
+    documentation: '/api-docs',
   });
 });
 
@@ -209,10 +227,10 @@ app.get('/', (req, res) => {
  *                   type: string
  */
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
@@ -352,7 +370,7 @@ app.post('/api/login', (req, res) => {
 app.get('/api/users', (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
-  
+
   // Mock data for demo
   const mockUsers = [
     {
@@ -361,7 +379,7 @@ app.get('/api/users', (req, res) => {
       name: 'Nguyen Phong Thien',
       role: 'admin',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     },
     {
       _id: '2',
@@ -369,8 +387,8 @@ app.get('/api/users', (req, res) => {
       name: 'Test User',
       role: 'user',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+      updatedAt: new Date().toISOString(),
+    },
   ];
 
   res.json({
@@ -429,7 +447,7 @@ app.get('/api/users', (req, res) => {
 app.get('/api/products', (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
-  
+
   // Mock data for demo
   const mockProducts = [
     {
@@ -445,7 +463,7 @@ app.get('/api/products', (req, res) => {
       images: [],
       specifications: {},
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     },
     {
       _id: '2',
@@ -460,8 +478,8 @@ app.get('/api/products', (req, res) => {
       images: [],
       specifications: {},
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
+      updatedAt: new Date().toISOString(),
+    },
   ];
 
   res.json({
@@ -517,7 +535,9 @@ app.get('/api/dashboard/stats', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+  console.log(
+    `API Documentation available at http://localhost:${PORT}/api-docs`
+  );
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 

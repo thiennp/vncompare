@@ -35,24 +35,28 @@ const swaggerOptions = {
       description: 'API documentation for VNCompare paint comparison platform',
       contact: {
         name: 'VNCompare Team',
-        email: 'nguyenphongthien@gmail.com'
-      }
+        email: 'nguyenphongthien@gmail.com',
+      },
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' 
-          ? 'https://vncompare-api.railway.app' 
-          : `http://localhost:${PORT}`,
-        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
-      }
+        url:
+          process.env.NODE_ENV === 'production'
+            ? 'https://vncompare-api.railway.app'
+            : `http://localhost:${PORT}`,
+        description:
+          process.env.NODE_ENV === 'production'
+            ? 'Production server'
+            : 'Development server',
+      },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
+          bearerFormat: 'JWT',
+        },
       },
       schemas: {
         User: {
@@ -63,8 +67,8 @@ const swaggerOptions = {
             name: { type: 'string' },
             role: { type: 'string', enum: ['user', 'admin'] },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Product: {
           type: 'object',
@@ -81,8 +85,8 @@ const swaggerOptions = {
             images: { type: 'array', items: { type: 'string' } },
             specifications: { type: 'object' },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Order: {
           type: 'object',
@@ -91,10 +95,19 @@ const swaggerOptions = {
             userId: { type: 'string' },
             products: { type: 'array' },
             total: { type: 'number' },
-            status: { type: 'string', enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] },
+            status: {
+              type: 'string',
+              enum: [
+                'pending',
+                'processing',
+                'shipped',
+                'delivered',
+                'cancelled',
+              ],
+            },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Supplier: {
           type: 'object',
@@ -106,41 +119,45 @@ const swaggerOptions = {
             address: { type: 'string' },
             verified: { type: 'boolean' },
             createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
         },
         Error: {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            error: { type: 'string' }
-          }
+            error: { type: 'string' },
+          },
         },
         Success: {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: true },
-            message: { type: 'string' }
-          }
-        }
-      }
+            message: { type: 'string' },
+          },
+        },
+      },
     },
     security: [
       {
-        bearerAuth: []
-      }
-    ]
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: ['./server.js'] // Path to the API files
+  apis: ['./server.js'], // Path to the API files
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Serve Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'VNCompare API Documentation'
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'VNCompare API Documentation',
+  })
+);
 
 // MongoDB connection
 let db;
@@ -183,7 +200,7 @@ async function connectToDatabase() {
  *                     type: string
  */
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'VNCompare API Server is running!',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
@@ -196,9 +213,9 @@ app.get('/', (req, res) => {
       'POST /api/products',
       'GET /api/orders',
       'GET /api/suppliers',
-      'GET /api/dashboard/stats'
+      'GET /api/dashboard/stats',
     ],
-    documentation: '/api-docs'
+    documentation: '/api-docs',
   });
 });
 
@@ -227,10 +244,10 @@ app.get('/', (req, res) => {
  *                   type: string
  */
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
@@ -1203,7 +1220,15 @@ app.get('/api/reviews', async (req, res) => {
  */
 // Dashboard stats endpoint
 app.get('/api/dashboard/stats', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const totalUsers = await db.collection('users').countDocuments();
     const totalProducts = await db.collection('products').countDocuments();
     const totalOrders = await db.collection('orders').countDocuments();
@@ -1215,13 +1240,26 @@ app.get('/api/dashboard/stats', async (req, res) => {
       totalOrders,
       totalSuppliers,
       totalRevenue: 0, // TODO: Calculate from orders
+      activeProducts: 0, // TODO: Calculate active products
+      verifiedSuppliers: 0, // TODO: Calculate verified suppliers
     });
   } catch (error) {
     console.error('Get dashboard stats error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Lỗi khi lấy thống kê dashboard',
+    // Graceful fallback when DB is unavailable
+    res.json({
+      totalUsers: 0,
+      totalProducts: 0,
+      totalOrders: 0,
+      totalSuppliers: 0,
+      totalRevenue: 0,
+      activeProducts: 0,
+      verifiedSuppliers: 0,
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
@@ -1242,43 +1280,48 @@ app.post('/api/reset-db', async (req, res) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
-        error: 'Unauthorized - Admin token required'
+        error: 'Unauthorized - Admin token required',
       });
     }
 
     const token = authHeader.substring(7);
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     if (decoded.role !== 'admin') {
       return res.status(403).json({
         success: false,
-        error: 'Forbidden - Admin role required'
+        error: 'Forbidden - Admin role required',
       });
     }
 
     // Drop all collections
     const collections = ['users', 'products', 'orders', 'suppliers', 'reviews'];
     for (const collectionName of collections) {
-      await db.collection(collectionName).drop().catch(() => {
-        // Collection might not exist, ignore error
-      });
+      await db
+        .collection(collectionName)
+        .drop()
+        .catch(() => {
+          // Collection might not exist, ignore error
+        });
     }
 
     // Recreate collections with indexes
     await db.collection('users').createIndex({ email: 1 }, { unique: true });
     await db.collection('products').createIndex({ name: 1 });
     await db.collection('orders').createIndex({ userId: 1 });
-    await db.collection('suppliers').createIndex({ email: 1 }, { unique: true });
+    await db
+      .collection('suppliers')
+      .createIndex({ email: 1 }, { unique: true });
 
     res.json({
       success: true,
-      message: 'Database reset successfully'
+      message: 'Database reset successfully',
     });
   } catch (error) {
     console.error('Reset database error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to reset database'
+      error: 'Failed to reset database',
     });
   }
 });

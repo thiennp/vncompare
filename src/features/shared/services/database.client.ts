@@ -125,10 +125,13 @@ export const db = {
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
       return {
+        totalUsers: 0,
         totalProducts: 0,
         totalOrders: 0,
-        totalUsers: 0,
+        totalSuppliers: 0,
         totalRevenue: 0,
+        activeProducts: 0,
+        verifiedSuppliers: 0,
       };
     }
   },

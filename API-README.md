@@ -14,31 +14,38 @@ A Node.js Express server with OpenAPI/Swagger documentation for the VNCompare pa
 ## API Endpoints
 
 ### General
+
 - `GET /` - Server information and available endpoints
 - `GET /api/health` - Health check
 - `GET /api-docs` - Interactive API documentation (Swagger UI)
 
 ### Authentication
+
 - `POST /api/login` - User login
 
 ### Users
+
 - `GET /api/users` - Get users list
 - `POST /api/users` - Create user
 
 ### Products
+
 - `GET /api/products` - Get products list
 - `POST /api/products` - Create product
 
 ### Dashboard
+
 - `GET /api/dashboard/stats` - Get dashboard statistics
 
 ## Local Development
 
 ### Prerequisites
+
 - Node.js 18+
 - pnpm (recommended) or npm
 
 ### Installation
+
 ```bash
 # Install dependencies
 pnpm install
@@ -51,6 +58,7 @@ pnpm run server
 ```
 
 ### Access Points
+
 - **API Server**: http://localhost:3001
 - **API Documentation**: http://localhost:3001/api-docs
 - **Health Check**: http://localhost:3001/api/health
@@ -58,12 +66,14 @@ pnpm run server
 ## Testing the API
 
 ### Using Swagger UI
+
 1. Open http://localhost:3001/api-docs
 2. Click "Try it out" on any endpoint
 3. Fill in the required parameters
 4. Click "Execute" to test
 
 ### Using curl
+
 ```bash
 # Health check
 curl http://localhost:3001/api/health
@@ -83,12 +93,14 @@ curl http://localhost:3001/api/products
 ## Deployment
 
 ### Railway Deployment
+
 1. Connect your GitHub repository to Railway
 2. Railway will automatically detect the `railway.toml` configuration
 3. The server will be deployed using `server-deploy.js` with mock data
 4. Access your deployed API at the Railway-provided URL
 
 ### Environment Variables
+
 - `NODE_ENV` - Environment (development/production)
 - `PORT` - Server port (default: 3001)
 
@@ -97,10 +109,12 @@ curl http://localhost:3001/api/products
 The deployment server (`server-deploy.js`) includes mock data for testing:
 
 ### Users
+
 - Admin: `nguyenphongthien@gmail.com` / `Kimtuoc2`
 - User: `user@example.com` / `password`
 
 ### Products
+
 - Dulux Weathershield (450,000 VND)
 - Jotun Majestic (520,000 VND)
 
