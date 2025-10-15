@@ -3,6 +3,8 @@ import cors from 'cors';
 import { MongoClient, ObjectId } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,6 +25,123 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'VNCompare API',
+      version: '1.0.0',
+      description: 'API documentation for VNCompare paint comparison platform',
+      contact: {
+        name: 'VNCompare Team',
+        email: 'nguyenphongthien@gmail.com'
+      }
+    },
+    servers: [
+      {
+        url: process.env.NODE_ENV === 'production' 
+          ? 'https://vncompare-api.railway.app' 
+          : `http://localhost:${PORT}`,
+        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      },
+      schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            email: { type: 'string', format: 'email' },
+            name: { type: 'string' },
+            role: { type: 'string', enum: ['user', 'admin'] },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Product: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            brand: { type: 'string' },
+            category: { type: 'string' },
+            description: { type: 'string' },
+            price: { type: 'number' },
+            unit: { type: 'string' },
+            coverage: { type: 'number' },
+            isActive: { type: 'boolean' },
+            images: { type: 'array', items: { type: 'string' } },
+            specifications: { type: 'object' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Order: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            userId: { type: 'string' },
+            products: { type: 'array' },
+            total: { type: 'number' },
+            status: { type: 'string', enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'] },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Supplier: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            email: { type: 'string', format: 'email' },
+            phone: { type: 'string' },
+            address: { type: 'string' },
+            verified: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            error: { type: 'string' }
+          }
+        },
+        Success: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: true },
+            message: { type: 'string' }
+          }
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
+  },
+  apis: ['./server.js'] // Path to the API files
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'VNCompare API Documentation'
+}));
+
 // MongoDB connection
 let db;
 async function connectToDatabase() {
@@ -36,7 +155,33 @@ async function connectToDatabase() {
   }
 }
 
-// Root endpoint for Railway
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Root endpoint
+ *     description: Returns basic server information and available endpoints
+ *     tags: [General]
+ *     responses:
+ *       200:
+ *         description: Server information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 environment:
+ *                   type: string
+ *                 endpoints:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ */
 app.get('/', (req, res) => {
   res.json({ 
     message: 'VNCompare API Server is running!',
@@ -46,12 +191,41 @@ app.get('/', (req, res) => {
       'GET /api/health',
       'GET /api/users',
       'POST /api/users',
-      'POST /api/login'
-    ]
+      'POST /api/login',
+      'GET /api/products',
+      'POST /api/products',
+      'GET /api/orders',
+      'GET /api/suppliers',
+      'GET /api/dashboard/stats'
+    ],
+    documentation: '/api-docs'
   });
 });
 
-// Health check endpoint
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     summary: Health check
+ *     description: Check if the server is running and healthy
+ *     tags: [General]
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                 environment:
+ *                   type: string
+ */
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -60,6 +234,65 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: User login
+ *     description: Authenticate user and return JWT token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: nguyenphongthien@gmail.com
+ *               password:
+ *                 type: string
+ *                 example: Kimtuoc2
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for authentication
+ *       400:
+ *         description: Bad request - missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Unauthorized - invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // Login endpoint
 app.post('/api/login', async (req, res) => {
   try {
@@ -142,6 +375,111 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Get products
+ *     description: Retrieve a paginated list of products
+ *     tags: [Products]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: List of products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 products:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 total:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   post:
+ *     summary: Create product
+ *     description: Create a new product
+ *     tags: [Products]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - brand
+ *               - price
+ *               - coverage
+ *             properties:
+ *               name:
+ *                 type: string
+ *               brand:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *                 default: Sơn ngoại thất
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               unit:
+ *                 type: string
+ *                 default: lít
+ *               coverage:
+ *                 type: number
+ *               isActive:
+ *                 type: boolean
+ *                 default: true
+ *     responses:
+ *       200:
+ *         description: Product created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 product:
+ *                   $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Bad request - missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // Products endpoints
 app.get('/api/products', async (req, res) => {
   try {
@@ -369,6 +707,102 @@ app.put('/api/orders/:id/status', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get users
+ *     description: Retrieve a paginated list of users
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *                 total:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *   post:
+ *     summary: Create user
+ *     description: Create a new user account
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - name
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               name:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
+ *                 default: user
+ *     responses:
+ *       200:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request - missing required fields or email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // Users endpoints
 app.get('/api/users', async (req, res) => {
   let client;
@@ -735,6 +1169,38 @@ app.get('/api/reviews', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/dashboard/stats:
+ *   get:
+ *     summary: Get dashboard statistics
+ *     description: Retrieve statistics for the admin dashboard
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Dashboard statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalUsers:
+ *                   type: integer
+ *                 totalProducts:
+ *                   type: integer
+ *                 totalOrders:
+ *                   type: integer
+ *                 totalSuppliers:
+ *                   type: integer
+ *                 totalRevenue:
+ *                   type: number
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // Dashboard stats endpoint
 app.get('/api/dashboard/stats', async (req, res) => {
   try {

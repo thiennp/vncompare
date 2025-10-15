@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "start": "node dist/server/entry.server.js",
     "server": "node server.js",
+    "server:deploy": "node server-deploy.js",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "seed": "tsx src/scripts/seedDatabase.ts",
@@ -31,6 +32,8 @@
     "react-router": "^6.28.0",
     "react-router-dom": "^6.28.0",
     "react-router-server": "^4.2.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
