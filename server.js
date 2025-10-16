@@ -583,7 +583,14 @@ app.get('/api/products', async (req, res) => {
 });
 
 app.post('/api/products', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
     const {
       name,
       brand,
@@ -629,11 +636,23 @@ app.post('/api/products', async (req, res) => {
       success: false,
       error: 'Lỗi khi tạo sản phẩm',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
 app.put('/api/products/:id', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
     const { id } = req.params;
     const {
       name,
@@ -679,6 +698,11 @@ app.put('/api/products/:id', async (req, res) => {
       success: false,
       error: 'Lỗi khi cập nhật sản phẩm',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
