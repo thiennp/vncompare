@@ -26,7 +26,14 @@ export function useLoginFormLogic() {
 
   // Handle successful login redirect
   useEffect(() => {
+    console.log('Login effect triggered:', {
+      data: fetcher.data,
+      state: fetcher.state,
+    });
+
     if (fetcher.data && fetcher.data.success) {
+      console.log('Login successful, navigating...', fetcher.data.user);
+
       // Dispatch login event with user data (no localStorage per workspace rules)
       const userData = {
         _id: fetcher.data.user._id || fetcher.data.user.email,
@@ -43,9 +50,13 @@ export function useLoginFormLogic() {
       // Redirect based on user role
       const redirectPath =
         fetcher.data.user.role === 'admin' ? '/admin' : '/dashboard';
-      navigate(redirectPath);
+
+      console.log('Navigating to:', redirectPath);
+      navigate(redirectPath, { replace: true });
+    } else if (fetcher.data && !fetcher.data.success) {
+      console.error('Login failed:', fetcher.data.error);
     }
-  }, [fetcher.data, navigate]);
+  }, [fetcher.data, fetcher.state, navigate]);
 
   return {
     email,
