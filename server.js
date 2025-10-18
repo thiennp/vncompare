@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const MONGODB_URI =
   process.env.MONGODB_URI ||
-  'mongodb+srv://thiennp:FlTTgdiuA44ZuQ5W@vncompare.blc3zwp.mongodb.net/vncompare?retryWrites=true&w=majority&appName=Vncompare';
+  'mongodb+srv://thiennp:Kimtuoc2%40@vncompare.blc3zwp.mongodb.net/vncompare?retryWrites=true&w=majority&appName=Vncompare';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // Middleware
