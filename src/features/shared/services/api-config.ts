@@ -1,11 +1,26 @@
 // API configuration utility
-// In production, use relative URLs to hit the same domain's /api routes
-// In development, use localhost:3001
-export const API_BASE_URL =
-  (import.meta as any).env?.VITE_API_BASE_URL ||
-  (typeof window !== 'undefined' &&
-  (window.location.hostname === 'vncompare.com' ||
-    window.location.hostname === 'www.vncompare.com' ||
-    window.location.hostname.includes('vercel.app'))
-    ? '/api'
-    : 'http://localhost:3001/api');
+// Get API base URL at runtime to avoid build-time optimization
+function getApiBaseUrl(): string {
+  // Check for explicit env variable first
+  const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
+  if (envUrl) {
+    return envUrl;
+  }
+
+  // Runtime check - cannot be optimized away by Vite
+  if (typeof window !== 'undefined') {
+    const hostname = window['location']['hostname'];
+    const isProduction =
+      hostname === 'vncompare.com' ||
+      hostname === 'www.vncompare.com' ||
+      hostname.indexOf('vercel.app') !== -1;
+
+    if (isProduction) {
+      return '/api';
+    }
+  }
+
+  return 'http://localhost:3001/api';
+}
+
+export const API_BASE_URL = getApiBaseUrl();
