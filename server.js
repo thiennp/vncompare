@@ -603,6 +603,45 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
+app.get('/api/products/:id', async (req, res) => {
+  let client;
+  try {
+    // Create fresh connection for each serverless request
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const localDb = client.db('vncompare');
+
+    const { id } = req.params;
+    const product = await localDb
+      .collection('products')
+      .findOne({ _id: new ObjectId(id) });
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: 'Không tìm thấy sản phẩm',
+      });
+    }
+
+    res.json({
+      success: true,
+      product,
+    });
+  } catch (error) {
+    console.error('Get product by ID error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi lấy thông tin sản phẩm',
+      details: error.message,
+    });
+  } finally {
+    // Always close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
 app.post('/api/products', async (req, res) => {
   let client;
   try {
