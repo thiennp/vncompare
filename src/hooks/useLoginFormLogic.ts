@@ -34,6 +34,11 @@ export function useLoginFormLogic() {
     if (fetcher.data && fetcher.data.success) {
       console.log('Login successful, navigating...', fetcher.data.user);
 
+      // Save auth token to cookie (token only, not user info per workspace rules)
+      const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+      document.cookie = `auth_token=${fetcher.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      console.log('✅ Token saved to cookie');
+
       // Dispatch login event with user data (no localStorage per workspace rules)
       const userData = {
         _id: fetcher.data.user._id || fetcher.data.user.email,

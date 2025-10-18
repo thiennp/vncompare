@@ -55,6 +55,8 @@ export function useAuth() {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('paint_user');
+    // Clear auth token cookie
+    document.cookie = 'auth_token=; path=/; max-age=0';
     // Dispatch logout event
     window.dispatchEvent(new CustomEvent('paint:logout'));
     // Redirect to login page
