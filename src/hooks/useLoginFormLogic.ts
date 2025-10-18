@@ -1,4 +1,4 @@
-import { useState, useCallback, FormEvent, useEffect } from 'react';
+import { useState, useCallback, FormEvent, useEffect, useRef } from 'react';
 import { useFetcher, useNavigate } from 'react-router-dom';
 
 export function useLoginFormLogic() {
@@ -6,6 +6,7 @@ export function useLoginFormLogic() {
   const [password, setPassword] = useState('');
   const fetcher = useFetcher();
   const navigate = useNavigate();
+  const hasNavigated = useRef(false);
 
   const handleSubmit = useCallback(
     (e: FormEvent) => {
@@ -31,15 +32,13 @@ export function useLoginFormLogic() {
       state: fetcher.state,
     });
 
-    if (fetcher.data && fetcher.data.success) {
+    if (fetcher.data && fetcher.data.success && !hasNavigated.current) {
       console.log('Login successful, navigating...', fetcher.data.user);
 
-      // Save auth token to cookie (token only, not user info per workspace rules)
-      const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
-      document.cookie = `auth_token=${fetcher.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
-      console.log('✅ Token saved to cookie');
+      // Mark as navigated to prevent double execution
+      hasNavigated.current = true;
 
-      // Dispatch login event with user data (no localStorage per workspace rules)
+      // Prepare user data
       const userData = {
         _id: fetcher.data.user._id || fetcher.data.user.email,
         email: fetcher.data.user.email,
@@ -48,6 +47,16 @@ export function useLoginFormLogic() {
         token: fetcher.data.token,
       };
 
+      // Save auth token to cookie
+      const maxAge = 7 * 24 * 60 * 60; // 7 days in seconds
+      document.cookie = `auth_token=${fetcher.data.token}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      console.log('✅ Token saved to cookie');
+
+      // Save user data to localStorage (needed for useAuth hook)
+      localStorage.setItem('paint_user', JSON.stringify(userData));
+      console.log('✅ User data saved to localStorage');
+
+      // Dispatch login event
       window.dispatchEvent(
         new CustomEvent('paint:login', { detail: userData })
       );
@@ -57,7 +66,11 @@ export function useLoginFormLogic() {
         fetcher.data.user.role === 'admin' ? '/admin' : '/dashboard';
 
       console.log('Navigating to:', redirectPath);
-      navigate(redirectPath, { replace: true });
+
+      // Use setTimeout to break out of the current render cycle
+      setTimeout(() => {
+        navigate(redirectPath, { replace: true });
+      }, 50);
     } else if (fetcher.data && !fetcher.data.success) {
       console.error('Login failed:', fetcher.data.error);
     }
