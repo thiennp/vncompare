@@ -1510,6 +1510,63 @@ app.get('/api/debug/mongodb', async (req, res) => {
   }
 });
 
+// Get server's outbound IP address
+app.get('/api/debug/ip', async (req, res) => {
+  try {
+    const https = await import('https');
+    const options = {
+      hostname: 'api.ipify.org',
+      path: '/?format=json',
+      method: 'GET',
+    };
+
+    const ipRequest = https.request(options, ipRes => {
+      let data = '';
+      ipRes.on('data', chunk => {
+        data += chunk;
+      });
+      ipRes.on('end', () => {
+        try {
+          const ipData = JSON.parse(data);
+          res.json({
+            status: 'success',
+            outboundIP: ipData.ip,
+            message: 'Add this IP to MongoDB Atlas Network Access',
+            instructions: [
+              'Go to MongoDB Atlas → Network Access',
+              'Click + ADD IP ADDRESS',
+              `Enter: ${ipData.ip}`,
+              'Comment: Vercel Production IP',
+              'Click Confirm',
+            ],
+          });
+        } catch (e) {
+          res.json({ status: 'error', error: e.message });
+        }
+      });
+    });
+
+    ipRequest.on('error', e => {
+      res.json({
+        status: 'error',
+        error: e.message,
+        fallbackIPs: [
+          'Try adding these Vercel IP ranges:',
+          '76.76.21.0/24',
+          '76.223.0.0/20',
+        ],
+      });
+    });
+
+    ipRequest.end();
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error: error.message,
+    });
+  }
+});
+
 // Reset database endpoint
 app.post('/api/reset-db', async (req, res) => {
   try {
