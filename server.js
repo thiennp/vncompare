@@ -509,18 +509,24 @@ app.post('/api/login', async (req, res) => {
  */
 // Products endpoints
 app.get('/api/products', async (req, res) => {
+  let client;
   try {
+    // Create fresh connection for each serverless request
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const localDb = client.db('vncompare');
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
 
-    const products = await db
+    const products = await localDb
       .collection('products')
       .find({})
       .skip(skip)
       .limit(limit)
       .toArray();
-    const total = await db.collection('products').countDocuments();
+    const total = await localDb.collection('products').countDocuments();
 
     res.json({
       products,
@@ -589,6 +595,11 @@ app.get('/api/products', async (req, res) => {
       page,
       limit,
     });
+  } finally {
+    // Always close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
@@ -613,14 +624,12 @@ app.post('/api/products', async (req, res) => {
       });
     }
 
-    // Ensure database connection for serverless environment
-    if (!db) {
-      console.log('Creating new MongoDB connection...');
-      client = new MongoClient(MONGODB_URI);
-      await client.connect();
-      db = client.db('vncompare');
-      console.log('MongoDB connected successfully');
-    }
+    // Create fresh connection for each serverless request
+    console.log('Creating new MongoDB connection...');
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const localDb = client.db('vncompare');
+    console.log('MongoDB connected successfully');
 
     const product = {
       name,
@@ -637,7 +646,7 @@ app.post('/api/products', async (req, res) => {
       updatedAt: new Date(),
     };
 
-    const result = await db.collection('products').insertOne(product);
+    const result = await localDb.collection('products').insertOne(product);
 
     res.json({
       success: true,
