@@ -1464,6 +1464,49 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// MongoDB connection diagnostic endpoint
+app.get('/api/debug/mongodb', async (req, res) => {
+  try {
+    const hasUri = !!MONGODB_URI;
+    const uriPreview = MONGODB_URI
+      ? MONGODB_URI.substring(0, 20) +
+        '...' +
+        MONGODB_URI.substring(MONGODB_URI.length - 20)
+      : 'NOT SET';
+
+    if (!MONGODB_URI) {
+      return res.json({
+        status: 'error',
+        message: 'MONGODB_URI environment variable is not set',
+        hasUri,
+      });
+    }
+
+    const client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const adminDb = client.db().admin();
+    const serverInfo = await adminDb.serverStatus();
+    await client.close();
+
+    res.json({
+      status: 'success',
+      message: 'MongoDB connection successful',
+      hasUri,
+      uriPreview,
+      mongoVersion: serverInfo.version,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'MongoDB connection failed',
+      error: error.message,
+      hasUri: !!MONGODB_URI,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
 // Reset database endpoint
 app.post('/api/reset-db', async (req, res) => {
   try {
