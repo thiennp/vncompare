@@ -172,9 +172,11 @@ async function connectToDatabase() {
     const client = new MongoClient(MONGODB_URI);
     await client.connect();
     db = client.db('vncompare');
-    console.log('Connected to MongoDB');
+    console.log('✅ Connected to MongoDB');
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error('❌ MongoDB connection error:', error);
+    console.error('Server will continue without database connection');
+    // Don't throw error - allow server to start without MongoDB
   }
 }
 
@@ -1565,14 +1567,23 @@ app.post('/api/reset-db', async (req, res) => {
 // Start server
 async function startServer() {
   try {
+    // Try to connect to MongoDB but don't fail if it doesn't work
     await connectToDatabase();
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`✅ Server running on http://localhost:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(
+        `MongoDB: ${db ? 'Connected' : 'Not connected (using mock data)'}`
+      );
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
+    console.error('❌ Failed to start server:', error);
+    // Don't exit - try to start server anyway
+    app.listen(PORT, () => {
+      console.log(
+        `⚠️  Server running on http://localhost:${PORT} WITHOUT database`
+      );
+    });
   }
 }
 
