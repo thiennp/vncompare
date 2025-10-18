@@ -17,7 +17,12 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === 'production'
-        ? ['https://vncompare.vercel.app', 'https://www.vncompare.vercel.app']
+        ? [
+            'https://vncompare.vercel.app',
+            'https://www.vncompare.vercel.app',
+            'https://vncompare.com',
+            'https://www.vncompare.com',
+          ]
         : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
   })
