@@ -1564,38 +1564,29 @@ app.post('/api/reset-db', async (req, res) => {
   }
 });
 
-// Start server
-async function startServer() {
-  try {
-    // Try to connect to MongoDB but don't fail if it doesn't work
-    await connectToDatabase();
-    app.listen(PORT, () => {
-      console.log(`✅ Server running on http://localhost:${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(
-        `MongoDB: ${db ? 'Connected' : 'Not connected (using mock data)'}`
-      );
-    });
-  } catch (error) {
-    console.error('❌ Failed to start server:', error);
-    // Don't exit - try to start server anyway
-    app.listen(PORT, () => {
-      console.log(
-        `⚠️  Server running on http://localhost:${PORT} WITHOUT database`
-      );
-    });
-  }
+// Initialize MongoDB connection
+connectToDatabase().catch(err => {
+  console.error('Failed to connect to MongoDB:', err);
+});
+
+// For Vercel serverless, export the app directly
+export default app;
+
+// For local development with Node.js
+if (process.env.NODE_ENV !== 'production') {
+  const server = app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+
+  // Handle graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    server.close(() => process.exit(0));
+  });
+
+  process.on('SIGINT', () => {
+    console.log('SIGINT received, shutting down gracefully');
+    server.close(() => process.exit(0));
+  });
 }
-
-// Handle graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down gracefully');
-  process.exit(0);
-});
-
-startServer();
