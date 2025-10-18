@@ -649,8 +649,8 @@ app.post('/api/products', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Lỗi khi tạo sản phẩm',
-      details:
-        process.env.NODE_ENV === 'development' ? error.message : undefined,
+      details: error.message, // Always show error message for debugging
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   } finally {
     // Close connection in serverless environment
