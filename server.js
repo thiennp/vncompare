@@ -592,12 +592,6 @@ app.get('/api/products', async (req, res) => {
 app.post('/api/products', async (req, res) => {
   let client;
   try {
-    // Ensure database connection for serverless environment
-    if (!db) {
-      client = new MongoClient(MONGODB_URI);
-      await client.connect();
-      db = client.db('vncompare');
-    }
     const {
       name,
       brand,
@@ -614,6 +608,15 @@ app.post('/api/products', async (req, res) => {
         success: false,
         error: 'Thông tin bắt buộc không được để trống',
       });
+    }
+
+    // Ensure database connection for serverless environment
+    if (!db) {
+      console.log('Creating new MongoDB connection...');
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+      console.log('MongoDB connected successfully');
     }
 
     const product = {
@@ -639,9 +642,12 @@ app.post('/api/products', async (req, res) => {
     });
   } catch (error) {
     console.error('Create product error:', error);
+    console.error('Error details:', error.message, error.stack);
     res.status(500).json({
       success: false,
       error: 'Lỗi khi tạo sản phẩm',
+      details:
+        process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   } finally {
     // Close connection in serverless environment
