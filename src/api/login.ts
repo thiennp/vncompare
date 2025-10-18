@@ -4,6 +4,7 @@
 export interface LoginSuccessResponse {
   readonly success: true;
   readonly user: {
+    _id?: string;
     email: string;
     name: string;
     role: string;

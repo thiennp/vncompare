@@ -17,6 +17,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 export interface LoginSuccessResponse {
   readonly success: true;
   readonly user: {
+    _id?: string;
     email: string;
     name: string;
     role: string;
@@ -77,6 +78,7 @@ export async function action({
     return {
       success: true,
       user: {
+        _id: user._id.toString(),
         email: user.email,
         name: user.name,
         role: user.role,

@@ -337,6 +337,7 @@ app.post('/api/login', async (req, res) => {
       return res.json({
         success: true,
         user: {
+          _id: 'admin-user-id',
           email: 'nguyenphongthien@gmail.com',
           name: 'Nguyen Phong Thien',
           role: 'admin',
@@ -377,6 +378,7 @@ app.post('/api/login', async (req, res) => {
     res.json({
       success: true,
       user: {
+        _id: user._id.toString(),
         email: user.email,
         name: user.name,
         role: user.role,
@@ -520,11 +522,11 @@ app.get('/api/products', async (req, res) => {
     });
   } catch (error) {
     console.error('Get products error:', error);
-    
+
     // Fallback to mock data when database connection fails
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
-    
+
     const mockProducts = [
       {
         _id: '1',
@@ -539,7 +541,7 @@ app.get('/api/products', async (req, res) => {
         images: [],
         specifications: {},
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         _id: '2',
@@ -554,7 +556,7 @@ app.get('/api/products', async (req, res) => {
         images: [],
         specifications: {},
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         _id: '3',
@@ -569,8 +571,8 @@ app.get('/api/products', async (req, res) => {
         images: [],
         specifications: {},
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ];
 
     res.json({
@@ -757,11 +759,11 @@ app.get('/api/orders', async (req, res) => {
     });
   } catch (error) {
     console.error('Get orders error:', error);
-    
+
     // Fallback to mock data when database connection fails
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
-    
+
     const mockOrders = [
       {
         _id: '1',
@@ -771,14 +773,14 @@ app.get('/api/orders', async (req, res) => {
             productId: '1',
             name: 'Sơn Dulux Weathershield',
             quantity: 2,
-            price: 450000
-          }
+            price: 450000,
+          },
         ],
         total: 900000,
         status: 'pending',
         shippingAddress: '123 Đường ABC, Quận 1, TP.HCM',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         _id: '2',
@@ -788,15 +790,15 @@ app.get('/api/orders', async (req, res) => {
             productId: '2',
             name: 'Sơn Jotun Majestic',
             quantity: 1,
-            price: 520000
-          }
+            price: 520000,
+          },
         ],
         total: 520000,
         status: 'processing',
         shippingAddress: '456 Đường XYZ, Quận 2, TP.HCM',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ];
 
     res.json({
@@ -974,11 +976,11 @@ app.get('/api/users', async (req, res) => {
     });
   } catch (error) {
     console.error('Get users error:', error);
-    
+
     // Fallback to mock data when database connection fails
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
-    
+
     const mockUsers = [
       {
         _id: '1',
@@ -986,7 +988,7 @@ app.get('/api/users', async (req, res) => {
         name: 'Nguyen Phong Thien',
         role: 'admin',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         _id: '2',
@@ -994,8 +996,8 @@ app.get('/api/users', async (req, res) => {
         name: 'Test User',
         role: 'user',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ];
 
     res.json({
@@ -1185,11 +1187,11 @@ app.get('/api/suppliers', async (req, res) => {
     });
   } catch (error) {
     console.error('Get suppliers error:', error);
-    
+
     // Fallback to mock data when database connection fails
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
-    
+
     const mockSuppliers = [
       {
         _id: '1',
@@ -1199,7 +1201,7 @@ app.get('/api/suppliers', async (req, res) => {
         address: '123 Đường ABC, Quận 1, TP.HCM',
         verified: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       {
         _id: '2',
@@ -1209,8 +1211,8 @@ app.get('/api/suppliers', async (req, res) => {
         address: '456 Đường XYZ, Quận 2, TP.HCM',
         verified: true,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
+        updatedAt: new Date().toISOString(),
+      },
     ];
 
     res.json({

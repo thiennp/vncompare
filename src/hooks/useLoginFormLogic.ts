@@ -29,7 +29,7 @@ export function useLoginFormLogic() {
     if (fetcher.data && fetcher.data.success) {
       // Dispatch login event with user data (no localStorage per workspace rules)
       const userData = {
-        _id: fetcher.data.user._id,
+        _id: fetcher.data.user._id || fetcher.data.user.email,
         email: fetcher.data.user.email,
         name: fetcher.data.user.name,
         role: fetcher.data.user.role,
@@ -40,8 +40,10 @@ export function useLoginFormLogic() {
         new CustomEvent('paint:login', { detail: userData })
       );
 
-      // Redirect to admin dashboard after successful login
-      navigate('/admin');
+      // Redirect based on user role
+      const redirectPath =
+        fetcher.data.user.role === 'admin' ? '/admin' : '/dashboard';
+      navigate(redirectPath);
     }
   }, [fetcher.data, navigate]);
 
