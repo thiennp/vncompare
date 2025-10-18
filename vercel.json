@@ -28,7 +28,7 @@
     }
   ],
   "env": {
-    "MONGODB_URI": "mongodb+srv://thiennp:2MRlGkAa8w8Wxa7J@vncompare.blc3zwp.mongodb.net/vncompare?retryWrites=true&w=majority&appName=Vncompare",
+    "MONGODB_URI": "mongodb+srv://nguyenphongthien_db_user:1EFOhbR1rTb917Ge@vncompare-new.tx33zve.mongodb.net/vncompare?retryWrites=true&w=majority&appName=vncompare-new",
     "JWT_SECRET": "your-super-secret-jwt-key-here-2024-production"
   }
 }
