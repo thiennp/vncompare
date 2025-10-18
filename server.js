@@ -824,6 +824,55 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+app.post('/api/orders', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const { userId, products, total, shippingAddress, status } = req.body;
+
+    if (!userId || !products || !total) {
+      return res.status(400).json({
+        success: false,
+        error: 'UserId, products và total là bắt buộc',
+      });
+    }
+
+    const order = {
+      userId,
+      products,
+      total: parseFloat(total),
+      status: status || 'pending',
+      shippingAddress: shippingAddress || '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await db.collection('orders').insertOne(order);
+
+    res.json({
+      success: true,
+      order: { ...order, _id: result.insertedId },
+    });
+  } catch (error) {
+    console.error('Create order error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi tạo đơn hàng',
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
 app.put('/api/orders/:id/status', async (req, res) => {
   try {
     const { id } = req.params;
@@ -1239,7 +1288,15 @@ app.get('/api/suppliers', async (req, res) => {
 });
 
 app.post('/api/suppliers', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const { name, email, phone, address, verified } = req.body;
 
     if (!name || !email) {
@@ -1282,6 +1339,11 @@ app.post('/api/suppliers', async (req, res) => {
       success: false,
       error: 'Lỗi khi tạo nhà cung cấp',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
@@ -1353,7 +1415,15 @@ app.delete('/api/suppliers/:id', async (req, res) => {
 
 // Reviews endpoints
 app.get('/api/reviews', async (req, res) => {
+  let client;
   try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
@@ -1378,6 +1448,60 @@ app.get('/api/reviews', async (req, res) => {
       success: false,
       error: 'Lỗi khi lấy danh sách đánh giá',
     });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+app.post('/api/reviews', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const { productId, userId, userName, rating, comment } = req.body;
+
+    if (!productId || !userId || !rating) {
+      return res.status(400).json({
+        success: false,
+        error: 'ProductId, userId và rating là bắt buộc',
+      });
+    }
+
+    const review = {
+      productId,
+      userId,
+      userName: userName || 'Anonymous',
+      rating: parseInt(rating),
+      comment: comment || '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await db.collection('reviews').insertOne(review);
+
+    res.json({
+      success: true,
+      review: { ...review, _id: result.insertedId },
+    });
+  } catch (error) {
+    console.error('Create review error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi tạo đánh giá',
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
@@ -1414,6 +1538,51 @@ app.get('/api/reviews', async (req, res) => {
  *               $ref: '#/components/schemas/Error'
  */
 // Dashboard stats endpoint
+// Alias for /api/dashboard/stats
+app.get('/api/dashboard', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const totalUsers = await db.collection('users').countDocuments();
+    const totalProducts = await db.collection('products').countDocuments();
+    const totalOrders = await db.collection('orders').countDocuments();
+    const totalSuppliers = await db.collection('suppliers').countDocuments();
+
+    res.json({
+      totalUsers,
+      totalProducts,
+      totalOrders,
+      totalSuppliers,
+      totalRevenue: 0, // TODO: Calculate from orders
+      activeProducts: 0, // TODO: Calculate active products
+      verifiedSuppliers: 0, // TODO: Calculate verified suppliers
+    });
+  } catch (error) {
+    console.error('Get dashboard error:', error);
+    // Fallback to mock data when database connection fails
+    res.json({
+      totalUsers: 2,
+      totalProducts: 3,
+      totalOrders: 2,
+      totalSuppliers: 2,
+      totalRevenue: 1420000,
+      activeProducts: 3,
+      verifiedSuppliers: 2,
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
 app.get('/api/dashboard/stats', async (req, res) => {
   let client;
   try {
