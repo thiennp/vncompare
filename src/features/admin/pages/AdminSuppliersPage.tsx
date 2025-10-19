@@ -133,8 +133,11 @@ export default function AdminSuppliersPage() {
 
     setIsLoading(true);
     try {
-      await db.updateSupplier();
+      await db.updateSupplier(supplier._id.toString(), {
+        verified: !supplier.isVerified,
+      });
       revalidator.revalidate();
+      alert('Cập nhật trạng thái xác minh thành công!');
     } catch (error) {
       console.error('Error verifying supplier:', error);
       alert('Có lỗi xảy ra khi xác minh nhà cung cấp');
