@@ -542,8 +542,8 @@ export default function AdminAgenciesPage() {
               <Checkbox
                 id="create-verified"
                 checked={createForm.verified}
-                onCheckedChange={checked =>
-                  setCreateForm({ ...createForm, verified: checked === true })
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCreateForm({ ...createForm, verified: e.target.checked })
                 }
               />
               <Label htmlFor="create-verified">Đã xác minh</Label>
@@ -552,8 +552,8 @@ export default function AdminAgenciesPage() {
               <Checkbox
                 id="create-active"
                 checked={createForm.isActive}
-                onCheckedChange={checked =>
-                  setCreateForm({ ...createForm, isActive: checked === true })
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCreateForm({ ...createForm, isActive: e.target.checked })
                 }
               />
               <Label htmlFor="create-active">Hoạt động</Label>
@@ -630,8 +630,8 @@ export default function AdminAgenciesPage() {
               <Checkbox
                 id="edit-verified"
                 checked={editForm.verified || false}
-                onCheckedChange={checked =>
-                  setEditForm({ ...editForm, verified: checked === true })
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEditForm({ ...editForm, verified: e.target.checked })
                 }
               />
               <Label htmlFor="edit-verified">Đã xác minh</Label>
@@ -640,8 +640,8 @@ export default function AdminAgenciesPage() {
               <Checkbox
                 id="edit-active"
                 checked={editForm.isActive !== false}
-                onCheckedChange={checked =>
-                  setEditForm({ ...editForm, isActive: checked === true })
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEditForm({ ...editForm, isActive: e.target.checked })
                 }
               />
               <Label htmlFor="edit-active">Hoạt động</Label>

@@ -508,8 +508,8 @@ export default function AdminProductsPage() {
               <Checkbox
                 id="create-active"
                 checked={createForm.isActive}
-                onCheckedChange={checked =>
-                  setCreateForm({ ...createForm, isActive: checked === true })
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setCreateForm({ ...createForm, isActive: e.target.checked })
                 }
               />
               <Label htmlFor="create-active">Hoạt động</Label>
