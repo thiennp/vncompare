@@ -1397,20 +1397,28 @@ app.post('/api/suppliers', async (req, res) => {
 });
 
 app.put('/api/suppliers/:id', async (req, res) => {
+  let client;
   try {
+    // Create fresh connection for each serverless request
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const localDb = client.db('vncompare');
+
     const { id } = req.params;
     const { name, email, phone, address, verified } = req.body;
 
+    // Only update fields that are provided
     const updateData = {
-      name,
-      email,
-      phone,
-      address,
-      verified,
       updatedAt: new Date(),
     };
 
-    const result = await db
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
+    if (address !== undefined) updateData.address = address;
+    if (verified !== undefined) updateData.verified = verified;
+
+    const result = await localDb
       .collection('suppliers')
       .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
 
@@ -1430,15 +1438,27 @@ app.put('/api/suppliers/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Lỗi khi cập nhật nhà cung cấp',
+      details: error.message,
     });
+  } finally {
+    // Always close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
 app.delete('/api/suppliers/:id', async (req, res) => {
+  let client;
   try {
+    // Create fresh connection for each serverless request
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const localDb = client.db('vncompare');
+
     const { id } = req.params;
 
-    const result = await db
+    const result = await localDb
       .collection('suppliers')
       .deleteOne({ _id: new ObjectId(id) });
 
@@ -1458,7 +1478,13 @@ app.delete('/api/suppliers/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Lỗi khi xóa nhà cung cấp',
+      details: error.message,
     });
+  } finally {
+    // Always close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
