@@ -21,6 +21,8 @@ export interface Product {
   coverage?: number;
   coverageRate?: number;
   isActive: boolean;
+  images?: string[];
+  specifications?: Record<string, any>;
   supplierId?: string;
   agencyId?: string;
   sourceType?: 'supplier' | 'agency';

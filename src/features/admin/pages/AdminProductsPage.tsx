@@ -72,6 +72,8 @@ export default function AdminProductsPage() {
     unit: 'lít',
     coverage: 0,
     isActive: true,
+    images: [],
+    specifications: {},
     supplierId: undefined,
     agencyId: undefined,
     sourceType: undefined,
@@ -79,6 +81,9 @@ export default function AdminProductsPage() {
 
   // Track source type selection
   const [sourceType, setSourceType] = useState<'supplier' | 'agency' | ''>('');
+  const [editSourceType, setEditSourceType] = useState<
+    'supplier' | 'agency' | ''
+  >('');
 
   const [editForm, setEditForm] = useState<Partial<Product>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -116,6 +121,8 @@ export default function AdminProductsPage() {
         unit: 'lít',
         coverage: 0,
         isActive: true,
+        images: [],
+        specifications: {},
         supplierId: undefined,
         agencyId: undefined,
         sourceType: undefined,
@@ -179,8 +186,11 @@ export default function AdminProductsPage() {
       unit: product.unit,
       coverage: product.coverage,
       isActive: product.isActive,
-      images: product.images,
-      specifications: product.specifications,
+      images: product.images || [],
+      specifications: product.specifications || {},
+      supplierId: product.supplierId,
+      agencyId: product.agencyId,
+      sourceType: product.sourceType,
     });
     setShowEditModal(true);
   };

@@ -33,6 +33,8 @@ export interface CreateProduct {
   unit: string;
   coverage: number;
   isActive: boolean;
+  images?: string[];
+  specifications?: Record<string, any>;
   supplierId?: string;
   agencyId?: string;
   sourceType?: 'supplier' | 'agency';
