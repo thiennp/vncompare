@@ -90,6 +90,13 @@ const swaggerOptions = {
             isActive: { type: 'boolean' },
             images: { type: 'array', items: { type: 'string' } },
             specifications: { type: 'object' },
+            supplierId: { type: 'string', description: 'ID của nhà cung cấp' },
+            agencyId: { type: 'string', description: 'ID của đại lý' },
+            sourceType: {
+              type: 'string',
+              enum: ['supplier', 'agency'],
+              description: 'Nguồn cung cấp (supplier hoặc agency)',
+            },
             createdAt: { type: 'string', format: 'date-time' },
             updatedAt: { type: 'string', format: 'date-time' },
           },
@@ -124,6 +131,34 @@ const swaggerOptions = {
             phone: { type: 'string' },
             address: { type: 'string' },
             verified: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+          },
+        },
+        Agency: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            email: { type: 'string', format: 'email' },
+            phone: { type: 'string' },
+            address: { type: 'string' },
+            level: {
+              type: 'integer',
+              enum: [1, 2, 3],
+              description: 'Cấp đại lý (1, 2, hoặc 3)',
+            },
+            parentId: {
+              type: 'string',
+              description: 'ID của nhà cung cấp hoặc đại lý cấp trên',
+            },
+            parentType: {
+              type: 'string',
+              enum: ['supplier', 'agency'],
+              description: 'Loại của parent (supplier hoặc agency)',
+            },
+            verified: { type: 'boolean' },
+            isActive: { type: 'boolean' },
             createdAt: { type: 'string', format: 'date-time' },
             updatedAt: { type: 'string', format: 'date-time' },
           },
@@ -654,12 +689,24 @@ app.post('/api/products', async (req, res) => {
       unit,
       coverage,
       isActive,
+      supplierId,
+      agencyId,
+      sourceType,
     } = req.body;
 
     if (!name || !brand || !price || !coverage) {
       return res.status(400).json({
         success: false,
         error: 'Thông tin bắt buộc không được để trống',
+      });
+    }
+
+    // Validate source (either supplier or agency, not both)
+    if (supplierId && agencyId) {
+      return res.status(400).json({
+        success: false,
+        error:
+          'Sản phẩm chỉ có thể liên kết với nhà cung cấp hoặc đại lý, không thể cả hai',
       });
     }
 
@@ -681,6 +728,9 @@ app.post('/api/products', async (req, res) => {
       isActive: isActive !== false,
       images: [],
       specifications: {},
+      supplierId: supplierId || null,
+      agencyId: agencyId || null,
+      sourceType: sourceType || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -727,7 +777,19 @@ app.put('/api/products/:id', async (req, res) => {
       unit,
       coverage,
       isActive,
+      supplierId,
+      agencyId,
+      sourceType,
     } = req.body;
+
+    // Validate source (either supplier or agency, not both)
+    if (supplierId && agencyId) {
+      return res.status(400).json({
+        success: false,
+        error:
+          'Sản phẩm chỉ có thể liên kết với nhà cung cấp hoặc đại lý, không thể cả hai',
+      });
+    }
 
     const updateData = {
       name,
@@ -738,6 +800,9 @@ app.put('/api/products/:id', async (req, res) => {
       unit,
       coverage: parseFloat(coverage),
       isActive,
+      supplierId: supplierId || null,
+      agencyId: agencyId || null,
+      sourceType: sourceType || null,
       updatedAt: new Date(),
     };
 
@@ -1333,6 +1398,11 @@ app.get('/api/suppliers', async (req, res) => {
       page,
       limit,
     });
+  } finally {
+    // Always close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
   }
 });
 
@@ -1482,6 +1552,543 @@ app.delete('/api/suppliers/:id', async (req, res) => {
     });
   } finally {
     // Always close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+// Agencies endpoints
+/**
+ * @swagger
+ * /api/agencies:
+ *   get:
+ *     summary: Get agencies
+ *     description: Retrieve a paginated list of agencies with optional filtering by level or parent
+ *     tags: [Agencies]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         description: Number of items per page
+ *       - in: query
+ *         name: level
+ *         schema:
+ *           type: integer
+ *           enum: [1, 2, 3]
+ *         description: Filter by agency level
+ *       - in: query
+ *         name: parentId
+ *         schema:
+ *           type: string
+ *         description: Filter by parent ID
+ *     responses:
+ *       200:
+ *         description: List of agencies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 agencies:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Agency'
+ *                 total:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *       500:
+ *         description: Internal server error
+ */
+app.get('/api/agencies', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    // Build filter
+    const filter = {};
+    if (req.query.level) {
+      filter.level = parseInt(req.query.level);
+    }
+    if (req.query.parentId) {
+      filter.parentId = req.query.parentId;
+    }
+
+    const agencies = await db
+      .collection('agencies')
+      .find(filter)
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+    const total = await db.collection('agencies').countDocuments(filter);
+
+    res.json({
+      agencies,
+      total,
+      page,
+      limit,
+    });
+  } catch (error) {
+    console.error('Get agencies error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi lấy danh sách đại lý',
+      details: error.message,
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+/**
+ * @swagger
+ * /api/agencies/{id}:
+ *   get:
+ *     summary: Get agency by ID
+ *     description: Retrieve a single agency by its ID
+ *     tags: [Agencies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Agency ID
+ *     responses:
+ *       200:
+ *         description: Agency details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 agency:
+ *                   $ref: '#/components/schemas/Agency'
+ *       404:
+ *         description: Agency not found
+ *       500:
+ *         description: Internal server error
+ */
+app.get('/api/agencies/:id', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const { id } = req.params;
+    const agency = await db
+      .collection('agencies')
+      .findOne({ _id: new ObjectId(id) });
+
+    if (!agency) {
+      return res.status(404).json({
+        success: false,
+        error: 'Không tìm thấy đại lý',
+      });
+    }
+
+    res.json({
+      success: true,
+      agency,
+    });
+  } catch (error) {
+    console.error('Get agency by ID error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi lấy thông tin đại lý',
+      details: error.message,
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+/**
+ * @swagger
+ * /api/agencies:
+ *   post:
+ *     summary: Create agency
+ *     description: Create a new agency
+ *     tags: [Agencies]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - address
+ *               - level
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               level:
+ *                 type: integer
+ *                 enum: [1, 2, 3]
+ *               parentId:
+ *                 type: string
+ *               parentType:
+ *                 type: string
+ *                 enum: [supplier, agency]
+ *               verified:
+ *                 type: boolean
+ *               isActive:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Agency created successfully
+ *       400:
+ *         description: Bad request - missing required fields or validation error
+ *       500:
+ *         description: Internal server error
+ */
+app.post('/api/agencies', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const {
+      name,
+      email,
+      phone,
+      address,
+      level,
+      parentId,
+      parentType,
+      verified,
+      isActive,
+    } = req.body;
+
+    if (!name || !email || !address || !level) {
+      return res.status(400).json({
+        success: false,
+        error: 'Tên, email, địa chỉ và cấp đại lý là bắt buộc',
+      });
+    }
+
+    // Validate level
+    if (![1, 2, 3].includes(parseInt(level))) {
+      return res.status(400).json({
+        success: false,
+        error: 'Cấp đại lý phải là 1, 2 hoặc 3',
+      });
+    }
+
+    // Validate parent relationship
+    const agencyLevel = parseInt(level);
+    if (agencyLevel === 1) {
+      // Level 1 agency must have a supplier parent
+      if (!parentId || parentType !== 'supplier') {
+        return res.status(400).json({
+          success: false,
+          error: 'Đại lý cấp 1 phải có nhà cung cấp làm parent',
+        });
+      }
+    } else if (agencyLevel === 2) {
+      // Level 2 agency must have a level 1 agency parent
+      if (!parentId || parentType !== 'agency') {
+        return res.status(400).json({
+          success: false,
+          error: 'Đại lý cấp 2 phải có đại lý cấp 1 làm parent',
+        });
+      }
+      // Verify parent is level 1
+      const parentAgency = await db
+        .collection('agencies')
+        .findOne({ _id: new ObjectId(parentId) });
+      if (!parentAgency || parentAgency.level !== 1) {
+        return res.status(400).json({
+          success: false,
+          error: 'Parent của đại lý cấp 2 phải là đại lý cấp 1',
+        });
+      }
+    } else if (agencyLevel === 3) {
+      // Level 3 agency must have a level 2 agency parent
+      if (!parentId || parentType !== 'agency') {
+        return res.status(400).json({
+          success: false,
+          error: 'Đại lý cấp 3 phải có đại lý cấp 2 làm parent',
+        });
+      }
+      // Verify parent is level 2
+      const parentAgency = await db
+        .collection('agencies')
+        .findOne({ _id: new ObjectId(parentId) });
+      if (!parentAgency || parentAgency.level !== 2) {
+        return res.status(400).json({
+          success: false,
+          error: 'Parent của đại lý cấp 3 phải là đại lý cấp 2',
+        });
+      }
+    }
+
+    // Check if email already exists
+    const existingAgency = await db.collection('agencies').findOne({ email });
+    if (existingAgency) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email đại lý đã tồn tại',
+      });
+    }
+
+    const agency = {
+      name,
+      email,
+      phone: phone || '',
+      address,
+      level: agencyLevel,
+      parentId: parentId || null,
+      parentType: parentType || null,
+      verified: verified || false,
+      isActive: isActive !== false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await db.collection('agencies').insertOne(agency);
+
+    res.json({
+      success: true,
+      agency: { ...agency, _id: result.insertedId },
+    });
+  } catch (error) {
+    console.error('Create agency error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi tạo đại lý',
+      details: error.message,
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+/**
+ * @swagger
+ * /api/agencies/{id}:
+ *   put:
+ *     summary: Update agency
+ *     description: Update an existing agency
+ *     tags: [Agencies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Agency ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               verified:
+ *                 type: boolean
+ *               isActive:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Agency updated successfully
+ *       404:
+ *         description: Agency not found
+ *       500:
+ *         description: Internal server error
+ */
+app.put('/api/agencies/:id', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const { id } = req.params;
+    const { name, email, phone, address, verified, isActive } = req.body;
+
+    // Build update data (only include fields that are provided)
+    const updateData = {
+      updatedAt: new Date(),
+    };
+
+    if (name !== undefined) updateData.name = name;
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
+    if (address !== undefined) updateData.address = address;
+    if (verified !== undefined) updateData.verified = verified;
+    if (isActive !== undefined) updateData.isActive = isActive;
+
+    const result = await db
+      .collection('agencies')
+      .updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Không tìm thấy đại lý',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Cập nhật đại lý thành công',
+    });
+  } catch (error) {
+    console.error('Update agency error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi cập nhật đại lý',
+      details: error.message,
+    });
+  } finally {
+    // Close connection in serverless environment
+    if (client) {
+      await client.close();
+    }
+  }
+});
+
+/**
+ * @swagger
+ * /api/agencies/{id}:
+ *   delete:
+ *     summary: Delete agency
+ *     description: Delete an agency by ID
+ *     tags: [Agencies]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Agency ID
+ *     responses:
+ *       200:
+ *         description: Agency deleted successfully
+ *       404:
+ *         description: Agency not found
+ *       500:
+ *         description: Internal server error
+ */
+app.delete('/api/agencies/:id', async (req, res) => {
+  let client;
+  try {
+    // Ensure database connection for serverless environment
+    if (!db) {
+      client = new MongoClient(MONGODB_URI);
+      await client.connect();
+      db = client.db('vncompare');
+    }
+
+    const { id } = req.params;
+
+    // Check if any products are linked to this agency
+    const linkedProducts = await db
+      .collection('products')
+      .countDocuments({ agencyId: id });
+
+    if (linkedProducts > 0) {
+      return res.status(400).json({
+        success: false,
+        error: `Không thể xóa đại lý vì có ${linkedProducts} sản phẩm đang liên kết`,
+      });
+    }
+
+    // Check if any child agencies exist
+    const childAgencies = await db
+      .collection('agencies')
+      .countDocuments({ parentId: id });
+
+    if (childAgencies > 0) {
+      return res.status(400).json({
+        success: false,
+        error: `Không thể xóa đại lý vì có ${childAgencies} đại lý cấp dưới`,
+      });
+    }
+
+    const result = await db
+      .collection('agencies')
+      .deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Không tìm thấy đại lý',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Xóa đại lý thành công',
+    });
+  } catch (error) {
+    console.error('Delete agency error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Lỗi khi xóa đại lý',
+      details: error.message,
+    });
+  } finally {
+    // Close connection in serverless environment
     if (client) {
       await client.close();
     }

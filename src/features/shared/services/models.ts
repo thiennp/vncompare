@@ -21,6 +21,9 @@ export interface Product {
   coverage?: number;
   coverageRate?: number;
   isActive: boolean;
+  supplierId?: string;
+  agencyId?: string;
+  sourceType?: 'supplier' | 'agency';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -68,6 +71,21 @@ export interface Supplier {
   phone: string;
   address: string;
   verified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Agency {
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  level: 1 | 2 | 3;
+  parentId?: string;
+  parentType?: 'supplier' | 'agency';
+  verified: boolean;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
