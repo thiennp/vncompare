@@ -1128,14 +1128,12 @@ app.get('/api/users', async (req, res) => {
 app.post('/api/users', async (req, res) => {
   let client;
   try {
-    // Ensure database connection for serverless environment
-    if (!db) {
-      client = new MongoClient(MONGODB_URI);
-      await client.connect();
-      db = client.db('vncompare');
-    }
+    // Create fresh connection for each serverless request
+    client = new MongoClient(MONGODB_URI);
+    await client.connect();
+    const localDb = client.db('vncompare');
 
-    const { email, name, password, role } = req.body;
+    const { email, name, password, role, phone, isActive } = req.body;
 
     if (!email || !name || !password) {
       return res.status(400).json({
@@ -1145,7 +1143,7 @@ app.post('/api/users', async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await db.collection('users').findOne({ email });
+    const existingUser = await localDb.collection('users').findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -1161,11 +1159,13 @@ app.post('/api/users', async (req, res) => {
       name,
       password: hashedPassword,
       role: role || 'user',
+      phone: phone || '',
+      isActive: isActive !== false,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const result = await db.collection('users').insertOne(user);
+    const result = await localDb.collection('users').insertOne(user);
 
     res.json({
       success: true,
@@ -1176,9 +1176,10 @@ app.post('/api/users', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Lỗi khi tạo người dùng',
+      details: error.message,
     });
   } finally {
-    // Close connection in serverless environment
+    // Always close connection in serverless environment
     if (client) {
       await client.close();
     }
