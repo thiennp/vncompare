@@ -256,6 +256,8 @@ app.get('/', (req, res) => {
       'POST /api/products',
       'GET /api/orders',
       'GET /api/suppliers',
+      'GET /api/agencies',
+      'POST /api/agencies',
       'GET /api/dashboard/stats',
     ],
     documentation: '/api-docs',
@@ -2235,12 +2237,26 @@ app.get('/api/dashboard', async (req, res) => {
     const totalProducts = await db.collection('products').countDocuments();
     const totalOrders = await db.collection('orders').countDocuments();
     const totalSuppliers = await db.collection('suppliers').countDocuments();
+    const totalAgencies = await db.collection('agencies').countDocuments();
+    const agenciesLevel1 = await db
+      .collection('agencies')
+      .countDocuments({ level: 1 });
+    const agenciesLevel2 = await db
+      .collection('agencies')
+      .countDocuments({ level: 2 });
+    const agenciesLevel3 = await db
+      .collection('agencies')
+      .countDocuments({ level: 3 });
 
     res.json({
       totalUsers,
       totalProducts,
       totalOrders,
       totalSuppliers,
+      totalAgencies,
+      agenciesLevel1,
+      agenciesLevel2,
+      agenciesLevel3,
       totalRevenue: 0, // TODO: Calculate from orders
       activeProducts: 0, // TODO: Calculate active products
       verifiedSuppliers: 0, // TODO: Calculate verified suppliers
@@ -2253,6 +2269,10 @@ app.get('/api/dashboard', async (req, res) => {
       totalProducts: 3,
       totalOrders: 2,
       totalSuppliers: 2,
+      totalAgencies: 0,
+      agenciesLevel1: 0,
+      agenciesLevel2: 0,
+      agenciesLevel3: 0,
       totalRevenue: 1420000,
       activeProducts: 3,
       verifiedSuppliers: 2,
@@ -2279,12 +2299,26 @@ app.get('/api/dashboard/stats', async (req, res) => {
     const totalProducts = await db.collection('products').countDocuments();
     const totalOrders = await db.collection('orders').countDocuments();
     const totalSuppliers = await db.collection('suppliers').countDocuments();
+    const totalAgencies = await db.collection('agencies').countDocuments();
+    const agenciesLevel1 = await db
+      .collection('agencies')
+      .countDocuments({ level: 1 });
+    const agenciesLevel2 = await db
+      .collection('agencies')
+      .countDocuments({ level: 2 });
+    const agenciesLevel3 = await db
+      .collection('agencies')
+      .countDocuments({ level: 3 });
 
     res.json({
       totalUsers,
       totalProducts,
       totalOrders,
       totalSuppliers,
+      totalAgencies,
+      agenciesLevel1,
+      agenciesLevel2,
+      agenciesLevel3,
       totalRevenue: 0, // TODO: Calculate from orders
       activeProducts: 0, // TODO: Calculate active products
       verifiedSuppliers: 0, // TODO: Calculate verified suppliers
@@ -2297,6 +2331,10 @@ app.get('/api/dashboard/stats', async (req, res) => {
       totalProducts: 3,
       totalOrders: 2,
       totalSuppliers: 2,
+      totalAgencies: 0,
+      agenciesLevel1: 0,
+      agenciesLevel2: 0,
+      agenciesLevel3: 0,
       totalRevenue: 1420000,
       activeProducts: 3,
       verifiedSuppliers: 2,
@@ -2441,7 +2479,14 @@ app.post('/api/reset-db', async (req, res) => {
     }
 
     // Drop all collections
-    const collections = ['users', 'products', 'orders', 'suppliers', 'reviews'];
+    const collections = [
+      'users',
+      'products',
+      'orders',
+      'suppliers',
+      'agencies',
+      'reviews',
+    ];
     for (const collectionName of collections) {
       await db
         .collection(collectionName)
@@ -2458,6 +2503,9 @@ app.post('/api/reset-db', async (req, res) => {
     await db
       .collection('suppliers')
       .createIndex({ email: 1 }, { unique: true });
+    await db.collection('agencies').createIndex({ email: 1 }, { unique: true });
+    await db.collection('agencies').createIndex({ level: 1 });
+    await db.collection('agencies').createIndex({ parentId: 1 });
 
     res.json({
       success: true,

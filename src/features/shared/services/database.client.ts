@@ -334,4 +334,93 @@ export const db = {
       throw error;
     }
   },
+
+  async getAgencies(filters = {}, page = 1, limit = 20) {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(filters as any),
+      });
+      const response = await fetch(`${API_BASE_URL}/agencies?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch agencies');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching agencies:', error);
+      return { agencies: [], total: 0 };
+    }
+  },
+
+  async getAgencyById(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/agencies/${id}`);
+      if (!response.ok) throw new Error('Failed to fetch agency');
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching agency:', error);
+      return null;
+    }
+  },
+
+  async createAgency(agencyData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/agencies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(agencyData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create agency');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating agency:', error);
+      throw error;
+    }
+  },
+
+  async updateAgency(id: string, agencyData: any) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/agencies/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(agencyData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update agency');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating agency:', error);
+      throw error;
+    }
+  },
+
+  async deleteAgency(id: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/agencies/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete agency');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting agency:', error);
+      throw error;
+    }
+  },
 };

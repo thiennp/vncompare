@@ -33,6 +33,9 @@ export interface CreateProduct {
   unit: string;
   coverage: number;
   isActive: boolean;
+  supplierId?: string;
+  agencyId?: string;
+  sourceType?: 'supplier' | 'agency';
 }
 
 // Supplier types
@@ -42,4 +45,17 @@ export interface CreateSupplier {
   phone: string;
   address: string;
   verified: boolean;
+}
+
+// Agency types
+export interface CreateAgency {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  level: 1 | 2 | 3;
+  parentId?: string;
+  parentType?: 'supplier' | 'agency';
+  verified: boolean;
+  isActive: boolean;
 }

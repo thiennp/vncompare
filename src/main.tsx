@@ -10,11 +10,13 @@ import AdminProductsPage from './features/admin/pages/AdminProductsPage';
 import AdminOrdersPage from './features/admin/pages/AdminOrdersPage';
 import AdminUsersPage from './features/admin/pages/AdminUsersPage';
 import AdminSuppliersPage from './features/admin/pages/AdminSuppliersPage';
+import AdminAgenciesPage from './features/admin/pages/AdminAgenciesPage';
 import AdminReviewsPage from './features/admin/pages/AdminReviewsPage';
 import { adminProductsLoader } from './features/admin/pages/loaders/adminProductsLoader';
 import { adminOrdersLoader } from './features/admin/pages/loaders/adminOrdersLoader';
 import { adminUsersLoader } from './features/admin/pages/loaders/adminUsersLoader';
 import { adminSuppliersLoader } from './features/admin/pages/loaders/adminSuppliersLoader';
+import { adminAgenciesLoader } from './features/admin/pages/loaders/adminAgenciesLoader';
 import { adminReviewsLoader } from './features/admin/pages/loaders/adminReviewsLoader';
 import { adminDashboardLoader } from './features/admin/pages/loaders/adminDashboardLoader';
 import ErrorPage from './features/error/pages/ErrorPage';
@@ -94,6 +96,11 @@ const router = createBrowserRouter([
         path: 'suppliers',
         element: <AdminSuppliersPage />,
         loader: adminSuppliersLoader,
+      },
+      {
+        path: 'agencies',
+        element: <AdminAgenciesPage />,
+        loader: adminAgenciesLoader,
       },
       {
         path: 'reviews',

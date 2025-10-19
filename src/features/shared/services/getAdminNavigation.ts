@@ -39,6 +39,12 @@ export function getAdminNavigation(): AdminNavigationItem[] {
       description: 'Quản lý nhà cung cấp',
     },
     {
+      name: 'Đại lý',
+      href: '/admin/agencies',
+      icon: null,
+      description: 'Quản lý đại lý các cấp',
+    },
+    {
       name: 'Đánh giá',
       href: '/admin/reviews',
       icon: null,

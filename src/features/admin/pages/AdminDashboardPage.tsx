@@ -13,6 +13,7 @@ import {
   Package,
   ShoppingCart,
   Building2,
+  Network,
   DollarSign,
   Clock,
   Star,
@@ -26,6 +27,10 @@ interface AdminDashboardPageData {
     totalProducts: number;
     totalOrders: number;
     totalSuppliers: number;
+    totalAgencies?: number;
+    agenciesLevel1?: number;
+    agenciesLevel2?: number;
+    agenciesLevel3?: number;
     totalRevenue: number;
     pendingOrders: number;
     pendingReviews: number;
@@ -59,7 +64,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
@@ -108,6 +113,20 @@ export default function AdminDashboardPage() {
             <div className="text-2xl font-bold">{stats.totalSuppliers}</div>
             <p className="text-xs text-muted-foreground">
               Nhà cung cấp đã đăng ký
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Đại lý</CardTitle>
+            <Network className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalAgencies || 0}</div>
+            <p className="text-xs text-muted-foreground">
+              Cấp 1: {stats.agenciesLevel1 || 0} | Cấp 2:{' '}
+              {stats.agenciesLevel2 || 0} | Cấp 3: {stats.agenciesLevel3 || 0}
             </p>
           </CardContent>
         </Card>

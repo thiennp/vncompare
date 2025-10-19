@@ -1,6 +1,6 @@
 import { useState, useTransition } from 'react';
 import { useLoaderData, useRevalidator } from 'react-router-dom';
-import { Product } from '../../shared/services/models';
+import { Product, Supplier, Agency } from '../../shared/services/models';
 import { CreateProduct } from '../../shared/services/types';
 import { db } from '../../shared/services/database.client';
 import {
@@ -29,6 +29,8 @@ import { Package, Plus, Edit, Trash2, Eye } from 'lucide-react';
 
 interface AdminProductsPageData {
   products: Product[];
+  suppliers: Supplier[];
+  agencies: Agency[];
   total: number;
   page: number;
   search: string;
@@ -46,7 +48,8 @@ const PRODUCT_CATEGORIES = [
 const PRODUCT_UNITS = ['lít', 'galông', 'lon', 'xô', 'tuýp'] as const;
 
 export default function AdminProductsPage() {
-  const { products, total } = useLoaderData() as AdminProductsPageData;
+  const { products, suppliers, agencies, total } =
+    useLoaderData() as AdminProductsPageData;
   const revalidator = useRevalidator();
   const [,] = useTransition();
 
@@ -59,19 +62,23 @@ export default function AdminProductsPage() {
 
   // Form states
   const [createForm, setCreateForm] = useState<
-    Omit<Product, '_id' | 'createdAt'>
+    Omit<Product, '_id' | 'createdAt' | 'updatedAt'>
   >({
     name: '',
     brand: '',
     category: 'Sơn ngoại thất',
     description: '',
     price: 0,
-    unit: 'liter',
+    unit: 'lít',
     coverage: 0,
     isActive: true,
-    images: [],
-    specifications: {},
+    supplierId: undefined,
+    agencyId: undefined,
+    sourceType: undefined,
   });
+
+  // Track source type selection
+  const [sourceType, setSourceType] = useState<'supplier' | 'agency' | ''>('');
 
   const [editForm, setEditForm] = useState<Partial<Product>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -89,7 +96,16 @@ export default function AdminProductsPage() {
 
     setIsLoading(true);
     try {
-      await db.createProduct(createForm);
+      // Prepare data with correct supplierId/agencyId based on sourceType
+      const productData = {
+        ...createForm,
+        supplierId:
+          sourceType === 'supplier' ? createForm.supplierId : undefined,
+        agencyId: sourceType === 'agency' ? createForm.agencyId : undefined,
+        sourceType: sourceType || undefined,
+      };
+
+      await db.createProduct(productData);
       setShowCreateModal(false);
       setCreateForm({
         name: '',
@@ -100,9 +116,11 @@ export default function AdminProductsPage() {
         unit: 'lít',
         coverage: 0,
         isActive: true,
-        images: [],
-        specifications: {},
+        supplierId: undefined,
+        agencyId: undefined,
+        sourceType: undefined,
       });
+      setSourceType('');
       revalidator.revalidate();
       alert('Tạo sản phẩm thành công!');
     } catch (error) {
@@ -402,12 +420,96 @@ export default function AdminProductsPage() {
               </div>
             </div>
 
+            <div>
+              <Label>Nguồn cung cấp</Label>
+              <div className="flex space-x-4 mt-2">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="sourceType"
+                    value="supplier"
+                    checked={sourceType === 'supplier'}
+                    onChange={() => {
+                      setSourceType('supplier');
+                      setCreateForm({
+                        ...createForm,
+                        supplierId: '',
+                        agencyId: undefined,
+                        sourceType: 'supplier',
+                      });
+                    }}
+                  />
+                  <span>Nhà cung cấp</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="sourceType"
+                    value="agency"
+                    checked={sourceType === 'agency'}
+                    onChange={() => {
+                      setSourceType('agency');
+                      setCreateForm({
+                        ...createForm,
+                        supplierId: undefined,
+                        agencyId: '',
+                        sourceType: 'agency',
+                      });
+                    }}
+                  />
+                  <span>Đại lý</span>
+                </label>
+              </div>
+            </div>
+
+            {sourceType === 'supplier' && (
+              <div>
+                <Label htmlFor="create-supplier">Chọn nhà cung cấp</Label>
+                <select
+                  id="create-supplier"
+                  className="w-full p-2 border rounded"
+                  value={createForm.supplierId || ''}
+                  onChange={e =>
+                    setCreateForm({ ...createForm, supplierId: e.target.value })
+                  }
+                >
+                  <option value="">-- Chọn nhà cung cấp --</option>
+                  {suppliers.map(supplier => (
+                    <option key={supplier._id} value={supplier._id}>
+                      {supplier.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {sourceType === 'agency' && (
+              <div>
+                <Label htmlFor="create-agency">Chọn đại lý</Label>
+                <select
+                  id="create-agency"
+                  className="w-full p-2 border rounded"
+                  value={createForm.agencyId || ''}
+                  onChange={e =>
+                    setCreateForm({ ...createForm, agencyId: e.target.value })
+                  }
+                >
+                  <option value="">-- Chọn đại lý --</option>
+                  {agencies.map(agency => (
+                    <option key={agency._id} value={agency._id}>
+                      {agency.name} (Cấp {agency.level})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="create-active"
                 checked={createForm.isActive}
-                onChange={e =>
-                  setCreateForm({ ...createForm, isActive: e.target.checked })
+                onCheckedChange={checked =>
+                  setCreateForm({ ...createForm, isActive: checked === true })
                 }
               />
               <Label htmlFor="create-active">Hoạt động</Label>
